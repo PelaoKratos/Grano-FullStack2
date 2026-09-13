@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Grano, una tienda de café de especialidad. Maqueta académica de Brian Bravo y Matías Guerra.">
+  <title>Tu primera prensa francesa | Grano</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <!-- Primero cargué Bootstrap y después mis estilos para cambiar los colores. -->
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div class="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
+  <header class="border-bottom">
+    <!-- navbar ordena la cabecera. flex-wrap deja que el menú baje sin usar JavaScript. -->
+    <div class="navbar container py-3 gap-3 flex-wrap">
+      <a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a>
+      <nav class="nav gap-1" aria-label="Navegación principal"><a class="nav-link" href="index.html">Inicio</a><a class="nav-link" href="productos.html">Nuestro café</a><a class="nav-link" href="nosotros.html">Nosotros</a><a class="nav-link" href="blog.html">El diario</a><a class="nav-link" href="contacto.html">Contacto</a></nav>
+      <nav class="nav gap-2" aria-label="Cuenta y carrito"><a class="nav-link" href="login.html">Mi cuenta</a><a class="nav-link" href="carrito.html">Bolsa (0)</a></nav>
+    </div>
+  </header>
+  <!-- container centra la página; py-5 le da espacio arriba y abajo. -->
+  <main id="contenido" class="container py-5"><article class="lectura mx-auto"><a href="blog.html">← Volver al diario</a><div class="encabezado mb-4"><p class="etiqueta">EL DIARIO</p><h1>Tu primera prensa francesa</h1><p class="text-secondary">Un método sencillo para disfrutar el café en casa.</p></div><img class="img-fluid rounded-4 mb-4" src="assets/guia.svg" alt="Ilustración de Tu primera prensa francesa" width="700" height="400"><p>La prensa francesa prepara el café dejando que el agua y el café molido estén en contacto. Después, el filtro separa la bebida de los granos.</p><h2 class="h3">Antes de empezar</h2><p>Necesitas una prensa limpia, café con molienda gruesa, agua caliente y una taza. Puedes usar una balanza para repetir una preparación que te haya gustado.</p><h2 class="h3">Prepara a tu ritmo</h2><p>Pon el café en la prensa, agrega el agua con cuidado y deja reposar. Baja el émbolo lentamente y sirve. Si el resultado no te convence, cambia una sola cosa la próxima vez, como la cantidad de café o el tiempo de reposo.</p></article></main>
+  <footer class="pie mt-4 py-5">
+    <!-- La grilla del footer se apila en pantallas chicas. -->
+    <div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4">
+      <div><a class="marca" href="index.html">grano</a><p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p></div>
+      <div><a href="nosotros.html">Nuestro proyecto</a><br><a href="admin.html">Ver maqueta de administración</a></div>
+      <div><p class="mb-1">Brian Bravo y Matías Guerra</p><small>FullStack II · Evaluación 1<br>Maqueta académica. No realiza compras.</small></div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Grano, una tienda de café de especialidad. Maqueta académica de Brian Bravo y Matías Guerra.">
+  <title>Registro | Grano</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <!-- Primero cargué Bootstrap y después mis estilos para cambiar los colores. -->
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div class="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
+  <header class="border-bottom">
+    <!-- navbar ordena la cabecera. flex-wrap deja que el menú baje sin usar JavaScript. -->
+    <div class="navbar container py-3 gap-3 flex-wrap">
+      <a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a>
+      <nav class="nav gap-1" aria-label="Navegación principal"><a class="nav-link" href="index.html">Inicio</a><a class="nav-link" href="productos.html">Nuestro café</a><a class="nav-link" href="nosotros.html">Nosotros</a><a class="nav-link" href="blog.html">El diario</a><a class="nav-link" href="contacto.html">Contacto</a></nav>
+      <nav class="nav gap-2" aria-label="Cuenta y carrito"><a class="nav-link" href="login.html">Mi cuenta</a><a class="nav-link" href="carrito.html">Bolsa (0)</a></nav>
+    </div>
+  </header>
+  <!-- container centra la página; py-5 le da espacio arriba y abajo. -->
+  <main id="contenido" class="container py-5"><div class="encabezado mb-4"><p class="etiqueta">MI CUENTA</p><h1>Tu rincón en Grano.</h1></div><!-- alert sirve para explicar que esta parte es solo visual. -->
+<p class="alert alert-light aviso">Formulario de muestra. No crea cuentas. Región y comuna son opciones fijas de ejemplo.</p><!-- form-label, form-control y form-select mantienen los campos ordenados. row g-3 deja espacio entre ellos. -->
+<form class="panel"><div class="row g-3"><div class="col-md-6"><label class="form-label" for="run">RUN</label><input class="form-control" type="text" id="run" placeholder="19011022K" maxlength="9"></div><div class="col-md-6"><label class="form-label" for="nombre">Nombre</label><input class="form-control" type="text" id="nombre" autocomplete="given-name" maxlength="50"></div><div class="col-md-6"><label class="form-label" for="apellidos">Apellidos</label><input class="form-control" type="text" id="apellidos" autocomplete="family-name" maxlength="100"></div><div class="col-md-6"><label class="form-label" for="correo">Correo electrónico</label><input class="form-control" type="email" id="correo" autocomplete="email" maxlength="100"></div><div class="col-md-6"><label class="form-label" for="nacimiento">Fecha de nacimiento (opcional)</label><input class="form-control" type="date" id="nacimiento" ></div><div class="col-md-6"><label class="form-label" for="direccion">Dirección</label><input class="form-control" type="text" id="direccion" autocomplete="street-address" maxlength="300"></div><div class="col-md-6"><label class="form-label" for="region">Región de ejemplo</label><select class="form-select" id="region"><option>Metropolitana de Santiago</option></select></div><div class="col-md-6"><label class="form-label" for="comuna">Comuna de ejemplo</label><select class="form-select" id="comuna"><option>Santiago</option><option>Providencia</option><option>Ñuñoa</option></select></div><div class="col-md-6"><label class="form-label" for="clave">Contraseña</label><input class="form-control" type="password" id="clave" autocomplete="new-password"></div><div class="col-md-6"><label class="form-label" for="confirmacion">Repetir contraseña</label><input class="form-control" type="password" id="confirmacion" autocomplete="new-password"></div><div class="col-12"><button type="button" class="btn btn-success" disabled>Crear cuenta</button></div></div></form><p class="mt-4"><a href="login.html">Volver a inicio de sesión</a></p></main>
+  <footer class="pie mt-4 py-5">
+    <!-- La grilla del footer se apila en pantallas chicas. -->
+    <div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4">
+      <div><a class="marca" href="index.html">grano</a><p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p></div>
+      <div><a href="nosotros.html">Nuestro proyecto</a><br><a href="admin.html">Ver maqueta de administración</a></div>
+      <div><p class="mb-1">Brian Bravo y Matías Guerra</p><small>FullStack II · Evaluación 1<br>Maqueta académica. No realiza compras.</small></div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Grano, una tienda de café de especialidad. Maqueta académica de Brian Bravo y Matías Guerra.">
+  <title>Nuestro café | Grano</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <!-- Primero cargué Bootstrap y después mis estilos para cambiar los colores. -->
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div class="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
+  <header class="border-bottom">
+    <!-- navbar ordena la cabecera. flex-wrap deja que el menú baje sin usar JavaScript. -->
+    <div class="navbar container py-3 gap-3 flex-wrap">
+      <a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a>
+      <nav class="nav gap-1" aria-label="Navegación principal"><a class="nav-link" href="index.html">Inicio</a><a class="nav-link active" href="productos.html" aria-current="page">Nuestro café</a><a class="nav-link" href="nosotros.html">Nosotros</a><a class="nav-link" href="blog.html">El diario</a><a class="nav-link" href="contacto.html">Contacto</a></nav>
+      <nav class="nav gap-2" aria-label="Cuenta y carrito"><a class="nav-link" href="login.html">Mi cuenta</a><a class="nav-link" href="carrito.html">Bolsa (0)</a></nav>
+    </div>
+  </header>
+  <!-- container centra la página; py-5 le da espacio arriba y abajo. -->
+  <main id="contenido" class="container py-5"><div class="encabezado mb-4"><p class="etiqueta">LA COLECCIÓN</p><h1>Encuentra tu próximo ritual.</h1><p class="text-secondary">Cafés, métodos y accesorios. Precios de muestra en pesos chilenos.</p></div><!-- alert sirve para explicar que esta parte es solo visual. -->
+<p class="alert alert-light aviso">Catálogo de muestra. Puedes conocer cada producto; la compra no está habilitada.</p><!-- row-cols cambia la cantidad de tarjetas según el ancho; g-4 separa las columnas. -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4"><div class="col">
+  <!-- Usé card y h-100 para que las tarjetas de productos tengan la misma altura. -->
+  <article class="card h-100 producto"><a href="producto-colombia.html"><img class="card-img-top" src="assets/colombia.svg" alt="Origen Colombia" loading="lazy" width="600" height="500"></a>
+    <div class="card-body d-flex flex-column"><p class="etiqueta">Café en grano</p><h3 class="h4"><a href="producto-colombia.html">Origen Colombia</a></h3><p class="text-secondary">Cacao y caramelo</p><p class="precio mt-auto">$12.990 <small>CLP</small></p>
+    <!-- btn da el estilo a los enlaces y botones; disabled deja la compra para más adelante. -->
+    <div class="d-flex gap-2 flex-wrap"><a class="btn btn-outline-success" href="producto-colombia.html">Ver detalle</a><button class="btn btn-success" type="button" disabled>Añadir</button></div></div>
+  </article></div><div class="col">
+  <!-- Usé card y h-100 para que las tarjetas de productos tengan la misma altura. -->
+  <article class="card h-100 producto"><a href="producto-etiopia.html"><img class="card-img-top" src="assets/etiopia.svg" alt="Origen Etiopía" loading="lazy" width="600" height="500"></a>
+    <div class="card-body d-flex flex-column"><p class="etiqueta">Café en grano</p><h3 class="h4"><a href="producto-etiopia.html">Origen Etiopía</a></h3><p class="text-secondary">Flores y cítricos</p><p class="precio mt-auto">$14.990 <small>CLP</small></p>
+    <!-- btn da el estilo a los enlaces y botones; disabled deja la compra para más adelante. -->
+    <div class="d-flex gap-2 flex-wrap"><a class="btn btn-outline-success" href="producto-etiopia.html">Ver detalle</a><button class="btn btn-success" type="button" disabled>Añadir</button></div></div>
+  </article></div><div class="col">
+  <!-- Usé card y h-100 para que las tarjetas de productos tengan la misma altura. -->
+  <article class="card h-100 producto"><a href="producto-blend.html"><img class="card-img-top" src="assets/blend.svg" alt="Blend de la casa" loading="lazy" width="600" height="500"></a>
+    <div class="card-body d-flex flex-column"><p class="etiqueta">Café en grano</p><h3 class="h4"><a href="producto-blend.html">Blend de la casa</a></h3><p class="text-secondary">Chocolate y avellanas</p><p class="precio mt-auto">$11.990 <small>CLP</small></p>
+    <!-- btn da el estilo a los enlaces y botones; disabled deja la compra para más adelante. -->
+    <div class="d-flex gap-2 flex-wrap"><a class="btn btn-outline-success" href="producto-blend.html">Ver detalle</a><button class="btn btn-success" type="button" disabled>Añadir</button></div></div>
+  </article></div><div class="col">
+  <!-- Usé card y h-100 para que las tarjetas de productos tengan la misma altura. -->
+  <article class="card h-100 producto"><a href="producto-dripper.html"><img class="card-img-top" src="assets/dripper.svg" alt="Dripper cerámico" loading="lazy" width="600" height="500"></a>
+    <div class="card-body d-flex flex-column"><p class="etiqueta">Métodos</p><h3 class="h4"><a href="producto-dripper.html">Dripper cerámico</a></h3><p class="text-secondary">Una pausa, una taza</p><p class="precio mt-auto">$18.990 <small>CLP</small></p>
+    <!-- btn da el estilo a los enlaces y botones; disabled deja la compra para más adelante. -->
+    <div class="d-flex gap-2 flex-wrap"><a class="btn btn-outline-success" href="producto-dripper.html">Ver detalle</a><button class="btn btn-success" type="button" disabled>Añadir</button></div></div>
+  </article></div><div class="col">
+  <!-- Usé card y h-100 para que las tarjetas de productos tengan la misma altura. -->
+  <article class="card h-100 producto"><a href="producto-prensa.html"><img class="card-img-top" src="assets/prensa.svg" alt="Prensa francesa" loading="lazy" width="600" height="500"></a>
+    <div class="card-body d-flex flex-column"><p class="etiqueta">Métodos</p><h3 class="h4"><a href="producto-prensa.html">Prensa francesa</a></h3><p class="text-secondary">600 ml para compartir</p><p class="precio mt-auto">$24.990 <small>CLP</small></p>
+    <!-- btn da el estilo a los enlaces y botones; disabled deja la compra para más adelante. -->
+    <div class="d-flex gap-2 flex-wrap"><a class="btn btn-outline-success" href="producto-prensa.html">Ver detalle</a><button class="btn btn-success" type="button" disabled>Añadir</button></div></div>
+  </article></div><div class="col">
+  <!-- Usé card y h-100 para que las tarjetas de productos tengan la misma altura. -->
+  <article class="card h-100 producto"><a href="producto-taza.html"><img class="card-img-top" src="assets/taza.svg" alt="Taza de cerámica" loading="lazy" width="600" height="500"></a>
+    <div class="card-body d-flex flex-column"><p class="etiqueta">Accesorios</p><h3 class="h4"><a href="producto-taza.html">Taza de cerámica</a></h3><p class="text-secondary">Tu compañera de cada mañana</p><p class="precio mt-auto">$8.990 <small>CLP</small></p>
+    <!-- btn da el estilo a los enlaces y botones; disabled deja la compra para más adelante. -->
+    <div class="d-flex gap-2 flex-wrap"><a class="btn btn-outline-success" href="producto-taza.html">Ver detalle</a><button class="btn btn-success" type="button" disabled>Añadir</button></div></div>
+  </article></div></div></main>
+  <footer class="pie mt-4 py-5">
+    <!-- La grilla del footer se apila en pantallas chicas. -->
+    <div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4">
+      <div><a class="marca" href="index.html">grano</a><p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p></div>
+      <div><a href="nosotros.html">Nuestro proyecto</a><br><a href="admin.html">Ver maqueta de administración</a></div>
+      <div><p class="mb-1">Brian Bravo y Matías Guerra</p><small>FullStack II · Evaluación 1<br>Maqueta académica. No realiza compras.</small></div>
+    </div>
+  </footer>
+</body>
+</html>
