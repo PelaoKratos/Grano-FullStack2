@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Grano, una tienda de café de especialidad. Maqueta académica de Brian Bravo y Matías Guerra.">
+  <title>Administrar usuarios | Grano</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <!-- Primero cargué Bootstrap y después mis estilos para cambiar los colores. -->
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div class="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
+  <header class="border-bottom">
+    <!-- navbar ordena la cabecera. flex-wrap deja que el menú baje sin usar JavaScript. -->
+    <div class="navbar container py-3 gap-3 flex-wrap">
+      <a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a>
+      <nav class="nav gap-1" aria-label="Navegación principal"><a class="nav-link" href="index.html">Inicio</a><a class="nav-link" href="productos.html">Nuestro café</a><a class="nav-link" href="nosotros.html">Nosotros</a><a class="nav-link" href="blog.html">El diario</a><a class="nav-link" href="contacto.html">Contacto</a></nav>
+      <nav class="nav gap-2" aria-label="Cuenta y carrito"><a class="nav-link" href="login.html">Mi cuenta</a><a class="nav-link" href="carrito.html">Bolsa (0)</a></nav>
+    </div>
+  </header>
+  <!-- container centra la página; py-5 le da espacio arriba y abajo. -->
+  <main id="contenido" class="container py-5"><!-- row y col-lg separan el menú del contenido en pantallas grandes. -->
+<div class="row g-4"><!-- Con list-group armé el menú del administrador; en el celular queda arriba. -->
+<aside class="col-lg-3"><nav class="list-group mb-4" aria-label="Administración"><a class="list-group-item list-group-item-action" href="admin.html">Resumen</a><a class="list-group-item list-group-item-action" href="admin-productos.html">Productos</a><a class="list-group-item list-group-item-action active" href="admin-usuarios.html" aria-current="page">Usuarios</a><a class="list-group-item list-group-item-action" href="admin-ordenes.html">Órdenes</a><a class="list-group-item list-group-item-action" href="admin-mensajes.html">Mensajes</a></nav></aside><section class="col-lg-9"><div class="encabezado mb-4"><p class="etiqueta">PERSONAS</p><h1>Usuarios</h1></div><!-- alert sirve para explicar que esta parte es solo visual. -->
+<p class="alert alert-light aviso">Esta pantalla es una maqueta. Los datos no se envían ni se guardan.</p><a class="btn btn-success mb-4" href="admin-usuario-nuevo.html">Nuevo usuario</a><!-- table-responsive deja desplazar la tabla en celular; table-striped ayuda a seguir las filas. --><div class="table-responsive"><table class="table table-striped"><caption>Datos de ejemplo para presentar la maqueta.</caption><thead><tr><th scope="col">Nombre</th><th scope="col">Correo de ejemplo</th><th scope="col">Perfil</th><th scope="col">Acción</th></tr></thead><tbody><tr><td>Cliente de ejemplo</td><td>cliente@example.com</td><td>Cliente</td><td><a href="admin-usuario-editar.html">Ver edición</a></td></tr></tbody></table></div></section></div></main>
+  <footer class="pie mt-4 py-5">
+    <!-- La grilla del footer se apila en pantallas chicas. -->
+    <div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4">
+      <div><a class="marca" href="index.html">grano</a><p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p></div>
+      <div><a href="nosotros.html">Nuestro proyecto</a><br><a href="admin.html">Ver maqueta de administración</a></div>
+      <div><p class="mb-1">Brian Bravo y Matías Guerra</p><small>FullStack II · Evaluación 1<br>Maqueta académica. No realiza compras.</small></div>
+    </div>
+  </footer>
+</body>
+</html>
