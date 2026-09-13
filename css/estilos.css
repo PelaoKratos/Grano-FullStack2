@@ -1,4 +1,4 @@
-/* Elegí los colores de Grano para mantener la idea del proyecto anterior. */
+/* Elegí los colores de Grano para darle identidad a la tienda. */
 :root { --verde: #2d4938; --crema: #f8f5ee; --tinta: #263c30; }
 body { background: var(--crema); color: var(--tinta); font-family: Arial, Helvetica, sans-serif; line-height: 1.6; }
 a { color: var(--verde); text-underline-offset: 4px; }
@@ -28,12 +28,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); }
 .producto h3 a:hover { text-decoration: underline; }
 .precio { font-size: 1.2rem; font-weight: bold; }
 .precio small { font-size: .7rem; font-weight: normal; }
-.imagen-blog { height: 280px; object-fit: cover; }
 .panel { background: #fffdfa; padding: clamp(1.3rem, 3vw, 2.5rem); border: 1px solid #dedfd4; border-radius: .8rem; }
-.lectura { max-width: 760px; }
 .formulario-corto { max-width: 600px; }
-/* Ajusté alert-light para que el aviso de maqueta combine con el resto. */
-.aviso { background: #efeee4; border-color: #d8d9cb; color: #3d493e; }
 /* Este color marca la opción elegida dentro del list-group de administración. */
 .list-group-item.active { background: var(--verde); border-color: var(--verde); }
 /* Cambié el foco de los formularios de Bootstrap para que se vea al usar Tab. */

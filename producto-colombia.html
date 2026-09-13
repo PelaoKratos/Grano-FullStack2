@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Grano, una tienda de café de especialidad. Maqueta académica de Brian Bravo y Matías Guerra.">
+  <meta name="description" content="Grano, café de especialidad, métodos y accesorios para disfrutar una buena taza en casa.">
   <title>Origen Colombia | Grano</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <!-- Primero cargué Bootstrap y después mis estilos para cambiar los colores. -->
-  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <!-- Cargué el CSS de Bootstrap desde su enlace y después puse mis estilos. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
@@ -17,22 +17,21 @@
     <!-- navbar ordena la cabecera. flex-wrap deja que el menú baje sin usar JavaScript. -->
     <div class="navbar container py-3 gap-3 flex-wrap">
       <a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a>
-      <nav class="nav gap-1" aria-label="Navegación principal"><a class="nav-link" href="index.html">Inicio</a><a class="nav-link" href="productos.html">Nuestro café</a><a class="nav-link" href="nosotros.html">Nosotros</a><a class="nav-link" href="blog.html">El diario</a><a class="nav-link" href="contacto.html">Contacto</a></nav>
-      <nav class="nav gap-2" aria-label="Cuenta y carrito"><a class="nav-link" href="login.html">Mi cuenta</a><a class="nav-link" href="carrito.html">Bolsa (0)</a></nav>
+      <nav class="nav gap-1" aria-label="Navegación principal"><a class="nav-link" href="index.html">Inicio</a><a class="nav-link" href="productos.html">Nuestro café</a><a class="nav-link" href="nosotros.html">Nosotros</a><a class="nav-link" href="contacto.html">Contacto</a></nav>
     </div>
   </header>
   <!-- container centra la página; py-5 le da espacio arriba y abajo. -->
   <main id="contenido" class="container py-5"><!-- breadcrumb muestra el camino para volver al catálogo. -->
 <nav aria-label="Ubicación"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Inicio</a></li><li class="breadcrumb-item"><a href="productos.html">Colección</a></li><li class="breadcrumb-item active" aria-current="page">Origen Colombia</li></ol></nav>
-<section class="row gx-4 gy-5 align-items-center"><div class="col-md-6"><img class="img-fluid rounded-4" src="assets/colombia.svg" alt="Origen Colombia" width="600" height="500"></div><div class="col-md-6"><div class="encabezado mb-4"><p class="etiqueta">Café en grano</p><h1>Origen Colombia</h1></div><p class="lead">Cacao y caramelo</p><p>Café de tueste medio, dulce y equilibrado. Bolsa de 250 g para acompañar tus mañanas.</p><p class="precio">$12.990 CLP</p><!-- alert sirve para explicar que esta parte es solo visual. -->
-<p class="alert alert-light aviso">Producto de muestra. Añadir a la bolsa no está habilitado.</p><button class="btn btn-success" type="button" disabled>Añadir a la bolsa</button> <a href="productos.html" class="btn btn-outline-success">Volver a la colección</a></div></section></main>
+<section class="row gx-4 gy-5 align-items-center"><div class="col-md-6"><img class="img-fluid rounded-4" src="assets/colombia.svg" alt="Origen Colombia" width="600" height="500"></div><div class="col-md-6"><div class="encabezado mb-4"><p class="etiqueta">Café en grano</p><h1>Origen Colombia</h1></div><p class="lead">Cacao y caramelo</p><p>Café de tueste medio, dulce y equilibrado. Bolsa de 250 g para acompañar tus mañanas.</p><p class="precio">$12.990 CLP</p><button class="btn btn-success" type="button" disabled>Añadir a la bolsa</button> <a href="productos.html" class="btn btn-outline-success">Volver a la colección</a></div></section></main>
   <footer class="pie mt-4 py-5">
     <!-- La grilla del footer se apila en pantallas chicas. -->
     <div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4">
       <div><a class="marca" href="index.html">grano</a><p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p></div>
-      <div><a href="nosotros.html">Nuestro proyecto</a><br><a href="admin.html">Ver maqueta de administración</a></div>
-      <div><p class="mb-1">Brian Bravo y Matías Guerra</p><small>FullStack II · Evaluación 1<br>Maqueta académica. No realiza compras.</small></div>
+      <div><a href="nosotros.html">Conoce Grano</a><br><a href="contacto.html">Contacto</a></div>
+      
     </div>
   </footer>
 </body>
 </html>
+
