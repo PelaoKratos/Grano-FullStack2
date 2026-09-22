@@ -7,7 +7,7 @@
       name="description"
       content="Grano, café de especialidad, métodos y accesorios para disfrutar una buena taza en casa."
     />
-    <title>Nosotros | Grano</title>
+    <title>Blend de la casa | Grano</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <!-- Cargué el CSS de Bootstrap desde su enlace y después puse mis estilos. -->
     <link
@@ -31,7 +31,7 @@
         <nav class="nav gap-1" aria-label="Navegación principal">
           <a class="nav-link" href="index.html">Inicio</a
           ><a class="nav-link" href="productos.html">Nuestro café</a
-          ><a class="nav-link active" href="nosotros.html" aria-current="page">Nosotros</a
+          ><a class="nav-link" href="nosotros.html">Nosotros</a
           ><a class="nav-link" href="contacto.html">Contacto</a
           ><a class="nav-link" href="login.html">Iniciar sesión</a
           ><a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a>
@@ -40,33 +40,34 @@
     </header>
     <!-- container centra la página; py-5 le da espacio arriba y abajo. -->
     <main id="contenido" class="container py-5">
-      <div class="encabezado mb-4">
-        <p class="etiqueta">NUESTRA HISTORIA</p>
-        <h1>Somos Grano.</h1>
-      </div>
+      <!-- breadcrumb muestra el camino para volver al catálogo. -->
+      <nav aria-label="Ubicación">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="productos.html">Colección</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Modelo del producto</li>
+        </ol>
+      </nav>
       <section class="row gx-4 gy-5 align-items-center">
         <div class="col-md-6">
           <img
             class="img-fluid rounded-4"
-            src="assets/origenes.svg"
-            alt="Ilustración de los orígenes del café"
-            width="700"
+            src="assets/producto.svg"
+            alt="Imagen del producto"
+            width="600"
             height="500"
           />
         </div>
         <div class="col-md-6">
-          <h2>El café como una pausa.</h2>
-          <p>
-            En Grano reunimos cafés de distintos orígenes y accesorios sencillos para quienes
-            disfrutan preparar una taza en casa. Queremos que encontrar tu café favorito sea parte
-            de un momento agradable del día.
-          </p>
-          <p>
-            Nos gustan los sabores que invitan a probar algo distinto y los métodos fáciles de
-            incorporar a la rutina. Por eso nuestra colección combina café en grano, utensilios de
-            preparación y tazas para acompañar cada pausa.
-          </p>
-          <a class="btn btn-outline-success" href="contacto.html">Conversemos</a>
+          <div class="encabezado mb-4">
+            <p class="etiqueta">NOMBRE DEL PRODUCTO</p>
+            <h1>Modelo del producto</h1>
+          </div>
+          <p class="lead">Tipo de producto</p>
+          <p>Detalle de producto</p>
+          <p class="precio">Precio</p>
+          <button class="btn btn-success" type="button" data-agregar-carrito data-id="blend" data-nombre="Blend de la casa" data-precio="11990" data-imagen="assets/blend.svg">Añadir al carrito</button>
+          <a href="productos.html" class="btn btn-outline-success">Volver a la colección</a>
         </div>
       </section>
     </main>
