@@ -4,7 +4,9 @@ Tienda de café de especialidad, métodos de preparación y accesorios.
 
 ## Abrir el sitio
 
-Abre `index.html` en el navegador. El menú principal lleva a Inicio, Nuestro café, Nosotros y Contacto. En el pie están los accesos a cuenta, bolsa y administración.
+Abre `index.html` en el navegador. El menú principal lleva a Inicio, Nuestro café, Nosotros, Contacto e Iniciar sesión.
+
+La página `login.html` presenta los campos de correo y contraseña y permite volver al catálogo. Por ahora es una pantalla de diseño: el botón no autentica usuarios ni envía los datos.
 
 ## Archivos
 

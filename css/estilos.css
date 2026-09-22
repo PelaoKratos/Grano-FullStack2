@@ -1,49 +1,201 @@
 /* Elegí los colores de Grano para darle identidad a la tienda. */
-:root { --verde: #2d4938; --crema: #f8f5ee; --tinta: #263c30; }
-body { background: var(--crema); color: var(--tinta); font-family: Arial, Helvetica, sans-serif; line-height: 1.6; }
-a { color: var(--verde); text-underline-offset: 4px; }
-h1, h2, .marca { font-family: Georgia, 'Times New Roman', serif; }
-h1 { font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 1.1; letter-spacing: -.04em; }
-h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); }
+:root {
+  --verde: #2d4938;
+  --crema: #f8f5ee;
+  --tinta: #263c30;
+}
+body {
+  background: var(--crema);
+  color: var(--tinta);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+a {
+  color: var(--verde);
+  text-underline-offset: 4px;
+}
+h1,
+h2,
+.marca {
+  font-family: Georgia, "Times New Roman", serif;
+}
+h1 {
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
 /* Personalicé la navbar de Bootstrap y dejé el menú visible en todos los tamaños. */
-.navbar-brand, .marca { color: var(--verde); font-weight: bold; font-size: 2.7rem; line-height: 1; text-decoration: none; }
-.marca-sub { display: block; font: .6rem Arial, sans-serif; letter-spacing: .18em; margin-top: .6rem; }
-.nav-link { color: var(--verde); padding: .6rem .7rem; }
-.nav-link:hover, .nav-link.active { color: var(--verde); text-decoration: underline; }
-.nav-link.active { font-weight: bold; }
-.franja, .pie { background: var(--verde); color: var(--crema); }
-.franja { font-size: .8rem; letter-spacing: .06em; }
-.pie a { color: var(--crema); }
-.etiqueta { font-size: .75rem; font-weight: bold; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .8rem; }
-.hero img { max-height: 540px; width: 100%; object-fit: cover; }
+.navbar-brand,
+.marca {
+  color: var(--verde);
+  font-weight: bold;
+  font-size: 2.7rem;
+  line-height: 1;
+  text-decoration: none;
+}
+.marca-sub {
+  display: block;
+  font:
+    0.6rem Arial,
+    sans-serif;
+  letter-spacing: 0.18em;
+  margin-top: 0.6rem;
+}
+.nav-link {
+  color: var(--verde);
+  padding: 0.6rem 0.7rem;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--verde);
+  text-decoration: underline;
+}
+.nav-link.active {
+  font-weight: bold;
+}
+.franja,
+.pie {
+  background: var(--verde);
+  color: var(--crema);
+}
+.franja {
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+.pie a {
+  color: var(--crema);
+}
+.etiqueta {
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+.hero img {
+  max-height: 540px;
+  width: 100%;
+  object-fit: cover;
+}
 /* Cambié las variables de btn-success para usar nuestro verde en los botones de Bootstrap. */
-.btn-success { --bs-btn-bg: #2d4938; --bs-btn-border-color: #2d4938; --bs-btn-hover-bg: #203829; --bs-btn-hover-border-color: #203829; --bs-btn-active-bg: #203829; --bs-btn-active-border-color: #203829; --bs-btn-disabled-bg: #2d4938; --bs-btn-disabled-border-color: #2d4938; }
-.btn-outline-success { --bs-btn-color: #2d4938; --bs-btn-border-color: #2d4938; --bs-btn-hover-bg: #2d4938; --bs-btn-hover-border-color: #2d4938; --bs-btn-active-bg: #203829; --bs-btn-active-border-color: #203829; --bs-btn-disabled-color: #2d4938; --bs-btn-disabled-border-color: #2d4938; }
-.btn { border-radius: .35rem; padding: .65rem 1.1rem; }
+.btn-success {
+  --bs-btn-bg: #2d4938;
+  --bs-btn-border-color: #2d4938;
+  --bs-btn-hover-bg: #203829;
+  --bs-btn-hover-border-color: #203829;
+  --bs-btn-active-bg: #203829;
+  --bs-btn-active-border-color: #203829;
+  --bs-btn-disabled-bg: #2d4938;
+  --bs-btn-disabled-border-color: #2d4938;
+}
+.btn-outline-success {
+  --bs-btn-color: #2d4938;
+  --bs-btn-border-color: #2d4938;
+  --bs-btn-hover-bg: #2d4938;
+  --bs-btn-hover-border-color: #2d4938;
+  --bs-btn-active-bg: #203829;
+  --bs-btn-active-border-color: #203829;
+  --bs-btn-disabled-color: #2d4938;
+  --bs-btn-disabled-border-color: #2d4938;
+}
+.btn {
+  border-radius: 0.35rem;
+  padding: 0.65rem 1.1rem;
+}
 /* A las cards les saqué la sombra y les puse un borde suave. */
-.card { background: #fffdfa; border: 1px solid #dedfd4; border-radius: .8rem; overflow: hidden; }
-.card-body { padding: 1.5rem; }
-.producto .card-img-top { height: 270px; object-fit: cover; }
-.producto h3 a { text-decoration: none; }
-.producto h3 a:hover { text-decoration: underline; }
-.precio { font-size: 1.2rem; font-weight: bold; }
-.precio small { font-size: .7rem; font-weight: normal; }
-.panel { background: #fffdfa; padding: clamp(1.3rem, 3vw, 2.5rem); border: 1px solid #dedfd4; border-radius: .8rem; }
-.formulario-corto { max-width: 600px; }
+.card {
+  background: #fffdfa;
+  border: 1px solid #dedfd4;
+  border-radius: 0.8rem;
+  overflow: hidden;
+}
+.card-body {
+  padding: 1.5rem;
+}
+.producto .card-img-top {
+  height: 270px;
+  object-fit: cover;
+}
+.producto h3 a {
+  text-decoration: none;
+}
+.producto h3 a:hover {
+  text-decoration: underline;
+}
+.precio {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.precio small {
+  font-size: 0.7rem;
+  font-weight: normal;
+}
+.panel {
+  background: #fffdfa;
+  padding: clamp(1.3rem, 3vw, 2.5rem);
+  border: 1px solid #dedfd4;
+  border-radius: 0.8rem;
+}
+.formulario-corto {
+  max-width: 600px;
+}
 /* Este color marca la opción elegida dentro del list-group de administración. */
-.list-group-item.active { background: var(--verde); border-color: var(--verde); }
+.list-group-item.active {
+  background: var(--verde);
+  border-color: var(--verde);
+}
 /* Cambié el foco de los formularios de Bootstrap para que se vea al usar Tab. */
-.form-control:focus, .form-select:focus { border-color: var(--verde); box-shadow: 0 0 0 .2rem #2d493830; }
-a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #a65f24; outline-offset: 3px; }
-.saltar { position: absolute; left: 1rem; top: -80px; padding: .8rem; background: white; z-index: 10; }
-.saltar:focus { top: .5rem; }
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--verde);
+  box-shadow: 0 0 0 0.2rem #2d493830;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #a65f24;
+  outline-offset: 3px;
+}
+.saltar {
+  position: absolute;
+  left: 1rem;
+  top: -80px;
+  padding: 0.8rem;
+  background: white;
+  z-index: 10;
+}
+.saltar:focus {
+  top: 0.5rem;
+}
 /* La tabla de Bootstrap conserva colores claros; el contenedor permite desplazarla en móvil. */
-.table { --bs-table-bg: #fffdfa; --bs-table-color: #263c30; }
-.table th, .table td { padding: 1rem; vertical-align: middle; }
+.table {
+  --bs-table-bg: #fffdfa;
+  --bs-table-color: #263c30;
+}
+.table th,
+.table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
 /* En celulares separé la marca y los enlaces para que no queden apretados. */
 @media (max-width: 575px) {
-  .navbar { justify-content: center; }
-  .navbar nav { justify-content: center; width: 100%; }
-  .nav-link { font-size: .9rem; padding: .5rem; }
-  .hero img { max-height: 390px; }
+  .navbar {
+    justify-content: center;
+  }
+  .navbar nav {
+    justify-content: center;
+    width: 100%;
+  }
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+  .hero img {
+    max-height: 390px;
+  }
 }
