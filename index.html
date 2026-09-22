@@ -17,6 +17,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="css/estilos.css" />
+    <script defer src="js/carrito.js"></script>
   </head>
   <body>
     <a class="saltar" href="#contenido">Saltar al contenido</a>
@@ -32,7 +33,8 @@
           ><a class="nav-link" href="productos.html">Nuestro café</a
           ><a class="nav-link" href="nosotros.html">Nosotros</a
           ><a class="nav-link" href="contacto.html">Contacto</a
-          ><a class="nav-link" href="login.html">Iniciar sesión</a>
+          ><a class="nav-link" href="login.html">Iniciar sesión</a
+          ><a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a>
         </nav>
       </div>
     </header>
@@ -94,7 +96,7 @@
                 <!-- btn da el estilo a los enlaces y botones. -->
                 <div class="d-flex gap-2 flex-wrap">
                   <a class="btn btn-outline-success" href="producto-colombia.html">Ver detalle</a
-                  ><button class="btn btn-success" type="button" disabled>Añadir</button>
+                  ><button class="btn btn-success" type="button" data-agregar-carrito data-id="colombia" data-nombre="Origen Colombia" data-precio="12990" data-imagen="assets/colombia.svg">Añadir</button>
                 </div>
               </div>
             </article>
@@ -119,7 +121,7 @@
                 <!-- btn da el estilo a los enlaces y botones. -->
                 <div class="d-flex gap-2 flex-wrap">
                   <a class="btn btn-outline-success" href="producto-etiopia.html">Ver detalle</a
-                  ><button class="btn btn-success" type="button" disabled>Añadir</button>
+                  ><button class="btn btn-success" type="button" data-agregar-carrito data-id="etiopia" data-nombre="Origen Etiopía" data-precio="14990" data-imagen="assets/etiopia.svg">Añadir</button>
                 </div>
               </div>
             </article>
@@ -144,7 +146,7 @@
                 <!-- btn da el estilo a los enlaces y botones. -->
                 <div class="d-flex gap-2 flex-wrap">
                   <a class="btn btn-outline-success" href="producto-blend.html">Ver detalle</a
-                  ><button class="btn btn-success" type="button" disabled>Añadir</button>
+                  ><button class="btn btn-success" type="button" data-agregar-carrito data-id="blend" data-nombre="Blend de la casa" data-precio="11990" data-imagen="assets/blend.svg">Añadir</button>
                 </div>
               </div>
             </article>

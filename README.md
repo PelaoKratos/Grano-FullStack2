@@ -8,6 +8,8 @@ Abre `index.html` en el navegador. El menú principal lleva a Inicio, Nuestro ca
 
 La página `login.html` presenta los campos de correo y contraseña y permite volver al catálogo. Por ahora es una pantalla de diseño: el botón no autentica usuarios ni envía los datos.
 
+El carrito usa `localStorage` para guardar los productos en el navegador. Solo permite agregar, ver y quitar productos; no incluye compra ni pago.
+
 ## Archivos
 
 - Las páginas están en archivos HTML.

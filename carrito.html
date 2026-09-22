@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Productos guardados en el carrito de Grano." />
+    <title>Carrito | Grano</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <!-- Cargué Bootstrap y después los estilos propios de Grano. -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/estilos.css" />
+    <script defer src="js/carrito.js"></script>
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    <div class="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
+    <header class="border-bottom">
+      <!-- navbar ordena la cabecera y flex-wrap acomoda el menú en celular. -->
+      <div class="navbar container py-3 gap-3 flex-wrap">
+        <a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a>
+        <nav class="nav gap-1" aria-label="Navegación principal">
+          <a class="nav-link" href="index.html">Inicio</a>
+          <a class="nav-link" href="productos.html">Nuestro café</a>
+          <a class="nav-link" href="nosotros.html">Nosotros</a>
+          <a class="nav-link" href="contacto.html">Contacto</a>
+          <a class="nav-link" href="login.html">Iniciar sesión</a>
+          <a class="nav-link active enlace-carrito" href="carrito.html" aria-current="page">Carrito <span class="contador-carrito">0</span></a>
+        </nav>
+      </div>
+    </header>
+    <!-- container centra el contenido y py-5 deja espacio para que se lea mejor. -->
+    <main id="contenido" class="container py-5">
+      <div class="encabezado mb-4">
+        <p class="etiqueta">TU SELECCIÓN</p>
+        <h1>Carrito</h1>
+        <p class="text-secondary">Aquí se guardan los productos que agregaste.</p>
+      </div>
+      <section id="lista-carrito" class="panel" aria-live="polite"></section>
+      <a class="btn btn-outline-success mt-4" href="productos.html">Seguir viendo productos</a>
+    </main>
+    <footer class="pie mt-4 py-5">
+      <!-- flex-column apila el contenido y flex-md-row lo distribuye en escritorio. -->
+      <div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4">
+        <div>
+          <a class="marca" href="index.html">grano</a>
+          <p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p>
+        </div>
+        <div>
+          <a href="nosotros.html">Conoce Grano</a><br />
+          <a href="contacto.html">Contacto</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
