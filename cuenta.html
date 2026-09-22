@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Historial de compras de tu cuenta Grano." />
+    <title>Mi cuenta | Grano</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css/estilos.css" />
+    <script defer src="js/carrito.js"></script>
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    <div class="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
+    <header class="border-bottom"><div class="navbar container py-3 gap-3 flex-wrap"><a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a><nav class="nav gap-1" aria-label="Navegación principal"><a class="nav-link" href="index.html">Inicio</a><a class="nav-link" href="productos.html">Nuestro café</a><a class="nav-link" href="nosotros.html">Nosotros</a><a class="nav-link" href="contacto.html">Contacto</a><a class="nav-link active enlace-login" href="cuenta.html" aria-current="page">Mi cuenta</a><a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a></nav></div></header>
+    <main id="contenido" class="container py-5">
+      <div class="encabezado mb-4"><p class="etiqueta">MI CUENTA</p><h1>Mis compras.</h1><p class="text-secondary">Revisa el estado y el historial de tus pedidos en Grano.</p></div>
+      <section class="panel mb-4" aria-labelledby="titulo-datos"><p class="etiqueta">DATOS PERSONALES</p><h2 id="titulo-datos" class="h3">Información de contacto</h2><p class="text-secondary">Mantén tus datos actualizados para tus próximos pedidos.</p>
+        <form id="form-perfil" class="row g-3"><div class="col-md-6"><label class="form-label" for="perfil-nombre">Nombre completo</label><input class="form-control" id="perfil-nombre" name="nombre" required maxlength="80" /></div><div class="col-md-6"><label class="form-label" for="perfil-correo">Correo electrónico</label><input class="form-control" id="perfil-correo" name="correo" type="email" readonly /></div><div class="col-md-6"><label class="form-label" for="perfil-telefono">Teléfono</label><input class="form-control" id="perfil-telefono" name="telefono" type="tel" placeholder="+56 9 1234 5678" maxlength="20" /></div><div class="col-md-6"><label class="form-label" for="perfil-direccion">Dirección</label><input class="form-control" id="perfil-direccion" name="direccion" placeholder="Calle y número" maxlength="120" /></div><div class="col-md-6"><label class="form-label" for="perfil-comuna">Comuna</label><input class="form-control" id="perfil-comuna" name="comuna" maxlength="60" /></div><div class="col-md-6"><label class="form-label" for="perfil-region">Región</label><select class="form-select" id="perfil-region" name="region"><option value="">Selecciona una región</option><option>Región Metropolitana</option><option>Valparaíso</option><option>Biobío</option><option>La Araucanía</option><option>Los Lagos</option><option>Otra región</option></select></div><div class="col-12"><button class="btn btn-success" type="submit">Guardar datos</button></div></form><div id="mensaje-perfil" hidden></div>
+      </section>
+      <section class="panel" aria-labelledby="titulo-historial"><div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3"><h2 id="titulo-historial" class="h3 mb-0">Historial de pedidos</h2><a class="btn btn-success" href="productos.html">Seguir comprando</a></div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Pedido</th><th>Fecha</th><th>Productos</th><th>Total</th><th>Estado</th></tr></thead><tbody id="filas-historial"></tbody></table></div></section>
+    </main>
+    <footer class="pie mt-4 py-5"><div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4"><div><a class="marca" href="index.html">grano</a><p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p></div><div><a href="nosotros.html">Conoce Grano</a><br /><a href="contacto.html">Contacto</a></div></div></footer>
+  </body>
+</html>

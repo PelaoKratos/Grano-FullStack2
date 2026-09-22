@@ -28,7 +28,7 @@
           <a class="nav-link" href="productos.html">Nuestro café</a>
           <a class="nav-link" href="nosotros.html">Nosotros</a>
           <a class="nav-link" href="contacto.html">Contacto</a>
-          <a class="nav-link" href="login.html">Iniciar sesión</a>
+          <a class="nav-link enlace-login" href="login.html">Iniciar sesión</a>
           <a class="nav-link active enlace-carrito" href="carrito.html" aria-current="page">Carrito <span class="contador-carrito">0</span></a>
         </nav>
       </div>
@@ -41,6 +41,11 @@
         <p class="text-secondary">Aquí se guardan los productos que agregaste.</p>
       </div>
       <section id="lista-carrito" class="panel" aria-live="polite"></section>
+      <section id="resumen-carrito" class="panel mt-3 d-flex flex-wrap align-items-center justify-content-between gap-3" hidden>
+        <div><p class="etiqueta mb-1">TOTAL DEL PEDIDO</p><p class="h3 mb-0" data-total>$0 CLP</p></div>
+        <button id="confirmar-compra" class="btn btn-success" type="button">Confirmar pedido</button>
+      </section>
+      <div id="mensaje-compra" hidden></div>
       <a class="btn btn-outline-success mt-4" href="productos.html">Seguir viendo productos</a>
     </main>
     <footer class="pie mt-4 py-5">

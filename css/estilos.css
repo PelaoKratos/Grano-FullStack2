@@ -145,6 +145,88 @@ h2 {
 .enlace-carrito {
   white-space: nowrap;
 }
+.cuenta-activa {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.25rem 0.7rem;
+  line-height: 1.25;
+}
+.nombre-cuenta {
+  color: var(--verde);
+  font-weight: bold;
+  text-decoration: none;
+}
+.nombre-cuenta:hover {
+  text-decoration: underline;
+}
+.cerrar-sesion {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--verde);
+  font: inherit;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.acceso-cabecera {
+  max-width: 720px;
+  margin: 1rem auto 3rem;
+  text-align: center;
+}
+.acceso-cabecera p:last-child {
+  color: #58675c;
+  font-size: 1.08rem;
+}
+.panel-acceso {
+  border-top: 5px solid var(--verde);
+}
+.datos-admin {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dedfd4;
+  color: #58675c;
+  font-size: 0.82rem;
+}
+.panel-registro {
+  background: #f0eee5;
+}
+.acceso-acompanamiento {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 0.8rem;
+  background: var(--verde);
+  color: var(--crema);
+}
+.acceso-acompanamiento .etiqueta,
+.acceso-acompanamiento p {
+  color: var(--crema);
+}
+.acceso-acompanamiento .btn-outline-success {
+  --bs-btn-color: var(--crema);
+  --bs-btn-border-color: var(--crema);
+  --bs-btn-hover-bg: var(--crema);
+  --bs-btn-hover-border-color: var(--crema);
+  --bs-btn-hover-color: var(--verde);
+  margin-top: auto;
+}
+.cambiar-clave {
+  border-top: 1px solid #dedfd4;
+  padding-top: 1rem;
+}
+.cambiar-clave summary {
+  color: var(--verde);
+  cursor: pointer;
+  font-weight: bold;
+  list-style-position: outside;
+}
+.cambiar-clave summary:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 .contador-carrito {
   display: inline-grid;
   min-width: 1.4rem;
@@ -172,6 +254,40 @@ h2 {
   border-radius: 0.4rem;
   object-fit: cover;
 }
+.carrusel-grano {
+  position: relative;
+  max-width: 900px;
+  padding: 0.75rem;
+}
+.diapositiva {
+  margin: 0;
+}
+.diapositiva img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+.control-carrusel {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  transform: translateY(-50%);
+  border: 1px solid var(--verde);
+  border-radius: 50%;
+  background: var(--crema);
+  color: var(--verde);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.control-carrusel:hover {
+  background: var(--verde);
+  color: var(--crema);
+}
+.control-anterior { left: 1.25rem; }
+.control-siguiente { right: 1.25rem; }
 /* Este color marca la opción elegida dentro del list-group de administración. */
 .list-group-item.active {
   background: var(--verde);
@@ -239,4 +355,10 @@ textarea:focus-visible {
     grid-column: 2;
     justify-self: start;
   }
+  .cuenta-activa {
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+  }
+  .control-anterior { left: 1rem; }
+  .control-siguiente { right: 1rem; }
 }

@@ -33,7 +33,7 @@
           ><a class="nav-link" href="productos.html">Nuestro café</a
           ><a class="nav-link" href="nosotros.html">Nosotros</a
           ><a class="nav-link active" href="contacto.html" aria-current="page">Contacto</a
-          ><a class="nav-link" href="login.html">Iniciar sesión</a
+          ><a class="nav-link enlace-login" href="login.html">Iniciar sesión</a
           ><a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a>
         </nav>
       </div>
@@ -48,28 +48,8 @@
         </p>
       </div>
       <!-- form-label, form-control y form-select mantienen los campos ordenados. row g-3 deja espacio entre ellos. -->
-      <form class="panel">
+      <form id="form-contacto" class="panel">
         <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label" for="nombre">Nombre</label
-            ><input
-              class="form-control"
-              type="text"
-              id="nombre"
-              autocomplete="name"
-              maxlength="100"
-            />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="correo">Correo electrónico</label
-            ><input
-              class="form-control"
-              type="email"
-              id="correo"
-              autocomplete="email"
-              maxlength="100"
-            />
-          </div>
           <div class="col-12">
             <label class="form-label" for="mensaje">Mensaje</label
             ><textarea
@@ -78,12 +58,14 @@
               rows="5"
               maxlength="500"
               aria-describedby="ayuda-mensaje"
+              required
             ></textarea>
             <div class="form-text" id="ayuda-mensaje">Máximo 500 caracteres.</div>
           </div>
           <div class="col-12">
-            <button type="button" class="btn btn-success" disabled>Enviar mensaje</button>
+            <button type="submit" class="btn btn-success">Enviar mensaje</button>
           </div>
+          <div id="mensaje-contacto" hidden></div>
         </div>
       </form>
     </main>

@@ -33,21 +33,17 @@
           <a class="nav-link" href="productos.html">Nuestro café</a>
           <a class="nav-link" href="nosotros.html">Nosotros</a>
           <a class="nav-link" href="contacto.html">Contacto</a>
-          <a class="nav-link active" href="login.html" aria-current="page">Iniciar sesión</a>
+          <a class="nav-link active enlace-login" href="login.html" aria-current="page">Iniciar sesión</a>
           <a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a>
         </nav>
       </div>
     </header>
-    <!-- container centra el contenido y py-5 deja espacio alrededor del formulario. -->
     <main id="contenido" class="container py-5">
-      <!-- mx-auto centra el panel; text-center centra el título y la presentación. -->
-      <section class="panel formulario-corto mx-auto" aria-labelledby="titulo-login">
-        <div class="text-center mb-4">
-          <p class="etiqueta">TU CUENTA GRANO</p>
-          <h1 id="titulo-login" class="h2">Qué bueno verte de nuevo.</h1>
-          <p class="text-secondary">Ingresa tu correo y contraseña para iniciar sesión.</p>
-        </div>
-        <form>
+      <div class="acceso-cabecera"><p class="etiqueta">TU CUENTA GRANO</p><h1>Tu pausa empieza aquí.</h1><p>Accede para comprar, revisar tu cuenta o administrar la tienda.</p></div>
+      <div class="row g-4 align-items-stretch">
+      <section class="col-lg-5" aria-labelledby="titulo-login"><div class="panel panel-acceso h-100">
+        <div class="mb-4"><p class="etiqueta">INICIAR SESIÓN</p><h2 id="titulo-login" class="h3">Bienvenido de vuelta.</h2><p class="text-secondary">Ingresa tus datos para continuar.</p></div>
+        <form id="form-login">
           <!-- form-label y form-control dan el mismo estilo a los campos; mb-3 los separa. -->
           <div class="mb-3">
             <label class="form-label" for="correo">Correo electrónico</label>
@@ -70,11 +66,27 @@
               required
             />
           </div>
-          <!-- btn-success usa el verde de Grano y w-100 deja el botón del ancho del formulario. -->
-          <button class="btn btn-success w-100" type="button">Iniciar sesión</button>
+          <button class="btn btn-success w-100" type="submit">Iniciar sesión</button>
+          <p class="datos-admin mb-0">Acceso administrador: <strong>admin@duocuc.cl</strong> · Contraseña: <strong>1234</strong></p>
         </form>
-        <p class="text-center mt-4 mb-0"><a href="productos.html">Volver a nuestro café</a></p>
-      </section>
+        <div id="mensaje-login" hidden></div>
+        <details class="cambiar-clave mt-4">
+          <summary>Cambiar contraseña</summary>
+          <p class="text-secondary small mt-3">Confirma tu contraseña actual y define una nueva clave.</p>
+          <form id="form-clave" class="row g-3">
+            <div class="col-12"><label class="form-label" for="correo-clave">Correo</label><input class="form-control" type="email" id="correo-clave" name="correo" required /></div>
+            <div class="col-md-6"><label class="form-label" for="actual">Contraseña actual</label><input class="form-control" type="password" id="actual" name="actual" required /></div>
+            <div class="col-md-6"><label class="form-label" for="nueva">Nueva contraseña</label><input class="form-control" type="password" id="nueva" name="nueva" required minlength="4" /></div>
+            <div class="col-12"><button class="btn btn-outline-success" type="submit">Actualizar contraseña</button></div>
+          </form>
+          <div id="mensaje-clave" hidden></div>
+        </details>
+      </div></section>
+      <section class="col-lg-4"><div class="panel panel-registro h-100"><p class="etiqueta">NUEVO COMPRADOR</p><h2 class="h3">Crea tu cuenta</h2><p class="text-secondary">Guarda tus compras y realiza pedidos cuando quieras.</p>
+        <form id="form-registro"><div class="mb-3"><label class="form-label" for="nombre">Nombre</label><input class="form-control" id="nombre" name="nombre" required maxlength="80" /></div><div class="mb-3"><label class="form-label" for="correo-registro">Correo electrónico</label><input class="form-control" type="email" id="correo-registro" name="correo" required maxlength="100" /></div><div class="mb-3"><label class="form-label" for="contrasena-registro">Contraseña</label><input class="form-control" type="password" id="contrasena-registro" name="contrasena" required minlength="4" /></div><button class="btn btn-outline-success w-100" type="submit">Crear usuario comprador</button></form><div id="mensaje-registro" hidden></div>
+      </div></section>
+      <aside class="col-lg-3"><div class="acceso-acompanamiento h-100"><p class="etiqueta">GRANO</p><h2 class="h3">Buen café, a tu ritmo.</h2><p>Explora nuestra selección, guarda tus favoritos y prepara cada taza con intención.</p><a class="btn btn-outline-success" href="productos.html">Ver la colección</a></div></aside>
+      </div>
     </main>
     <footer class="pie mt-4 py-5">
       <!-- flex-column apila el pie en celular y flex-md-row lo ordena en una fila en escritorio. -->

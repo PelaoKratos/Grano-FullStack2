@@ -33,7 +33,7 @@
           ><a class="nav-link" href="productos.html">Nuestro café</a
           ><a class="nav-link active" href="nosotros.html" aria-current="page">Nosotros</a
           ><a class="nav-link" href="contacto.html">Contacto</a
-          ><a class="nav-link" href="login.html">Iniciar sesión</a
+          ><a class="nav-link enlace-login" href="login.html">Iniciar sesión</a
           ><a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a>
         </nav>
       </div>
@@ -46,13 +46,11 @@
       </div>
       <section class="row gx-4 gy-5 align-items-center">
         <div class="col-md-6">
-          <img
-            class="img-fluid rounded-4"
-            src="assets/origenes.svg"
-            alt="Ilustración de los orígenes del café"
-            width="700"
-            height="500"
-          />
+          <div class="carrusel-grano panel" data-carrusel aria-label="Galería de la historia de Grano">
+            <figure class="diapositiva mb-0"><img src="assets/origenes.svg" alt="Ilustración de los orígenes del café" width="700" height="500" /></figure>
+            <figure class="diapositiva mb-0"><img src="assets/hero.svg" alt="Ilustración de una taza de café" width="700" height="500" /></figure>
+            <button class="control-carrusel control-anterior" type="button" data-anterior aria-label="Imagen anterior">‹</button><button class="control-carrusel control-siguiente" type="button" data-siguiente aria-label="Imagen siguiente">›</button>
+          </div>
         </div>
         <div class="col-md-6">
           <h2>El café como una pausa.</h2>

@@ -8,7 +8,14 @@ Abre `index.html` en el navegador. El menú principal lleva a Inicio, Nuestro ca
 
 La página `login.html` presenta los campos de correo y contraseña y permite volver al catálogo. Por ahora es una pantalla de diseño: el botón no autentica usuarios ni envía los datos.
 
-El carrito usa `localStorage` para guardar los productos en el navegador. Solo permite agregar, ver y quitar productos; no incluye compra ni pago.
+El carrito usa `localStorage` para guardar los productos en el navegador. Los compradores pueden confirmar un pedido desde el carrito y el administrador puede revisarlo en `admin.html`.
+
+## Cuentas de prueba
+
+- Administrador: `admin@duocuc.cl` / `1234`.
+- Los nuevos registros creados en `login.html` tienen el rol de comprador.
+
+Esta versión es una demostración estática: usuarios, contraseñas, sesión y pedidos se guardan solo en el `localStorage` del navegador. Para un sitio publicado se requiere un backend que almacene datos de manera segura.
 
 ## Archivos
 
