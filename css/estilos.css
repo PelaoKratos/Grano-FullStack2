@@ -1,4 +1,4 @@
-/* Elegí los colores de Grano para darle identidad a la tienda. */
+
 :root {
   --verde: #2d4938;
   --crema: #f8f5ee;
@@ -27,7 +27,7 @@ h1 {
 h2 {
   font-size: clamp(1.8rem, 3vw, 2.5rem);
 }
-/* Personalicé la navbar de Bootstrap y dejé el menú visible en todos los tamaños. */
+
 .navbar-brand,
 .marca {
   color: var(--verde);
@@ -80,7 +80,7 @@ h2 {
   width: 100%;
   object-fit: cover;
 }
-/* Cambié las variables de btn-success para usar nuestro verde en los botones de Bootstrap. */
+
 .btn-success {
   --bs-btn-bg: #2d4938;
   --bs-btn-border-color: #2d4938;
@@ -105,7 +105,7 @@ h2 {
   border-radius: 0.35rem;
   padding: 0.65rem 1.1rem;
 }
-/* A las cards les saqué la sombra y les puse un borde suave. */
+
 .card {
   background: #fffdfa;
   border: 1px solid #dedfd4;
@@ -288,12 +288,12 @@ h2 {
 }
 .control-anterior { left: 1.25rem; }
 .control-siguiente { right: 1.25rem; }
-/* Este color marca la opción elegida dentro del list-group de administración. */
+
 .list-group-item.active {
   background: var(--verde);
   border-color: var(--verde);
 }
-/* Cambié el foco de los formularios de Bootstrap para que se vea al usar Tab. */
+
 .form-control:focus,
 .form-select:focus {
   border-color: var(--verde);
@@ -318,7 +318,7 @@ textarea:focus-visible {
 .saltar:focus {
   top: 0.5rem;
 }
-/* La tabla de Bootstrap conserva colores claros; el contenedor permite desplazarla en móvil. */
+
 .table {
   --bs-table-bg: #fffdfa;
   --bs-table-color: #263c30;
@@ -328,7 +328,7 @@ textarea:focus-visible {
   padding: 1rem;
   vertical-align: middle;
 }
-/* En celulares separé la marca y los enlaces para que no queden apretados. */
+
 @media (max-width: 575px) {
   .navbar {
     justify-content: center;
