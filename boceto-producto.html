@@ -3,83 +3,85 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Grano, café de especialidad, métodos y accesorios para disfrutar una buena taza en casa."
-    />
-    <title>Blend de la casa | Grano</title>
+    <meta name="description" content="Plantilla reutilizable para las fichas de producto de Grano." />
+    <title>Plantilla de producto | Grano</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-    
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/componentes.css" />
+    <link rel="stylesheet" href="css/paginas.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
     <script defer src="js/carrito.js"></script>
   </head>
   <body>
     <a class="saltar" href="#contenido">Saltar al contenido</a>
     <div class="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
     <header class="border-bottom">
-      
       <div class="navbar container py-3 gap-3 flex-wrap">
-        <a class="navbar-brand marca" href="index.html"
-          >grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a
-        >
+        <a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a>
         <nav class="nav gap-1" aria-label="Navegación principal">
-          <a class="nav-link" href="index.html">Inicio</a
-          ><a class="nav-link" href="productos.html">Nuestro café</a
-          ><a class="nav-link" href="nosotros.html">Nosotros</a
-          ><a class="nav-link" href="contacto.html">Contacto</a
-          ><a class="nav-link" href="login.html">Iniciar sesión</a
-          ><a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a>
+          <a class="nav-link" href="index.html">Inicio</a>
+          <a class="nav-link" href="productos.html">Nuestro café</a>
+          <a class="nav-link" href="nosotros.html">Nosotros</a>
+          <a class="nav-link" href="contacto.html">Contacto</a>
+          <a class="nav-link enlace-login" href="login.html">Iniciar sesión</a>
+          <a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a>
         </nav>
       </div>
     </header>
-    
-    <main id="contenido" class="container py-5">
-      
+
+    <main id="contenido" class="container py-5 plantilla-producto">
       <nav aria-label="Ubicación">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
           <li class="breadcrumb-item"><a href="productos.html">Colección</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Modelo del producto</li>
+          <li class="breadcrumb-item active" aria-current="page">{{producto.nombre}}</li>
         </ol>
       </nav>
-      <section class="row gx-4 gy-5 align-items-center">
-        <div class="col-md-6">
-          <img
-            class="img-fluid rounded-4"
-            src="assets/producto.svg"
-            alt="Imagen del producto"
-            width="600"
-            height="500"
-          />
+
+      <p class="plantilla-aviso" role="note">Plantilla de desarrollo: completa los campos del producto antes de publicar esta página.</p>
+
+      <article class="producto-detalle" data-producto-id="{{producto.id}}">
+        <div class="producto-imagen">
+          <img src="assets/producto-placeholder.svg" alt="Imagen de {{producto.nombre}}" width="720" height="720" />
         </div>
-        <div class="col-md-6">
-          <div class="encabezado mb-4">
-            <p class="etiqueta">NOMBRE DEL PRODUCTO</p>
-            <h1>Modelo del producto</h1>
+        <div class="producto-datos">
+          <p class="etiqueta">{{producto.categoria}}</p>
+          <h1>{{producto.nombre}}</h1>
+          <p class="producto-resumen">{{producto.resumen}}</p>
+          <p class="producto-descripcion">{{producto.descripcion}}</p>
+
+          <ul class="producto-atributos" aria-label="Características del producto">
+            <li>{{producto.caracteristica_1}}</li>
+            <li>{{producto.caracteristica_2}}</li>
+            <li>{{producto.caracteristica_3}}</li>
+          </ul>
+
+          <div class="producto-compra">
+            <p class="precio mb-3"><data value="{{producto.precio}}">${{producto.precio_formateado}} <small>CLP</small></data></p>
+            <button class="btn btn-success" type="button" disabled aria-describedby="aviso-producto-pendiente">Añadir al carrito</button>
+            <a href="productos.html" class="btn btn-outline-success">Volver a la colección</a>
+            <span id="aviso-producto-pendiente" class="visually-hidden">Completa los datos del producto para habilitar la compra.</span>
           </div>
-          <p class="lead">Tipo de producto</p>
-          <p>Detalle de producto</p>
-          <p class="precio">Precio</p>
-          <button class="btn btn-success" type="button" data-agregar-carrito data-id="blend" data-nombre="Blend de la casa" data-precio="11990" data-imagen="assets/blend.svg">Añadir al carrito</button>
-          <a href="productos.html" class="btn btn-outline-success">Volver a la colección</a>
         </div>
+      </article>
+
+      <section class="producto-ficha panel mt-5" aria-labelledby="titulo-ficha">
+        <p class="etiqueta">DETALLES</p>
+        <h2 id="titulo-ficha" class="h3">Sobre este producto</h2>
+        <p class="mb-0">{{producto.detalle}}</p>
       </section>
     </main>
+
     <footer class="pie mt-4 py-5">
-      
       <div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4">
         <div>
           <a class="marca" href="index.html">grano</a>
           <p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p>
         </div>
         <div>
-          <a href="nosotros.html">Conoce Grano</a><br /><a href="contacto.html">Contacto</a>
+          <a href="nosotros.html">Conoce Grano</a><br />
+          <a href="contacto.html">Contacto</a>
         </div>
       </div>
     </footer>

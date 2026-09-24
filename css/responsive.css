@@ -1,0 +1,55 @@
+@media (max-width: 575px) {
+  .navbar {
+    justify-content: center;
+  }
+  .navbar nav {
+    justify-content: center;
+    width: 100%;
+  }
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+  .hero img {
+    max-height: 390px;
+  }
+  .item-carrito {
+    grid-template-columns: 70px 1fr;
+  }
+  .item-carrito img {
+    width: 70px;
+    height: 60px;
+  }
+  .item-carrito button {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .cuenta-activa {
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+  }
+  .control-anterior { left: 1rem; }
+  .control-siguiente { right: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@media (max-width: 767.98px) {
+  .producto-detalle {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .producto-imagen {
+    max-width: 620px;
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 575px) {
+  .producto-compra .btn {
+    width: 100%;
+  }
+}

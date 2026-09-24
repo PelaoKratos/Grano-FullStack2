@@ -1,0 +1,96 @@
+.btn-success {
+  --bs-btn-bg: #2d4938;
+  --bs-btn-border-color: #2d4938;
+  --bs-btn-hover-bg: #203829;
+  --bs-btn-hover-border-color: #203829;
+  --bs-btn-active-bg: #203829;
+  --bs-btn-active-border-color: #203829;
+  --bs-btn-disabled-bg: #2d4938;
+  --bs-btn-disabled-border-color: #2d4938;
+}
+
+.btn-outline-success {
+  --bs-btn-color: #2d4938;
+  --bs-btn-border-color: #2d4938;
+  --bs-btn-hover-bg: #2d4938;
+  --bs-btn-hover-border-color: #2d4938;
+  --bs-btn-active-bg: #203829;
+  --bs-btn-active-border-color: #203829;
+  --bs-btn-disabled-color: #2d4938;
+  --bs-btn-disabled-border-color: #2d4938;
+}
+
+.btn {
+  border-radius: 0.35rem;
+  padding: 0.65rem 1.1rem;
+}
+
+.card {
+  background: #fffdfa;
+  border: 1px solid #dedfd4;
+  border-radius: 0.8rem;
+  overflow: hidden;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.producto .card-img-top {
+  height: 270px;
+  object-fit: cover;
+}
+
+.producto h3 a {
+  text-decoration: none;
+}
+
+.producto h3 a:hover {
+  text-decoration: underline;
+}
+
+.precio {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.precio small {
+  font-size: 0.7rem;
+  font-weight: normal;
+}
+
+.panel {
+  background: #fffdfa;
+  padding: clamp(1.3rem, 3vw, 2.5rem);
+  border: 1px solid #dedfd4;
+  border-radius: 0.8rem;
+}
+
+.list-group-item.active {
+  background: var(--verde);
+  border-color: var(--verde);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--verde);
+  box-shadow: 0 0 0 0.2rem #2d493830;
+}
+
+.table {
+  --bs-table-bg: #fffdfa;
+  --bs-table-color: #263c30;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.card, .panel {
+  box-shadow: var(--sombra-suave);
+}
+.btn, .form-control, .form-select {
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease, color 160ms ease;
+}

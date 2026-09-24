@@ -1,0 +1,261 @@
+.hero img {
+  max-height: 540px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.formulario-corto {
+  max-width: 600px;
+}
+
+.enlace-carrito {
+  white-space: nowrap;
+}
+
+.cuenta-activa {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.25rem 0.7rem;
+  line-height: 1.25;
+}
+
+.nombre-cuenta {
+  color: var(--verde);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.nombre-cuenta:hover {
+  text-decoration: underline;
+}
+
+.cerrar-sesion {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--verde);
+  font: inherit;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.acceso-cabecera {
+  max-width: 720px;
+  margin: 1rem auto 3rem;
+  text-align: center;
+}
+
+.acceso-cabecera p:last-child {
+  color: #58675c;
+  font-size: 1.08rem;
+}
+
+.panel-acceso {
+  border-top: 5px solid var(--verde);
+}
+
+.datos-admin {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dedfd4;
+  color: #58675c;
+  font-size: 0.82rem;
+}
+
+.panel-registro {
+  background: #f0eee5;
+}
+
+.acceso-acompanamiento {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 0.8rem;
+  background: var(--verde);
+  color: var(--crema);
+}
+
+.acceso-acompanamiento .etiqueta,
+.acceso-acompanamiento p {
+  color: var(--crema);
+}
+
+.acceso-acompanamiento .btn-outline-success {
+  --bs-btn-color: var(--crema);
+  --bs-btn-border-color: var(--crema);
+  --bs-btn-hover-bg: var(--crema);
+  --bs-btn-hover-border-color: var(--crema);
+  --bs-btn-hover-color: var(--verde);
+  margin-top: auto;
+}
+
+.cambiar-clave {
+  border-top: 1px solid #dedfd4;
+  padding-top: 1rem;
+}
+
+.cambiar-clave summary {
+  color: var(--verde);
+  cursor: pointer;
+  font-weight: bold;
+  list-style-position: outside;
+}
+
+.cambiar-clave summary:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.contador-carrito {
+  display: inline-grid;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--verde);
+  color: var(--crema);
+  font-size: 0.75rem;
+}
+
+.item-carrito {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #dedfd4;
+}
+
+.item-carrito:last-child {
+  border-bottom: 0;
+}
+
+.item-carrito img {
+  width: 90px;
+  height: 75px;
+  border-radius: 0.4rem;
+  object-fit: cover;
+}
+
+.carrusel-grano {
+  position: relative;
+  max-width: 900px;
+  padding: 0.75rem;
+}
+
+.diapositiva {
+  margin: 0;
+}
+
+.diapositiva img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.control-carrusel {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  transform: translateY(-50%);
+  border: 1px solid var(--verde);
+  border-radius: 50%;
+  background: var(--crema);
+  color: var(--verde);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.control-carrusel:hover {
+  background: var(--verde);
+  color: var(--crema);
+}
+
+.control-anterior { left: 1.25rem; }
+
+.control-siguiente { right: 1.25rem; }
+
+.plantilla-producto {
+  --producto-borde: var(--borde, #dedfd4);
+}
+
+.plantilla-aviso {
+  margin: 0 0 1.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #d7c69f;
+  border-radius: 0.5rem;
+  background: #f4efdf;
+  color: #51452d;
+  font-size: 0.92rem;
+}
+
+.producto-detalle {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 5rem);
+}
+
+.producto-imagen {
+  overflow: hidden;
+  border: 1px solid var(--producto-borde);
+  border-radius: 1rem;
+  background: #eeeae0;
+}
+
+.producto-imagen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.producto-datos h1 {
+  margin-bottom: 1rem;
+}
+
+.producto-resumen {
+  color: var(--texto-suave, #58675c);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.producto-descripcion {
+  max-width: 58ch;
+}
+
+.producto-atributos {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.producto-compra {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--producto-borde);
+}
+
+.producto-compra .precio {
+  font-size: 1.65rem;
+}
+
+.producto-compra .precio small {
+  font-size: 0.8rem;
+}
+
+.producto-compra .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.producto-ficha {
+  max-width: 850px;
+}
