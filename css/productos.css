@@ -1,0 +1,34 @@
+/* Esta hoja es solo para el catálogo y las fichas de productos. */
+.card {
+  overflow: hidden;
+  border: 1px solid #dedfd4;
+  border-radius: 0.8rem;
+  background: #fffdfa;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.producto .card-img-top {
+  height: 270px;
+  object-fit: cover;
+}
+
+.producto h3 a {
+  text-decoration: none;
+}
+
+.producto h3 a:hover {
+  text-decoration: underline;
+}
+
+.precio {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.precio small {
+  font-size: 0.7rem;
+  font-weight: normal;
+}

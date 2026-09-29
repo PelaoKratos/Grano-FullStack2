@@ -1,0 +1,43 @@
+/* Esta hoja se ocupa solamente para ordenar los objetos del carrito. */
+.panel {
+  border: 1px solid #dedfd4;
+  border-radius: 0.8rem;
+  background: #fffdfa;
+  padding: clamp(1.3rem, 3vw, 2.5rem);
+}
+
+.item-carrito {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #dedfd4;
+}
+
+.item-carrito:last-child {
+  border-bottom: 0;
+}
+
+.item-carrito img {
+  width: 90px;
+  height: 75px;
+  border-radius: 0.4rem;
+  object-fit: cover;
+}
+
+@media (max-width: 575px) {
+  .item-carrito {
+    grid-template-columns: 70px 1fr;
+  }
+
+  .item-carrito img {
+    width: 70px;
+    height: 60px;
+  }
+
+  .item-carrito button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

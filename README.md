@@ -13,10 +13,10 @@ El carrito usa `localStorage` para guardar los productos en el navegador. Solo p
 ## Archivos
 
 - Las páginas están en archivos HTML.
-- `css/estilos.css` contiene los estilos propios.
+- `css/estilos.css` contiene los estilos comunes y las otras hojas separan inicio, productos, formularios y carrito.
 - `assets/` contiene las ilustraciones.
 - `docs/` contiene las planillas de requisitos y la ERS.
 
-Bootstrap se carga mediante un enlace a su CSS. Se necesita internet para cargarlo. No se usan JavaScript, Python, instalaciones de paquetes ni herramientas de compilación en el proyecto.
+Bootstrap se carga mediante un enlace a su CSS. Se necesita internet para cargarlo. Se usa JavaScript solo para el carrito y la validación del RUT; no se necesitan instalaciones ni herramientas de compilación.
 
 Esta versión presenta las pantallas y la navegación. No procesa compras, cuentas ni envíos de formularios.

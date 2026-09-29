@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Registro de usuarios de Grano." />
+    <title>Crear cuenta | Grano</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <!-- Bootstrap ordena los campos y después se cargan los estilos del formulario. -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/formularios.css" />
+    <script defer src="js/carrito.js"></script>
+    <script defer src="js/validar-rut.js"></script>
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    <div class="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
+    <header class="border-bottom">
+      <!-- navbar mantiene los enlaces visibles y flex-wrap los acomoda en celular. -->
+      <div class="navbar container py-3 gap-3 flex-wrap">
+        <a class="navbar-brand marca" href="index.html">grano<span class="marca-sub">CAFÉ &amp; RITUALES</span></a>
+        <nav class="nav gap-1" aria-label="Navegación principal">
+          <a class="nav-link" href="index.html">Inicio</a>
+          <a class="nav-link" href="productos.html">Nuestro café</a>
+          <a class="nav-link" href="nosotros.html">Nosotros</a>
+          <a class="nav-link" href="contacto.html">Contacto</a>
+          <a class="nav-link" href="login.html">Iniciar sesión</a>
+          <a class="nav-link enlace-carrito" href="carrito.html">Carrito <span class="contador-carrito">0</span></a>
+        </nav>
+      </div>
+    </header>
+    <!-- container centra el formulario y mx-auto lo mantiene angosto. -->
+    <main id="contenido" class="container py-5">
+      <section class="panel formulario-corto mx-auto" aria-labelledby="titulo-registro">
+        <div class="text-center mb-4">
+          <p class="etiqueta">CREA TU CUENTA</p>
+          <h1 id="titulo-registro" class="h2">Regístrate en Grano.</h1>
+          <p class="text-secondary">Completa los datos para crear tu cuenta.</p>
+        </div>
+        <form id="formulario-registro" novalidate>
+          <!-- form-label y form-control dan el mismo formato a cada campo. -->
+          <div class="mb-3">
+            <label class="form-label" for="nombre">Nombre</label>
+            <input class="form-control" type="text" id="nombre" autocomplete="name" maxlength="50" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="rut">RUT</label>
+            <input class="form-control" type="text" id="rut" inputmode="text" autocomplete="off" maxlength="12" aria-describedby="ayuda-rut mensaje-rut" placeholder="12.345.678-5" required />
+            <div id="ayuda-rut" class="form-text">Incluye el cuerpo del RUT y un único dígito verificador.</div>
+            <div id="mensaje-rut" class="form-text"></div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label" for="correo">Correo electrónico</label>
+            <input class="form-control" type="email" id="correo" autocomplete="email" maxlength="100" required />
+          </div>
+          <!-- w-100 deja el botón del ancho del formulario. -->
+          <button class="btn btn-success w-100" type="submit">Crear cuenta</button>
+        </form>
+      </section>
+    </main>
+    <footer class="pie mt-4 py-5">
+      <!-- flex-column apila el pie en celular y flex-md-row lo ordena en escritorio. -->
+      <div class="container row-gap-4 d-flex flex-column flex-md-row justify-content-between gap-4">
+        <div>
+          <a class="marca" href="index.html">grano</a>
+          <p class="mt-2 mb-0">Una buena taza empieza con una pausa.</p>
+        </div>
+        <div>
+          <a href="nosotros.html">Conoce Grano</a><br />
+          <a href="contacto.html">Contacto</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

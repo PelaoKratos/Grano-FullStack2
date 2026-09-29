@@ -1,0 +1,12 @@
+/* Esta hoja se ocupa solamente en la portada. */
+.hero img {
+  width: 100%;
+  max-height: 540px;
+  object-fit: cover;
+}
+
+@media (max-width: 575px) {
+  .hero img {
+    max-height: 390px;
+  }
+}

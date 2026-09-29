@@ -1,0 +1,17 @@
+/* Estos estilos se usan solo en login, registro y contacto. */
+.panel {
+  border: 1px solid #dedfd4;
+  border-radius: 0.8rem;
+  background: #fffdfa;
+  padding: clamp(1.3rem, 3vw, 2.5rem);
+}
+
+.formulario-corto {
+  max-width: 600px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--verde);
+  box-shadow: 0 0 0 0.2rem #2d493830;
+}
