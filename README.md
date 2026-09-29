@@ -10,7 +10,15 @@ La página `login.html` presenta los campos de correo y contraseña y permite vo
 
 El carrito usa `localStorage` para guardar los productos en el navegador. Solo permite agregar, ver y quitar productos; no incluye compra ni pago.
 
-El JavaScript está separado por tarea: `js/carrito.js` guarda los datos del carrito, `js/carrito-interfaz.js` conecta sus botones y muestra los productos, y `js/validar-rut.js` valida el RUT en el registro.
+El JavaScript está separado por módulos: el carrito tiene datos e interfaz, los usuarios tienen validación de RUT y registro, y contacto guarda los mensajes.
+
+El registro y el formulario de contacto guardan sus datos solo en el navegador. No hay servidor, autenticación ni envío de mensajes a un correo.
+
+## Organización del JavaScript
+
+- `js/carrito/`: almacenamiento y elementos visuales del carrito.
+- `js/usuarios/`: validación del RUT y registro de usuarios.
+- `js/contacto/`: guardado de mensajes del formulario.
 
 ## Archivos
 
@@ -19,6 +27,6 @@ El JavaScript está separado por tarea: `js/carrito.js` guarda los datos del car
 - `assets/` contiene las ilustraciones.
 - `docs/` contiene las planillas de requisitos y la ERS.
 
-Bootstrap se carga mediante un enlace a su CSS. Se necesita internet para cargarlo. Se usa JavaScript solo para el carrito y la validación del RUT; no se necesitan instalaciones ni herramientas de compilación.
+Bootstrap se carga mediante un enlace a su CSS. Se necesita internet para cargarlo. Se usa JavaScript para el carrito, el registro de usuarios, la validación del RUT y el formulario de contacto. No se necesitan instalaciones ni herramientas de compilación.
 
-Esta versión presenta las pantallas y la navegación. No procesa compras, cuentas ni envíos de formularios.
+La tienda todavía no procesa compras ni pagos. Las cuentas y los mensajes quedan guardados localmente en el navegador y no se comparten entre dispositivos.

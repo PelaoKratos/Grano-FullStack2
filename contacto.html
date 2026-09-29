@@ -18,8 +18,9 @@
     />
     <link rel="stylesheet" href="css/estilos.css" />
     <link rel="stylesheet" href="css/formularios.css" />
-    <script defer src="js/carrito.js"></script>
-    <script defer src="js/carrito-interfaz.js"></script>
+    <script defer src="js/carrito/datos.js"></script>
+    <script defer src="js/carrito/interfaz.js"></script>
+    <script defer src="js/contacto/mensajes.js"></script>
   </head>
   <body>
     <a class="saltar" href="#contenido">Saltar al contenido</a>
@@ -50,7 +51,7 @@
         </p>
       </div>
       <!-- form-label, form-control y form-select mantienen los campos ordenados. row g-3 deja espacio entre ellos. -->
-      <form class="panel">
+      <form class="panel" id="formulario-contacto">
         <div class="row g-3">
           <div class="col-md-6">
             <label class="form-label" for="nombre">Nombre</label
@@ -60,6 +61,7 @@
               id="nombre"
               autocomplete="name"
               maxlength="100"
+              required
             />
           </div>
           <div class="col-md-6">
@@ -70,6 +72,7 @@
               id="correo"
               autocomplete="email"
               maxlength="100"
+              required
             />
           </div>
           <div class="col-12">
@@ -80,13 +83,15 @@
               rows="5"
               maxlength="500"
               aria-describedby="ayuda-mensaje"
+              required
             ></textarea>
             <div class="form-text" id="ayuda-mensaje">Máximo 500 caracteres.</div>
           </div>
           <div class="col-12">
-            <button type="button" class="btn btn-success" disabled>Enviar mensaje</button>
+            <button type="submit" class="btn btn-success">Enviar mensaje</button>
           </div>
         </div>
+        <p id="estado-mensaje" class="mt-3 mb-0" role="status" aria-live="polite"></p>
       </form>
     </main>
     <footer class="pie mt-4 py-5">
