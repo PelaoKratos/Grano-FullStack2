@@ -10,6 +10,8 @@ La página `login.html` presenta los campos de correo y contraseña y permite vo
 
 El carrito usa `localStorage` para guardar los productos en el navegador. Solo permite agregar, ver y quitar productos; no incluye compra ni pago.
 
+El JavaScript está separado por tarea: `js/carrito.js` guarda los datos del carrito, `js/carrito-interfaz.js` conecta sus botones y muestra los productos, y `js/validar-rut.js` valida el RUT en el registro.
+
 ## Archivos
 
 - Las páginas están en archivos HTML.
