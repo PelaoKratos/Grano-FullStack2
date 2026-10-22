@@ -40,12 +40,12 @@ El botón de compra viene desactivado para evitar agregar un producto de ejemplo
 - `css/responsive.css` adapta la interfaz a pantallas pequeñas y respeta la preferencia de movimiento reducido.
 
 
-Bootstrap se carga mediante un enlace a su CSS. Se necesita internet para cargarlo. No se usan JavaScript, Python, instalaciones de paquetes ni herramientas de compilación en el proyecto.
+Bootstrap se carga mediante un enlace a su CSS, así que se necesita internet para verlo. Las páginas actuales usan JavaScript y `localStorage`; no tienen servidor.
 
 El comportamiento del sitio está en `js/carrito.js`. Antes de migrar, conviene dividir sus responsabilidades en carrito, sesión y usuarios, formularios, panel de administración y componentes visuales.
 
-## Preparación para pasar a React
+## Inicio de la migración a React
 
-Al migrar, el menú y el pie de página pueden convertirse en componentes compartidos (`Header`, `Footer` y `Layout`). Las pantallas pueden separarse en Inicio, Catálogo, Detalle del producto, Carrito, Cuenta, Administración y Contacto. El catálogo debería usar una sola lista de productos para las tarjetas y los detalles.
+La primera pantalla React está en `react/`. Para abrirla, ejecuta `npm install` y `npm run dev` desde la carpeta principal; Vite muestra la app en `/react/` y mantiene disponibles las páginas HTML que aún no se han migrado. En esta primera parte, Inicio, el encabezado, el pie de página y las tarjetas de productos ya están como componentes. La lista está en `react/src/data/productos.js` y alimenta los productos destacados.
 
-Conviene avanzar por partes: preparar React con la herramienta indicada en clases, crear navegación y componentes comunes, migrar el catálogo y sus detalles, conectar el carrito y luego pasar las pantallas de cuenta, administración y contacto. `localStorage` puede mantenerse para la demostración mientras se migra; no hace falta sumar un servidor ni pagos para este paso.
+El siguiente paso es migrar el catálogo completo y sus detalles para que usen esa misma lista. Después se pueden pasar Carrito, Cuenta, Administración y Contacto. La demostración sigue guardando sus datos en `localStorage`; esta migración no agrega servidor ni pagos.

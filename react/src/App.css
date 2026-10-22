@@ -1,0 +1,15 @@
+.hero img {
+  max-height: 540px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.enlace-carrito {
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .navegacion-grano {
+    justify-content: center;
+  }
+}

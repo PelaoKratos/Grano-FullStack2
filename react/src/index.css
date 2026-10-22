@@ -1,0 +1,12 @@
+@import "../../css/estilos.css";
+@import "../../css/componentes.css";
+@import "../../css/paginas.css";
+@import "../../css/responsive.css";
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
