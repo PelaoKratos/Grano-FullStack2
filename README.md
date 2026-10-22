@@ -46,6 +46,6 @@ El comportamiento del sitio está en `js/carrito.js`. Antes de migrar, conviene 
 
 ## Inicio de la migración a React
 
-La primera pantalla React está en `react/`. Para abrirla, ejecuta `npm install` y `npm run dev` desde la carpeta principal; Vite muestra la app en `/react/` y mantiene disponibles las páginas HTML que aún no se han migrado. En esta primera parte, Inicio, el encabezado, el pie de página y las tarjetas de productos ya están como componentes. La lista está en `react/src/data/productos.js` y alimenta los productos destacados.
+La versión React está en `react/`. Para abrirla, ejecuta `npm install` y `npm run dev` desde la carpeta principal; Inicio está en `/react/`, el catálogo en `/react/productos.html` y los detalles en `/react/producto.html?id=colombia`. Las páginas HTML originales siguen disponibles. Inicio, el encabezado, el pie, las tarjetas y las fichas están hechos con componentes; todos leen los mismos datos desde `react/src/data/productos.js`.
 
-El siguiente paso es migrar el catálogo completo y sus detalles para que usen esa misma lista. Después se pueden pasar Carrito, Cuenta, Administración y Contacto. La demostración sigue guardando sus datos en `localStorage`; esta migración no agrega servidor ni pagos.
+El siguiente paso es migrar Carrito, Cuenta, Administración y Contacto. La demostración sigue guardando sus datos en `localStorage`; esta migración no agrega servidor ni pagos.

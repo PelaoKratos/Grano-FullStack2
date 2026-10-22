@@ -35,7 +35,7 @@ function Inicio() {
             <p className="etiqueta">LOS FAVORITOS</p>
             <h2>Café para todos los días.</h2>
           </div>
-          <a href="../productos.html">Ver la colección →</a>
+          <a href="./productos.html">Ver la colección →</a>
         </div>
         {/* Bootstrap acomoda las tarjetas en una, dos o tres columnas según el ancho. */}
         <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">

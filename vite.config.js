@@ -33,6 +33,8 @@ export default defineConfig({
       input: Object.fromEntries([
         ...paginasActuales,
         ["react", resolve(carpetaReact, "index.html")],
+        ["reactCatalogo", resolve(carpetaReact, "productos.html")],
+        ["reactProducto", resolve(carpetaReact, "producto.html")],
       ]),
     },
   },

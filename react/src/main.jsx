@@ -4,8 +4,10 @@ import './index.css'
 import '../../js/carrito.js'
 import App from './App.jsx'
 
+const pagina = document.body.dataset.pagina || 'inicio'
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <App pagina={pagina} />
   </StrictMode>,
 )

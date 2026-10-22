@@ -1,4 +1,7 @@
-function Encabezado() {
+function Encabezado({ pagina }) {
+  const inicioActivo = pagina === "inicio";
+  const productosActivos = pagina === "productos" || pagina === "producto";
+
   return (
     <>
       <div className="franja text-center py-2">Café de especialidad, a tu ritmo.</div>
@@ -9,8 +12,8 @@ function Encabezado() {
             grano<span className="marca-sub">CAFÉ &amp; RITUALES</span>
           </a>
           <nav className="nav gap-1" aria-label="Navegación principal">
-            <a className="nav-link active" href="./" aria-current="page">Inicio</a>
-            <a className="nav-link" href="../productos.html">Nuestro café</a>
+            <a className={`nav-link${inicioActivo ? " active" : ""}`} href="./" aria-current={inicioActivo ? "page" : undefined}>Inicio</a>
+            <a className={`nav-link${productosActivos ? " active" : ""}`} href="./productos.html" aria-current={productosActivos ? "page" : undefined}>Nuestro café</a>
             <a className="nav-link" href="../nosotros.html">Nosotros</a>
             <a className="nav-link" href="../contacto.html">Contacto</a>
             <a className="nav-link enlace-login" href="../login.html">Iniciar sesión</a>
