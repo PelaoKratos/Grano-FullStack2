@@ -6,11 +6,13 @@ import Inicio from "./pages/Inicio.jsx";
 import "./App.css";
 
 function App({ pagina }) {
-  const contenido = {
-    inicio: <Inicio />,
-    productos: <Catalogo />,
-    producto: <DetalleProducto />,
-  }[pagina] || <Inicio />;
+  let contenido = <Inicio />;
+
+  if (pagina === "productos") {
+    contenido = <Catalogo />;
+  } else if (pagina === "producto") {
+    contenido = <DetalleProducto />;
+  }
 
   return (
     <>
