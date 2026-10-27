@@ -65,7 +65,7 @@ function Cuenta({ usuario, pedidos, onGuardar }) {
               <li key={pedido.id}>
                 {pedido.id} · {pedido.fecha} · {pedido.estado} · ${pedido.total.toLocaleString("es-CL")} CLP
                 <br />
-                {pedido.productos.map((producto) => producto.nombre).join(", ")}
+                {pedido.productos.map((producto) => `${producto.nombre} × ${producto.cantidad || 1}`).join(", ")}
               </li>
             ))}
           </ul>

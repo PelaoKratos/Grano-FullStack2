@@ -1,24 +1,40 @@
-# React separado para practicar
+# Grano en React
 
-Esta carpeta contiene una aplicación independiente para aprender y preparar la migración. No usa las páginas HTML ni los archivos JavaScript o CSS del sitio principal. Las imágenes que necesita están copiadas dentro de `src/assets`.
+Esta carpeta contiene la versión React de Grano. El sitio HTML original sigue en la raíz del repositorio; para probar React se usa Vite.
 
-## Probar la aplicación
+## Ejecutar
 
-Desde esta carpeta, instala las dependencias y ejecuta el servidor:
+Desde `react/`:
 
 ```bash
 npm install
 npm run dev
 ```
 
-La aplicación incluye Inicio, Nuestro café, Nosotros, un carrito con imágenes y total, acceso y registro con validación del RUT, cuenta de comprador, contacto y un panel de administración. Al crear una cuenta de comprador, la sesión se abre automáticamente. Usuarios, sesión y mensajes de esta práctica se guardan en `localStorage`; el acceso de prueba es `admin@duocuc.cl` con contraseña `1234`.
+`npm install` solo hace falta la primera vez o cuando cambian las dependencias. Después, abre en Chrome o Edge la dirección local que muestra Vite.
 
-Un comprador que inició sesión puede pulsar **Realizar compra**. Esto registra un pedido de prueba en el historial de su cuenta y vacía el carrito. No hay pagos ni servidor. Al cerrar sesión, el carrito también se vacía.
+## Organización
 
-Desde administración se pueden agregar productos de prueba con una imagen JPG, PNG o WebP de hasta 500 KB. Sus datos se guardan en `localStorage` bajo `granoProductosReact` y aparecen en el catálogo al instante, incluso después de recargar. Si no se elige imagen, se muestra una de ejemplo. También se pueden quitar los productos agregados en esta práctica.
+```text
+src/
+├── components/  Elementos compartidos: menú, pie y tarjeta de producto
+├── pages/       Pantallas de la tienda, cuenta y administración
+├── data/        Productos y cuenta inicial de demostración
+├── hooks/       Estado y acciones de la tienda
+├── utils/       RUT, formato de precios y almacenamiento
+└── assets/      Ilustraciones del proyecto
+```
 
-Si el navegador integrado de VS Code no permite escribir `@` en los campos de correo, abre la dirección que entrega Vite en Chrome o Edge. El formulario usa un campo de correo normal y no cambia el teclado.
+Las páginas se abren mediante la dirección después de `#`, por ejemplo `#productos`, `#registro` y `#admin/productos`. Así se puede volver atrás con el navegador sin agregar una librería de rutas.
 
-## Archivos que se integran
+## Funciones de prueba
 
-Al pasar el trabajo al proyecto principal se revisará qué archivos fuente y configuración hacen falta. `node_modules/` y `dist/` son carpetas generadas y están excluidas de Git.
+- Buscar y filtrar productos por categoría, consultar su ficha y ver el stock disponible.
+- Agregar unidades al carrito sin superar el stock. Al confirmar un pedido de prueba, se descuentan las unidades y se conserva un resumen en Mi cuenta.
+- Registrarse con RUT válido y entrar automáticamente a la cuenta. También se puede iniciar sesión, cerrar sesión, editar el perfil y cambiar la contraseña.
+- En administración, revisar el resumen y el stock crítico; crear, editar y quitar productos; revisar pedidos, usuarios y mensajes en pantallas separadas.
+- Agregar una imagen JPG, PNG o WebP de hasta 500 KB al crear o editar un producto.
+
+El acceso de administrador para probar es `admin@duocuc.cl` con contraseña `1234`. Los datos se guardan en `localStorage` del navegador. Esta versión no usa servidor, no cobra pagos y no comparte información entre equipos. Las contraseñas de prueba no deben ser contraseñas personales.
+
+Al abrir la nueva estructura se conservan las cuentas, pedidos, mensajes y productos creados en la versión React anterior del mismo navegador. Los productos antiguos que no tenían stock reciben 10 unidades iniciales. El carrito anterior se convierte a cantidades por producto.

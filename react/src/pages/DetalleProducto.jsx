@@ -8,7 +8,8 @@ function DetalleProducto({ producto, volver, onAgregar }) {
         <p>{producto.descripcion}</p>
         <p>{producto.detalle}</p>
         <p className="precio">${producto.precio.toLocaleString("es-CL")} CLP</p>
-        <button type="button" onClick={() => onAgregar(producto)}>
+        <p>{producto.stock > 0 ? `Disponibles: ${producto.stock}` : "Agotado"}</p>
+        <button type="button" onClick={() => onAgregar(producto)} disabled={producto.stock === 0}>
           Añadir al carrito
         </button>
         <button className="boton-secundario" type="button" onClick={volver}>

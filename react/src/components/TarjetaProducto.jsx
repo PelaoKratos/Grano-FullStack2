@@ -13,6 +13,9 @@ function TarjetaProducto({ producto, onVerDetalle, onAgregar }) {
         <p className="precio">
           ${producto.precio.toLocaleString("es-CL")} CLP
         </p>
+        <p className="stock-producto">
+          {producto.stock > 0 ? `Disponibles: ${producto.stock}` : "Agotado"}
+        </p>
         <button type="button" onClick={() => onVerDetalle(producto)}>
           Ver detalle
         </button>
@@ -20,6 +23,7 @@ function TarjetaProducto({ producto, onVerDetalle, onAgregar }) {
           className="boton-secundario"
           type="button"
           onClick={() => onAgregar(producto)}
+          disabled={producto.stock === 0}
         >
           Añadir al carrito
         </button>

@@ -1,51 +1,21 @@
 # Grano
 
-Tienda de café de especialidad, métodos de preparación y accesorios.
+Grano es una tienda de café de especialidad, métodos de preparación y accesorios. El repositorio conserva el sitio inicial en HTML, CSS, Bootstrap y JavaScript, además de una versión React independiente dentro de [`react/`](react/).
 
-## Abrir el sitio
+## Abrir la versión React
 
-Abre `index.html` en el navegador. El menú principal lleva a Inicio, Nuestro café, Nosotros, Contacto e Iniciar sesión.
+```bash
+cd react
+npm install
+npm run dev
+```
 
-La página `login.html` permite iniciar sesión y registrar compradores en el navegador. El proyecto incluye una cuenta de demostración para revisar el panel de administración.
+Instala las dependencias solo la primera vez o cuando cambien. Después abre en Chrome o Edge la dirección local que muestra Vite. La organización de carpetas y las funciones de esta versión están explicadas en [`react/README.md`](react/README.md).
 
-El carrito usa `localStorage` para guardar los productos en el navegador. Los compradores pueden confirmar un pedido desde el carrito y el administrador puede revisarlo en `admin.html`.
+## Abrir el sitio inicial
 
-## Cuentas de prueba
+Abre `index.html` con Live Server. Sus páginas, estilos y scripts están en la raíz del repositorio, en `css/`, `js/` y `assets/`.
 
-- Administrador: `admin@duocuc.cl` / `1234`.
-- Los nuevos registros creados en `login.html` tienen el rol de comprador.
+Las dos versiones son demostraciones locales. Las cuentas, los productos creados, el carrito, los pedidos y los mensajes se guardan en el navegador; no hay pagos reales ni un servidor compartido.
 
-Esta versión es una demostración estática: usuarios, contraseñas, sesión, mensajes y pedidos se guardan solo en el `localStorage` del navegador. El pedido no representa un pago real. Para publicar la tienda se necesitaría un backend que gestione esos datos de forma segura.
-
-## Archivos
-
-- Las páginas están en archivos HTML.
-
-- `assets/` contiene las ilustraciones.
-- `docs/` contiene las planillas de requisitos y la ERS.
-
-## Plantilla para productos
-
-
-`boceto-producto.html` es la base para crear fichas de producto con una estructura uniforme. Antes de publicar una copia, completa los campos `{{producto.id}}`, `{{producto.nombre}}`, `{{producto.categoria}}`, `{{producto.resumen}}`, `{{producto.descripcion}}`, `{{producto.detalle}}`, `{{producto.precio}}`, `{{producto.precio_formateado}}` y `{{producto.caracteristica_1}}` a `{{producto.caracteristica_3}}`. Reemplaza también `assets/producto-placeholder.svg` por la imagen del producto y actualiza su texto alternativo.
-
-El botón de compra viene desactivado para evitar agregar un producto de ejemplo al carrito. Al integrar una ficha, habilítalo y configura sus atributos `data-agregar-carrito`, `data-id`, `data-nombre`, `data-precio` y `data-imagen`, que son los que utiliza `js/carrito.js`. Para mostrarlo en la colección, agrega su tarjeta correspondiente en `productos.html`. Estos campos estandarizados sirven como base para automatizar esos pasos después.
-
-
-## CSS
-
-- `css/estilos.css` define los estilos base, la paleta de colores y la tipografía.
-- `css/componentes.css` reúne los estilos compartidos de botones, tarjetas, formularios y tablas.
-- `css/paginas.css` contiene los estilos específicos de acceso, carrito y carrusel.
-- `css/responsive.css` adapta la interfaz a pantallas pequeñas y respeta la preferencia de movimiento reducido.
-
-
-Bootstrap se carga mediante un enlace a su CSS. Se necesita internet para cargarlo. No se usan JavaScript, Python, instalaciones de paquetes ni herramientas de compilación en el proyecto.
-
-El comportamiento del sitio está en `js/carrito.js`. Antes de migrar, conviene dividir sus responsabilidades en carrito, sesión y usuarios, formularios, panel de administración y componentes visuales.
-
-## Preparación para pasar a React
-
-Al migrar, el menú y el pie de página pueden convertirse en componentes compartidos (`Header`, `Footer` y `Layout`). Las pantallas pueden separarse en Inicio, Catálogo, Detalle del producto, Carrito, Cuenta, Administración y Contacto. El catálogo debería usar una sola lista de productos para las tarjetas y los detalles.
-
-Conviene avanzar por partes: preparar React con la herramienta indicada en clases, crear navegación y componentes comunes, migrar el catálogo y sus detalles, conectar el carrito y luego pasar las pantallas de cuenta, administración y contacto. `localStorage` puede mantenerse para la demostración mientras se migra; no hace falta sumar un servidor ni pagos para este paso.
+`docs/` contiene la planilla de requisitos y la especificación del proyecto.

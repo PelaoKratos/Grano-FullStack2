@@ -40,6 +40,15 @@ button:hover,
   background: #203829;
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  background: #2d4938;
+}
+
 button:focus-visible,
 a:focus-visible {
   outline: 3px solid #a65f24;
@@ -110,6 +119,7 @@ a:focus-visible {
   border: 0;
   color: #2d4938;
   background: transparent;
+  text-decoration: none;
 }
 
 .enlace-menu:hover {
@@ -224,6 +234,32 @@ main {
   font-size: clamp(28px, 3vw, 38px);
 }
 
+.filtros-productos {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 16px;
+  padding: 20px;
+  border: 1px solid #dedfd4;
+  border-radius: 12px;
+  background: #fffdfa;
+}
+
+.filtros-productos label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.filtros-productos input,
+.filtros-productos select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bfc8bf;
+  border-radius: 5px;
+  font: inherit;
+}
+
 .lista-productos {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -268,6 +304,11 @@ main {
   color: #263c30;
   font-size: 19px;
   font-weight: bold;
+}
+
+.stock-producto {
+  margin: 6px 0;
+  color: #58675c;
 }
 
 .contenido-tarjeta button + button {
@@ -344,6 +385,18 @@ main {
   margin: 5px 0;
 }
 
+.cantidad-carrito {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cantidad-carrito button {
+  min-width: 36px;
+  padding: 4px 8px;
+}
+
 .resumen-carrito {
   max-width: 700px;
   padding: 16px 0;
@@ -388,6 +441,11 @@ main {
   border-radius: 12px;
   background: #fffdfa;
   box-shadow: 0 8px 24px rgba(38, 60, 48, 0.06);
+}
+
+.formulario-centrado {
+  max-width: 540px;
+  margin: 0 auto 24px;
 }
 
 .panel-registro {
@@ -471,7 +529,7 @@ main {
 }
 
 .lista-productos-admin {
-  max-width: 650px;
+  padding: 0;
   list-style: none;
 }
 
@@ -482,6 +540,75 @@ main {
   gap: 12px;
   padding: 10px 0;
   border-bottom: 1px solid #dedfd4;
+}
+
+.menu-admin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.menu-admin a {
+  padding: 8px 12px;
+  border: 1px solid #2d4938;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.menu-admin a:hover {
+  color: #fff;
+  background: #2d4938;
+}
+
+.resumen-admin {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.resumen-admin p {
+  padding: 14px;
+  border-radius: 8px;
+  background: #f0eee5;
+}
+
+.resumen-admin strong {
+  display: block;
+  font-size: 26px;
+}
+
+.lista-admin {
+  padding-left: 20px;
+}
+
+.lista-admin li {
+  padding: 12px 0;
+  border-bottom: 1px solid #dedfd4;
+}
+
+.lista-admin select,
+.acciones-admin select {
+  width: auto;
+  max-width: 100%;
+  margin: 0 8px;
+  padding: 6px;
+}
+
+.acciones-admin {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.aviso-stock {
+  color: #9b3f2e;
+}
+
+.aviso-carrito {
+  padding: 12px;
+  background: #eef3e8;
 }
 
 .pie {
@@ -515,6 +642,10 @@ main {
   .lista-productos {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .resumen-admin {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 520px) {
@@ -527,6 +658,10 @@ main {
   }
 
   .lista-productos {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros-productos {
     grid-template-columns: 1fr;
   }
 
