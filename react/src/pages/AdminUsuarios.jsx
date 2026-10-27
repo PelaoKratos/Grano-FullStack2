@@ -37,12 +37,13 @@ function AdminUsuarios({ usuarios, sesion, onCrear, onGuardar }) {
             <strong>{usuario.nombre}</strong> · {usuario.correo}
             <div className="acciones-admin">
               <label htmlFor={`rol-${usuario.correo}`}>Rol</label>
-              <select id={`rol-${usuario.correo}`} value={usuario.rol} onChange={(evento) => cambiar(usuario, { rol: evento.target.value })}>
-                <option value="comprador">Comprador</option><option value="admin">Administrador</option>
+              <select id={`rol-${usuario.correo}`} value={usuario.rol} disabled={usuario.cuentaDemostracion} onChange={(evento) => cambiar(usuario, { rol: evento.target.value })}>
+                <option value="comprador">Comprador</option><option value="vendedor">Vendedor</option><option value="admin">Administrador</option>
               </select>
-              <button className="boton-secundario" type="button" disabled={usuario.correo === sesion.correo} onClick={() => cambiar(usuario, { activo: !usuario.activo })}>
+              <button className="boton-secundario" type="button" disabled={usuario.correo === sesion.correo || usuario.cuentaDemostracion} onClick={() => cambiar(usuario, { activo: !usuario.activo })}>
                 {usuario.activo ? "Desactivar" : "Activar"}
               </button>
+              {usuario.cuentaDemostracion && <small>Cuenta de prueba</small>}
             </div>
           </li>
         ))}
@@ -56,7 +57,7 @@ function AdminUsuarios({ usuarios, sesion, onCrear, onGuardar }) {
         <label htmlFor="admin-clave">Contraseña</label>
         <input id="admin-clave" name="contrasena" type="password" minLength="6" required />
         <label htmlFor="admin-rol">Rol</label>
-        <select id="admin-rol" name="rol"><option value="comprador">Comprador</option><option value="admin">Administrador</option></select>
+        <select id="admin-rol" name="rol"><option value="comprador">Comprador</option><option value="vendedor">Vendedor</option><option value="admin">Administrador</option></select>
         <button type="submit">Crear usuario</button>
       </form>
       <p className="mensaje-formulario" role="status">{mensaje}</p>

@@ -32,9 +32,9 @@ Las páginas se abren mediante la dirección después de `#`, por ejemplo `#prod
 - Buscar y filtrar productos por categoría, consultar su ficha y ver el stock disponible.
 - Agregar unidades al carrito sin superar el stock. Al confirmar un pedido de prueba, se descuentan las unidades y se conserva un resumen en Mi cuenta.
 - Registrarse con RUT válido y entrar automáticamente a la cuenta. También se puede iniciar sesión, cerrar sesión, editar el perfil y cambiar la contraseña.
-- En administración, revisar el resumen y el stock crítico; crear, editar y quitar productos; revisar pedidos, usuarios y mensajes en pantallas separadas.
+- Iniciar sesión como comprador, vendedor o administrador. El vendedor consulta productos, stock y pedidos; el administrador gestiona productos, cuentas, pedidos y mensajes desde pantallas separadas.
 - Agregar una imagen JPG, PNG o WebP de hasta 500 KB al crear o editar un producto.
 
-El acceso de administrador para probar es `admin@duocuc.cl` con contraseña `1234`. Los datos se guardan en `localStorage` del navegador. Esta versión no usa servidor, no cobra pagos y no comparte información entre equipos. Las contraseñas de prueba no deben ser contraseñas personales.
+En el inicio de sesión aparecen tres cuentas de prueba, con botones para copiar el correo y la contraseña. Los datos se guardan en `localStorage` del navegador. Esta versión no usa servidor, no cobra pagos y no comparte información entre equipos. Las contraseñas de prueba no deben ser contraseñas personales.
 
 Al abrir la nueva estructura se conservan las cuentas, pedidos, mensajes y productos creados en la versión React anterior del mismo navegador. Los productos antiguos que no tenían stock reciben 10 unidades iniciales. El carrito anterior se convierte a cantidades por producto.

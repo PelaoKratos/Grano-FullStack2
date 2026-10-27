@@ -12,6 +12,10 @@ function Registro({ onRegistrar }) {
       return;
     }
     const datos = new FormData(evento.currentTarget);
+    if (datos.get("contrasena") !== datos.get("confirmarContrasena")) {
+      setMensaje("Las contraseñas no coinciden.");
+      return;
+    }
     const usuario = {
       nombre: datos.get("nombre").trim(),
       rut: formatearRut(rut),
@@ -38,6 +42,8 @@ function Registro({ onRegistrar }) {
           <input id="registro-correo" name="correo" type="email" autoComplete="email" required />
           <label htmlFor="registro-contrasena">Contraseña</label>
           <input id="registro-contrasena" name="contrasena" type="password" minLength="6" autoComplete="new-password" required />
+          <label htmlFor="registro-confirmar-contrasena">Confirmar contraseña</label>
+          <input id="registro-confirmar-contrasena" name="confirmarContrasena" type="password" minLength="6" autoComplete="new-password" required />
           <button type="submit">Crear cuenta</button>
         </form>
         <p className="mensaje-formulario" role="alert">{mensaje}</p>

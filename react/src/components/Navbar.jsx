@@ -1,4 +1,15 @@
 function Navbar({ sesion, cantidad, onSalir }) {
+  const destinoCuenta = sesion?.rol === "admin"
+    ? "#admin"
+    : sesion?.rol === "vendedor"
+      ? "#vendedor"
+      : "#cuenta";
+  const nombreCuenta = sesion?.rol === "admin"
+    ? "Administración"
+    : sesion?.rol === "vendedor"
+      ? "Panel vendedor"
+      : "Mi cuenta";
+
   return (
     <header className="encabezado">
       <a className="marca" href="#inicio">
@@ -12,9 +23,7 @@ function Navbar({ sesion, cantidad, onSalir }) {
         <a className="enlace-menu" href="#contacto">Contacto</a>
         {sesion ? (
           <>
-            <a className="enlace-menu" href={sesion.rol === "admin" ? "#admin" : "#cuenta"}>
-              {sesion.rol === "admin" ? "Administración" : "Mi cuenta"}
-            </a>
+            <a className="enlace-menu" href={destinoCuenta}>{nombreCuenta}</a>
             <button className="enlace-menu" type="button" onClick={onSalir}>Salir</button>
           </>
         ) : (

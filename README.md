@@ -16,6 +16,6 @@ Instala las dependencias solo la primera vez o cuando cambien. Después abre en 
 
 Abre `index.html` con Live Server. Sus páginas, estilos y scripts están en la raíz del repositorio, en `css/`, `js/` y `assets/`.
 
-Las dos versiones son demostraciones locales. Las cuentas, los productos creados, el carrito, los pedidos y los mensajes se guardan en el navegador; no hay pagos reales ni un servidor compartido.
+La versión React permite probar perfiles de administrador, vendedor y comprador. Las cuentas, los productos creados, el carrito, los pedidos y los mensajes se guardan en el navegador; no hay pagos reales ni un servidor compartido. Las credenciales de prueba aparecen bajo el formulario de inicio de sesión.
 
 `docs/` contiene la planilla de requisitos y la especificación del proyecto.

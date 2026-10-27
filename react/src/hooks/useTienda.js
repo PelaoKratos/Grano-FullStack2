@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { productos as productosIniciales } from "../data/productos.js";
-import { administradorInicial } from "../data/usuarios.js";
+import { usuariosDemostracion } from "../data/usuarios.js";
 import imagenProductoNuevo from "../assets/producto-nuevo.svg";
 import { guardarDato, leerDato } from "../utils/almacenamiento.js";
 
@@ -28,8 +28,10 @@ function cargarUsuarios() {
     activo: usuario.activo !== false,
   }));
 
-  if (!lista.some((usuario) => usuario.correo === administradorInicial.correo)) {
-    lista.push(administradorInicial);
+  for (const usuarioDemo of usuariosDemostracion) {
+    const existente = lista.find((usuario) => usuario.correo === usuarioDemo.correo);
+    if (existente) Object.assign(existente, usuarioDemo);
+    else lista.push(usuarioDemo);
   }
 
   return lista;
@@ -105,7 +107,7 @@ export default function useTienda() {
 
   function cambiarContrasena(correo, actual, nueva) {
     const usuario = usuarios.find((item) => item.correo === correo && item.contrasena === actual);
-    if (!usuario) return false;
+    if (!usuario || usuario.cuentaDemostracion) return false;
     setUsuarios(usuarios.map((item) => item.correo === correo ? { ...item, contrasena: nueva } : item));
     return true;
   }
@@ -200,6 +202,8 @@ export default function useTienda() {
   }
 
   function guardarUsuario(datos) {
+    const usuarioActualizado = usuarios.find((item) => item.correo === datos.correo);
+    if (usuarioActualizado?.cuentaDemostracion) return false;
     if (datos.correo === sesion?.correo && (datos.rol !== "admin" || datos.activo === false)) return false;
     setUsuarios(usuarios.map((item) => item.correo === datos.correo ? { ...item, ...datos } : item));
     return true;

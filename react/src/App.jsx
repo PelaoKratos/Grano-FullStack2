@@ -13,6 +13,7 @@ import Registro from "./pages/Registro.jsx";
 import CambiarContrasena from "./pages/CambiarContrasena.jsx";
 import Cuenta from "./pages/Cuenta.jsx";
 import Admin from "./pages/Admin.jsx";
+import Vendedor from "./pages/Vendedor.jsx";
 
 function App() {
   const tienda = useTienda();
@@ -48,7 +49,14 @@ function App() {
 
   function entrar(correo, contrasena) {
     const usuario = tienda.iniciarSesion(correo, contrasena);
-    if (usuario) navegar(usuario.rol === "admin" ? "admin" : "cuenta");
+    if (usuario) {
+      const paginaUsuario = usuario.rol === "admin"
+        ? "admin"
+        : usuario.rol === "vendedor"
+          ? "vendedor"
+          : "cuenta";
+      navegar(paginaUsuario);
+    }
     return usuario;
   }
 
@@ -68,6 +76,7 @@ function App() {
   const usuarioActual = tienda.usuarios.find((usuario) => usuario.correo === tienda.sesion?.correo);
   const esAdmin = ruta === "admin" || ruta.startsWith("admin/");
   const accesoDenegado = (ruta === "cuenta" && (!usuarioActual || tienda.sesion?.rol !== "comprador")) ||
+    (ruta === "vendedor" && (!usuarioActual || tienda.sesion?.rol !== "vendedor")) ||
     (esAdmin && (!usuarioActual || tienda.sesion?.rol !== "admin"));
   let pagina;
 
@@ -95,6 +104,8 @@ function App() {
     pagina = <CambiarContrasena onCambiar={tienda.cambiarContrasena} />;
   } else if (ruta === "cuenta") {
     pagina = <Cuenta usuario={usuarioActual} pedidos={tienda.pedidos.filter((pedido) => pedido.comprador === tienda.sesion.correo)} onGuardar={tienda.guardarPerfil} />;
+  } else if (ruta === "vendedor") {
+    pagina = <Vendedor productos={tienda.productos} pedidos={tienda.pedidos} />;
   } else if (esAdmin) {
     pagina = <Admin ruta={ruta} tienda={tienda} />;
   } else {
