@@ -693,6 +693,59 @@ main {
   font-size: 0.9rem;
 }
 
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #2d4938;
+  border-radius: 5px;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.boton-primario {
+  color: #fff;
+  background: #2d4938;
+}
+
+.boton-primario:hover {
+  color: #fff;
+  background: #203829;
+}
+
+.boton-secundario {
+  color: #2d4938;
+  background: transparent;
+}
+
+.boton-secundario:hover {
+  color: #fff;
+  background: #2d4938;
+}
+
+.boton-enlace {
+  color: #fff;
+  background: #2d4938;
+}
+
+.boton-enlace:hover {
+  color: #fff;
+  background: #203829;
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.boton:disabled:hover {
+  background: inherit;
+}
+
 @media (max-width: 760px) {
   .encabezado {
     align-items: flex-start;
