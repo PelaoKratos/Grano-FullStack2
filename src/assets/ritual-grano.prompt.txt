@@ -1,0 +1,8 @@
+Use case: photorealistic-natural
+Asset type: photographic hero asset for the grano independent coffee storefront, not a UI mockup
+Primary request: landscape 3:2 editorial still-life photograph of freshly brewed coffee in a rustic handmade light ceramic cup on a walnut wooden table, dark forest green linen, a folded kraft coffee bag with a small tasteful grano label.
+Composition/framing: full-frame useful photograph; cup and coffee bag form a central-right focal group; softly open tabletop on the left. Eye-level close editorial still-life with natural depth, authentic proportions, cup and label in clear focus.
+Lighting/mood: warm side window light, tactile intimate morning ritual, subtle steam, premium independent coffee shop photography.
+Materials/textures: handmade off-white glazed ceramic with small natural imperfections, real walnut grain, softly rumpled deep forest green woven linen, tactile folded kraft paper.
+Text (verbatim): "grano" in small tasteful dark simple lowercase lettering on a cream paper label on the coffee bag; no other text.
+Constraints: create one beautiful realistic photograph, landscape aspect ratio 3:2. No extra claims, no invented origin or weights, no UI, no borders, no watermark, no additional branding, no vector art.

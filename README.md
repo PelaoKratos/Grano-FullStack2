@@ -1,51 +1,81 @@
-# Grano
+# Grano · React
 
-Tienda de café de especialidad, métodos de preparación y accesorios.
+Tienda de café de especialidad, métodos de preparación y accesorios. **La aplicación principal ahora está en React y Vite, desde la raíz del repositorio.** Conserva el diseño cálido y artesanal y las funciones de la tienda.
 
-## Abrir el sitio
+## Abrir en Windows
 
-Abre `index.html` en el navegador. El menú principal lleva a Inicio, Nuestro café, Nosotros, Contacto e Iniciar sesión.
+Haz doble clic en **`Iniciar Grano.cmd`**. Abre el servidor local y la tienda en tu navegador. Mantén esa ventana abierta mientras usas la aplicación; para detenerla, pulsa `Ctrl+C`.
 
-La página `login.html` permite iniciar sesión y registrar compradores en el navegador. El proyecto incluye una cuenta de demostración para revisar el panel de administración.
+Ya no se abre `index.html` directamente: Vite prepara los componentes React.
 
-El carrito usa `localStorage` para guardar los productos en el navegador. Los compradores pueden confirmar un pedido desde el carrito y el administrador puede revisarlo en `admin.html`.
+## Desarrollo
 
-## Cuentas de prueba
+Requiere Node.js 22.12 o superior. Con npm:
 
-- Administrador: `admin@duocuc.cl` / `1234`.
-- Los nuevos registros creados en `login.html` tienen el rol de comprador.
+```sh
+npm install
+npm run dev
+```
 
-Esta versión es una demostración estática: usuarios, contraseñas, sesión, mensajes y pedidos se guardan solo en el `localStorage` del navegador. El pedido no representa un pago real. Para publicar la tienda se necesitaría un backend que gestione esos datos de forma segura.
+También puedes usar pnpm y el archivo de versiones incluido:
 
-## Archivos
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+```
 
-- Las páginas están en archivos HTML.
+La dirección habitual es `http://127.0.0.1:5173`; usa la dirección que indique la consola. La base `./` y las rutas con `#` permiten publicar en un alojamiento estático o una subcarpeta sin configurar redirecciones del servidor.
 
-- `assets/` contiene las ilustraciones.
-- `docs/` contiene las planillas de requisitos y la ERS.
+## Comprobar y compilar
 
-## Plantilla para productos
+```sh
+npm test
+npm run build
+npm run preview
+```
 
+`dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`boceto-producto.html` es la base para crear fichas de producto con una estructura uniforme. Antes de publicar una copia, completa los campos `{{producto.id}}`, `{{producto.nombre}}`, `{{producto.categoria}}`, `{{producto.resumen}}`, `{{producto.descripcion}}`, `{{producto.detalle}}`, `{{producto.precio}}`, `{{producto.precio_formateado}}` y `{{producto.caracteristica_1}}` a `{{producto.caracteristica_3}}`. Reemplaza también `assets/producto-placeholder.svg` por la imagen del producto y actualiza su texto alternativo.
+## Funciones
 
-El botón de compra viene desactivado para evitar agregar un producto de ejemplo al carrito. Al integrar una ficha, habilítalo y configura sus atributos `data-agregar-carrito`, `data-id`, `data-nombre`, `data-precio` y `data-imagen`, que son los que utiliza `js/carrito.js`. Para mostrarlo en la colección, agrega su tarjeta correspondiente en `productos.html`. Estos campos estandarizados sirven como base para automatizar esos pasos después.
+- Portada con selector de sabores y compra directa.
+- Catálogo con búsqueda por nombre, filtros y fichas compartibles por URL.
+- Carrito con controles de cantidad, validación de stock, total actualizado y persistencia.
+- Inicio de sesión, registro con confirmación de contraseña, validación de RUT y cambio de contraseña de demostración.
+- Perfil, dirección, comuna, región e historial de pedidos.
+- Contacto y mensajes que administración puede marcar como leídos.
+- Administración por secciones: resumen, edición y eliminación del catálogo completo, stock crítico, roles y activación de usuarios, estados de pedidos y mensajes. Imágenes JPG, PNG o WebP de hasta 500 KB.
+- Panel de vendedor para consultar productos, disponibilidad y pedidos.
+- Navegación móvil, historial del navegador, recarga de rutas y páginas no encontradas.
 
+Cuentas públicas de prueba (también visibles en la pantalla de acceso):
 
-## CSS
+| Perfil        | Correo              | Contraseña |
+| ------------- | ------------------- | ---------- |
+| Administrador | admin@duocuc.cl     | 1234       |
+| Vendedor      | vendedor@duocuc.cl  | Venta123   |
+| Comprador     | comprador@duocuc.cl | Cliente123 |
 
-- `css/estilos.css` define los estilos base, la paleta de colores y la tipografía.
-- `css/componentes.css` reúne los estilos compartidos de botones, tarjetas, formularios y tablas.
-- `css/paginas.css` contiene los estilos específicos de acceso, carrito y carrusel.
-- `css/responsive.css` adapta la interfaz a pantallas pequeñas y respeta la preferencia de movimiento reducido.
+Las cuentas de prueba conservan su rol, activación y contraseña. Puedes registrar compradores o crear usuarios desde administración. Al cerrar sesión se vacía el carrito.
 
+## Datos del navegador
 
-Bootstrap se carga mediante un enlace a su CSS. Se necesita internet para cargarlo. No se usan JavaScript, Python, instalaciones de paquetes ni herramientas de compilación en el proyecto.
+La aplicación guarda su estado en `localStorage`, bajo `grano-tienda-react-v1`. La primera vez importa los datos disponibles del sitio HTML y de la práctica React; mantiene cantidades, perfiles e historial y conserva las claves originales como respaldo. El esquema de datos es versión 2 y mantiene la misma clave para importar los datos existentes. El catálogo completo se guarda para conservar ediciones y eliminaciones. El descuento de stock, el pedido y el vaciado del carrito se guardan en una sola escritura. Se sincronizan cambios entre pestañas del mismo origen.
 
-El comportamiento del sitio está en `js/carrito.js`. Antes de migrar, conviene dividir sus responsabilidades en carrito, sesión y usuarios, formularios, panel de administración y componentes visuales.
+La importación requiere el **mismo navegador y origen**. Los datos abiertos antes mediante `file://`, otro dominio o un puerto distinto no son accesibles desde la nueva dirección; el navegador los conserva en su origen anterior. Esta migración no elimina esos datos.
 
-## Preparación para pasar a React
+Es una demostración local: no incluye servidor, pagos reales ni autenticación de producción. Las cuentas y contraseñas de prueba permanecen en el navegador.
 
-Al migrar, el menú y el pie de página pueden convertirse en componentes compartidos (`Header`, `Footer` y `Layout`). Las pantallas pueden separarse en Inicio, Catálogo, Detalle del producto, Carrito, Cuenta, Administración y Contacto. El catálogo debería usar una sola lista de productos para las tarjetas y los detalles.
+## Estructura
 
-Conviene avanzar por partes: preparar React con la herramienta indicada en clases, crear navegación y componentes comunes, migrar el catálogo y sus detalles, conectar el carrito y luego pasar las pantallas de cuenta, administración y contacto. `localStorage` puede mantenerse para la demostración mientras se migra; no hace falta sumar un servidor ni pagos para este paso.
+- `src/App.jsx`: composición de la aplicación y pantallas.
+- `src/components/`: navegación, portada, catálogo, formularios y administración.
+- `src/hooks/useRuta.js`: navegación con historial y rutas por hash.
+- `src/hooks/useTienda.js`: operaciones de la tienda y guardado.
+- `src/datos/`: catálogo, validación de RUT y migración de almacenamiento.
+- `src/styles/diseno.css`: sistema visual artesanal; `react.css` adapta las pantallas React.
+- `src/assets/`: imágenes, tipografías y licencias.
+- `src/datos/operaciones.js`: validaciones y cambios de estado de la tienda.
+- `tests/`: pruebas de migración, stock, compra, permisos, catálogo, persistencia, rutas y RUT.
+
+`PRODUCT.md` y `DESIGN.md` documentan el producto y el diseño. La fotografía de portada es ilustrativa y conserva su indicación de generación en el PNG y en `src/assets/ritual-grano.prompt.txt`.
