@@ -78,4 +78,8 @@ Es una demostración local: no incluye servidor, pagos reales ni autenticación 
 - `src/datos/operaciones.js`: validaciones y cambios de estado de la tienda.
 - `tests/`: pruebas de migración, stock, compra, permisos, catálogo, persistencia, rutas y RUT.
 
-`PRODUCT.md` y `DESIGN.md` documentan el producto y el diseño. La fotografía de portada es ilustrativa y conserva su indicación de generación en el PNG y en `src/assets/ritual-grano.prompt.txt`.
+`PRODUCT.md` y `DESIGN.md` documentan el producto y el diseño. La portada y las seis fotografías de producto son imágenes ilustrativas generadas con IA; no son fotos de productos físicos. La portada conserva su indicación de generación en el PNG y en `src/assets/ritual-grano.prompt.txt`. Los productos usan WebP locales optimizados en `src/assets/fotografia/`, con el prompt completo y su procedencia en cada archivo `.webp.json`.
+
+## Rama de diseño
+
+La rama `probando-diseno-nuevo` en `PelaoKratos/Grano-FullStack2` incorpora la migración React y la paridad funcional del commit `e36a9fd`, más la serie fotográfica realista basada en la portada. Se conserva la identidad crema y verde con Bitter y Karla, así como el esquema 2 de `grano-tienda-react-v1`, las migraciones y la escritura conjunta de inventario, pedido y carrito. Las imágenes cargadas por el usuario permanecen intactas.

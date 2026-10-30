@@ -11,8 +11,9 @@ export default function DetalleProducto({ producto, onAgregar }) {
             className="img-fluid rounded-4"
             src={producto.imagen}
             alt={producto.nombre}
-            width="600"
-            height="650"
+            width="1200"
+            height="1200"
+            decoding="async"
           />
         </div>
         <div>

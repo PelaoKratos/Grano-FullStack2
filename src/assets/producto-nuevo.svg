@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" role="img" aria-labelledby="titulo">
-  <title id="titulo">Producto de Grano</title>
-  <rect width="600" height="500" fill="#e8e4d9"/>
-  <circle cx="300" cy="225" r="105" fill="#2d4938"/>
-  <path d="M245 210h95v67a47 47 0 0 1-95 0z" fill="#f8f5ee"/>
-  <path d="M340 223h18a21 21 0 0 1 0 42h-18" fill="none" stroke="#f8f5ee" stroke-width="12"/>
-  <text x="300" y="395" fill="#2d4938" font-family="Georgia,serif" font-size="42" text-anchor="middle">grano</text>
-</svg>

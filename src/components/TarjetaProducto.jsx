@@ -15,8 +15,10 @@ export default function TarjetaProducto({
           className={portada ? "" : "card-img-top"}
           src={producto.imagen}
           alt={producto.nombre}
-          width="600"
-          height="650"
+          width="1200"
+          height="1200"
+          loading="lazy"
+          decoding="async"
         />
         {portada && <span className="sabor-etiqueta">{producto.notas}</span>}
       </a>

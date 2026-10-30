@@ -24,7 +24,7 @@ Nombre Grano, café y rituales. El usuario eligió una tienda cálida y artesana
 
 ## Evidence on Hand
 
-README.md, componentes React, catálogo e ilustraciones SVG locales. No inventar testimonios, premios, compromisos de envío, certificaciones ni datos de productores.
+README.md, componentes React, catálogo y fotografías ilustrativas locales generadas con IA. La portada original fija el estilo realista y artesanal para todas las imágenes de la tienda. Los SVG se reservan para iconos y favicon. No inventar testimonios, premios, compromisos de envío, certificaciones ni datos de productores.
 
 ## Product Principles
 

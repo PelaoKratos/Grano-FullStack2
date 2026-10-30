@@ -148,7 +148,14 @@ export default function Inicio({ productos, onAgregar }) {
               .filter((p) => ["dripper", "prensa"].includes(p.id))
               .map((p) => (
                 <a key={p.id} href={`#/producto/${p.id}`}>
-                  <img src={p.imagen} alt="" width="600" height="650" />
+                  <img
+                    src={p.imagen}
+                    alt=""
+                    width="1200"
+                    height="1200"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <span>
                     {p.nombre} <Icono />
                   </span>

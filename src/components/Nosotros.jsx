@@ -1,12 +1,32 @@
-import imagenOrigenes from "../assets/origenes.svg";
-import imagenHero from "../assets/hero.svg";
-import imagenColombia from "../assets/colombia.svg";
+import imagenRitual from "../assets/ritual-grano.png";
+import imagenTaza from "../assets/fotografia/taza.webp";
+import imagenColombia from "../assets/fotografia/colombia.webp";
 import { useState } from "react";
 import Icono from "./Icono.jsx";
 
 function Nosotros() {
   const [actual, setActual] = useState(0);
-  const imagenes = [imagenOrigenes, imagenHero, imagenColombia];
+  const imagenes = [
+    {
+      src: imagenRitual,
+      alt: "Café recién preparado junto a una bolsa Grano sobre madera y lino verde",
+      width: 1536,
+      height: 1024,
+    },
+    {
+      src: imagenTaza,
+      alt: "Taza de cerámica color arena sobre una mesa de madera junto a un paño verde",
+      width: 1200,
+      height: 1200,
+    },
+    {
+      src: imagenColombia,
+      alt: "Bolsa de café Origen Colombia de Grano en papel kraft con etiqueta crema",
+      width: 1200,
+      height: 1200,
+    },
+  ];
+  const imagen = imagenes[actual];
   return (
     <section className="nosotros">
       <h1>Somos Grano.</h1>
@@ -18,18 +38,19 @@ function Nosotros() {
           aria-label="Nuestros cafés"
         >
           <img
-            src={imagenes[actual]}
-            alt={
-              actual === 2
-                ? "Origen Colombia"
-                : "Bolsas de café Grano de distintos orígenes"
-            }
+            src={imagen.src}
+            alt={imagen.alt}
+            width={imagen.width}
+            height={imagen.height}
+            decoding="async"
           />
           <button
             className="control-carrusel control-anterior"
             type="button"
             aria-label="Imagen anterior"
-            onClick={() => setActual((actual + 2) % 3)}
+            onClick={() =>
+              setActual((actual + imagenes.length - 1) % imagenes.length)
+            }
           >
             <span
               style={{ display: "inline-flex", transform: "rotate(180deg)" }}
@@ -41,12 +62,12 @@ function Nosotros() {
             className="control-carrusel control-siguiente"
             type="button"
             aria-label="Imagen siguiente"
-            onClick={() => setActual((actual + 1) % 3)}
+            onClick={() => setActual((actual + 1) % imagenes.length)}
           >
             <Icono />
           </button>
           <span className="visually-hidden" role="status">
-            Imagen {actual + 1} de 3
+            Imagen {actual + 1} de {imagenes.length}
           </span>
         </div>
         <div>

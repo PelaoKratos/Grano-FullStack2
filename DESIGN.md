@@ -121,7 +121,7 @@ components:
 
 Grano se siente como papel avena cuidadosamente impreso, una mesa de madera y una pausa para preparar café. El mundo cálido y artesanal confirmado por el usuario se expresa mediante tinta bosque, serifas con cuerpo, controles sólidos y fotografías tangibles. La fotografía aporta textura; la interfaz conserva calma y legibilidad.
 
-La composición respira entre secciones y mantiene juntos sabor, nombre, precio y acción. Las ilustraciones existentes del catálogo conviven con la fotografía cálida sin fingir que son el mismo medio. Este sistema describe la aplicación principal en React. La autoridad visual actual es `src/styles/diseno.css`, cargada después de los estilos anteriores.
+La composición respira entre secciones y mantiene juntos sabor, nombre, precio y acción. El catálogo y Nosotros usan fotografía realista ilustrativa, coherente con la portada original: mesa de nogal, lino verde bosque, papel kraft, cerámica arena y luz cálida de ventana desde la izquierda. Este sistema describe la aplicación principal en React. La autoridad visual actual es `src/styles/diseno.css`, cargada después de los estilos anteriores.
 
 **Key Characteristics:**
 - Papel claro y tinta bosque, con inversión de color en zonas de ritual y compra.
@@ -152,7 +152,7 @@ La paleta reúne papel avena, bosque, oliva y un ámbar reservado para la selecc
 - **Oliva gris** (`texto-suave`): descripciones y metadatos sobre fondos claros.
 - **Fibra de papel** (`borde`): divisores y límites de panel.
 - **Salvia clara** (`texto-inverso-suave`): lectura secundaria sobre bosque.
-- **Soporte de ilustración** (`imagen-fondo`): fondo detrás de las ilustraciones de producto.
+- **Soporte de imagen** (`imagen-fondo`): fondo de reserva detrás de las fotografías de producto.
 - **Avena tostada** (`crema-hover`): respuesta de los botones crema.
 - **Trazo de campo** (`campo-borde`): límites visibles de campos y selectores.
 
@@ -205,7 +205,7 @@ La interfaz es plana: el contraste entre papel y bosque, los bordes finos y las 
 
 Los controles tienen esquinas apenas suavizadas, las etiquetas un radio menor y las fotografías y paneles un radio de superficie. Usar los valores de `rounded` para conservar esa diferencia. El mostrador y la notificación usan el radio compacto. En móvil el mostrador pierde sus esquinas propias y comparte la silueta de su contenedor; la mesa usa un radio de 10 px. El contador del carrito es circular.
 
-Los separadores son trazos de un píxel. Los iconos son SVG de línea, normalmente de 22 px; las flechas de acciones compactas se reducen a 16–17 px. Las ilustraciones de producto usan proporción 1.1 en escritorio y 1.2 en móvil, mientras que los métodos de preparación se presentan en cuadrados.
+Los separadores son trazos de un píxel. Los iconos son SVG de línea, normalmente de 22 px; las flechas de acciones compactas se reducen a 16–17 px. Las fotografías de producto se guardan como WebP de 1200 × 1200 px, con el objeto completo y margen suficiente para recortes. Las tarjetas conservan proporción 1.1 en escritorio y 1.2 en móvil, mientras que los métodos de preparación se presentan en cuadrados. La ficha de detalle muestra la fotografía cuadrada completa.
 
 ## Components
 
@@ -244,7 +244,7 @@ La notificación del carrito aparece sin mover el foco, anuncia la adición y of
 - **Do** mantener juntos nombre, sabor, precio y acción de compra.
 - **Do** usar Bitter para titulares y Karla para lectura y controles.
 - **Do** mantener el foco visible, los estados seleccionados y la preferencia de movimiento reducido.
-- **Do** conservar la fotografía cálida y las ilustraciones de catálogo como medios distintos y complementarios.
+- **Do** conservar la portada original y su lenguaje fotográfico en todo el catálogo y en Nosotros. Las seis imágenes de producto se encuentran en `src/assets/fotografia/`; sus archivos `.webp.json` conservan los prompts y la procedencia de generación con IA. No son fotos de productos físicos.
 
 ### Don't:
 - **Don't** añadir sombras a las tarjetas de producto o a los paneles planos.

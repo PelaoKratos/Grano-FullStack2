@@ -1,0 +1,8 @@
+{
+  "source": "AI-generated illustrative product photography",
+  "tool": "OpenAI built-in image_gen.imagegen",
+  "createdAt": "2026-10-30",
+  "reference": "../ritual-grano.png",
+  "prompt": "Use case: product-mockup. Create one square photorealistic editorial catalog photograph for Grano. The attached image is the visual style reference, not an edit target: match its warm side window light, walnut tabletop, forest green woven linen, cream paper and tactile kraft packaging, natural shadows and restrained warm grading. Subject: one upright folded kraft 250 g coffee bag, centered fully in frame with generous breathing room, small cream paper label with exact lowercase text \"grano\" and beneath it \"COLOMBIA\". A few coffee beans nearby, no cup, no extra products. Real crinkled paper, natural shallow depth of field, sharp entire bag, quiet softly blurred interior backdrop. Eye-level three-quarter angle. Product occupies about 65% image height; label readable. Same artisan coffee photo series as reference. Avoid CGI, illustration, floating objects, invented seals, awards or claims, watermarks, borders and any other text. Output 1024x1024.",
+  "processing": "Resized proportionally to 1200 px and encoded as WebP, quality 86. No scene edits."
+}

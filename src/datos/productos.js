@@ -1,9 +1,9 @@
-import imagenColombia from "../assets/colombia.svg";
-import imagenEtiopia from "../assets/etiopia.svg";
-import imagenBlend from "../assets/blend.svg";
-import imagenDripper from "../assets/dripper.svg";
-import imagenPrensa from "../assets/prensa.svg";
-import imagenTaza from "../assets/taza.svg";
+import imagenColombia from "../assets/fotografia/colombia.webp";
+import imagenEtiopia from "../assets/fotografia/etiopia.webp";
+import imagenBlend from "../assets/fotografia/blend.webp";
+import imagenDripper from "../assets/fotografia/dripper.webp";
+import imagenPrensa from "../assets/fotografia/prensa.webp";
+import imagenTaza from "../assets/fotografia/taza.webp";
 
 export const productos = [
   {

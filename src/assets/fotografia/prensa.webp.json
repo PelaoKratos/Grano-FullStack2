@@ -1,0 +1,8 @@
+{
+  "source": "AI-generated illustrative product photography",
+  "tool": "OpenAI built-in image_gen.imagegen",
+  "createdAt": "2026-10-30",
+  "reference": "../ritual-grano.png",
+  "prompt": "Use case: product-mockup. Asset: square photorealistic Grano catalog photograph. Input image is style reference only: match its warm left window light, walnut table grain, forest-green woven linen at one side, softly blurred cozy interior and restrained warm grading. Subject: one 600 ml French press coffee maker, transparent cylindrical glass beaker, dark forest green handle and lid, real stainless steel plunger and mesh filter visible inside, resting on walnut table. Empty clean glass, entire item visible, no cup or coffee bags, realistic construction and believable proportions. Centered three-quarter eye-level product photograph, generous space around the complete object, product occupies 65% image height, sharp entire product and naturally blurred background. Tactile authentic materials and soft real shadows, same photographic series as reference. No collage, CGI, illustration, watermark, text or additional equipment. Square output.",
+  "processing": "Resized proportionally to 1200 px and encoded as WebP, quality 86. No scene edits."
+}
