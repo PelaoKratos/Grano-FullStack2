@@ -121,7 +121,9 @@ components:
 
 Grano se siente como papel avena cuidadosamente impreso, una mesa de madera y una pausa para preparar café. El mundo cálido y artesanal confirmado por el usuario se expresa mediante tinta bosque, serifas con cuerpo, controles sólidos y fotografías tangibles. La fotografía aporta textura; la interfaz conserva calma y legibilidad.
 
-La composición respira entre secciones y mantiene juntos sabor, nombre, precio y acción. El catálogo y Nosotros usan fotografía realista ilustrativa, coherente con la portada original: mesa de nogal, lino verde bosque, papel kraft, cerámica arena y luz cálida de ventana desde la izquierda. Este sistema describe la aplicación principal en React. La autoridad visual actual es `src/styles/diseno.css`, cargada después de los estilos anteriores.
+La composición respira entre secciones y mantiene juntos sabor, nombre, precio y acción. El catálogo y Nosotros usan fotografía realista ilustrativa, coherente con la portada original: mesa de nogal, lino verde bosque, envases de papel, cerámica arena y luz cálida de ventana desde la izquierda. Este sistema describe la aplicación principal en React. La autoridad visual actual es `src/styles/diseno.css`, cargada después de los estilos anteriores.
+
+Los envases de café se diferencian por sus notas sin cambiar la identidad de la tienda: Colombia conserva kraft con banda crema y terracota y un motivo de cacao; Etiopía usa papel marfil y etiqueta salvia con flores y cítricos; el blend lleva papel verde bosque y etiqueta avellana con motivos de cacao y avellanas. Estos motivos gráficos impresos expresan notas de cata, no ingredientes añadidos. La portada original se mantiene como fotografía del ritual de marca.
 
 **Key Characteristics:**
 - Papel claro y tinta bosque, con inversión de color en zonas de ritual y compra.
