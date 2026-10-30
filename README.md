@@ -68,15 +68,16 @@ Es una demostración local: no incluye servidor, pagos reales ni autenticación 
 
 ## Estructura
 
-- `src/App.jsx`: composición de la aplicación y pantallas.
+- `src/App.jsx`: composición de la aplicación, rutas declaradas con `Routes` y `Route`, detalle con `useParams`, accesos por rol, compatibilidad con enlaces antiguos y página no encontrada.
 - `src/components/`: navegación, portada, catálogo, formularios y administración.
-- `src/hooks/useRuta.js`: navegación con historial y rutas por hash.
+- `src/main.jsx`: `HashRouter` de React Router DOM; conserva enlaces por hash en alojamiento estático.
+- `src/components/Administracion.jsx`: subrutas de administración y navegación activa con `NavLink`.
 - `src/hooks/useTienda.js`: operaciones de la tienda y guardado.
 - `src/datos/`: catálogo, validación de RUT y migración de almacenamiento.
 - `src/styles/diseno.css`: sistema visual artesanal; `react.css` adapta las pantallas React.
 - `src/assets/`: imágenes, tipografías y licencias.
 - `src/datos/operaciones.js`: validaciones y cambios de estado de la tienda.
-- `tests/`: pruebas de migración, stock, compra, permisos, catálogo, persistencia, rutas y RUT.
+- `tests/`: pruebas de migración, stock, compra, permisos, catálogo, persistencia, rutas y RUT. `enrutamiento.test.js` renderiza el árbol real con `MemoryRouter`, incluidas las pantallas diferidas, sin abrir un navegador.
 
 `PRODUCT.md` y `DESIGN.md` documentan el producto y el diseño. La portada y las seis fotografías de producto son imágenes ilustrativas generadas con IA; no son fotos de productos físicos. La portada conserva su indicación de generación en el PNG y en `src/assets/ritual-grano.prompt.txt`. Los productos usan WebP locales optimizados en `src/assets/fotografia/`, con el prompt completo y su procedencia en cada archivo `.webp.json`.
 

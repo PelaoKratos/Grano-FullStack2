@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { totalCarrito } from "../datos/almacenamiento.js";
 export default function Carrito({
   carrito,
@@ -73,7 +74,7 @@ export default function Carrito({
       </section>
       {mensajeCompra && (
         <p className="alert alert-success mt-4" role="status">
-          {mensajeCompra} <a href="#/cuenta">Ver mis pedidos</a>
+          {mensajeCompra} <Link to="/cuenta">Ver mis pedidos</Link>
         </p>
       )}
       {carrito.length > 0 && (
@@ -93,9 +94,9 @@ export default function Carrito({
               Realizar compra
             </button>
           ) : !sesion ? (
-            <a className="btn btn-success" href="#/acceso?destino=carrito">
+            <Link className="btn btn-success" to="/acceso?destino=carrito">
               Inicia sesión para comprar
-            </a>
+            </Link>
           ) : (
             <p className="mb-0">
               Ingresa con una cuenta de comprador para realizar el pedido.
@@ -103,9 +104,9 @@ export default function Carrito({
           )}
         </section>
       )}
-      <a className="btn btn-outline-success mt-4" href="#/productos">
+      <Link className="btn btn-outline-success mt-4" to="/productos">
         Seguir viendo productos
-      </a>
+      </Link>
     </>
   );
 }

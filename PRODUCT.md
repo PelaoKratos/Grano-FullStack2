@@ -18,6 +18,8 @@ Explorar los orígenes, consultar sus detalles y completar un pedido de demostra
 
 La aplicación principal es React 19 y Vite 8 desde la raíz. Bootstrap CSS local y el diseño artesanal se conservan. Carrito, cuentas, mensajes, pedidos y productos de demostración usan localStorage; no existe pago ni servidor. Mantener navegación, precios, formularios y roles.
 
+El enrutamiento usa React Router DOM 7: `HashRouter`, `Routes`, `Route`, `Link`, `NavLink`, `useNavigate`, `useParams` y `useSearchParams`. Se conservan los enlaces con `#`, alias anteriores, filtros por URL y redirecciones HTML. Cuenta, administración y vendedor validan el rol antes de renderizar sus paneles. No se mantiene un segundo enrutador manual.
+
 ## Brand Commitments
 
 Nombre Grano, café y rituales. El usuario eligió una tienda cálida y artesanal y autorizó un rediseño conservando contenido y funciones. Referencia de trabajo: https://github.com/anthropics/claude-cookbooks/blob/main/coding/prompting_for_frontend_aesthetics.ipynb

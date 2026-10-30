@@ -1,7 +1,8 @@
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Icono from "./Icono.jsx";
-import { navegar } from "../hooks/useRuta.js";
 export function Header({ path, sesion, cantidad, onCerrar }) {
+  const navegar = useNavigate();
   const [abierto, setAbierto] = useState(false);
   useEffect(() => setAbierto(false), [path]);
   useEffect(() => {
@@ -26,9 +27,9 @@ export function Header({ path, sesion, cantidad, onCerrar }) {
       </div>
       <header className="cabecera-grano">
         <div className="container barra-grano">
-          <a className="marca" href="#/" aria-label="Grano, inicio">
+          <Link className="marca" to="/" aria-label="Grano, inicio">
             grano<span className="marca-sub">CAFÉ &amp; RITUALES</span>
-          </a>
+          </Link>
           <button
             className="menu-toggle"
             type="button"
@@ -53,25 +54,25 @@ export function Header({ path, sesion, cantidad, onCerrar }) {
               ["/nosotros", "Nosotros"],
               ["/contacto", "Contacto"],
             ].map(([ruta, texto]) => (
-              <a
+              <Link
                 key={ruta}
                 className={`nav-link ${path === ruta || (ruta === "/productos" && path.startsWith("/producto/")) ? "active" : ""}`}
-                href={`#${ruta}`}
+                to={ruta}
                 aria-current={path === ruta ? "page" : undefined}
               >
                 {texto}
-              </a>
+              </Link>
             ))}
             {sesion ? (
               <div className="cuenta-activa">
-                <a
+                <Link
                   className="nombre-cuenta"
-                  href={
+                  to={
                     sesion.rol === "admin"
-                      ? "#/admin"
+                      ? "/admin"
                       : sesion.rol === "vendedor"
-                        ? "#/vendedor"
-                        : "#/cuenta"
+                        ? "/vendedor"
+                        : "/cuenta"
                   }
                 >
                   {sesion.rol === "admin"
@@ -79,7 +80,7 @@ export function Header({ path, sesion, cantidad, onCerrar }) {
                     : sesion.rol === "vendedor"
                       ? "Panel de vendedor"
                       : sesion.nombre}
-                </a>
+                </Link>
                 <button
                   className="cerrar-sesion"
                   onClick={() => {
@@ -93,20 +94,20 @@ export function Header({ path, sesion, cantidad, onCerrar }) {
                 </button>
               </div>
             ) : (
-              <a className="nav-link enlace-login" href="#/acceso">
+              <Link className="nav-link enlace-login" to="/acceso">
                 Iniciar sesión
-              </a>
+              </Link>
             )}
           </nav>
-          <a
+          <Link
             className="enlace-carrito"
-            href="#/carrito"
+            to="/carrito"
             aria-label={`Ver carrito, ${cantidad} ${cantidad === 1 ? "producto" : "productos"}`}
           >
             <Icono tipo="bolsa" />
             <span>Carrito</span>
             <span className="contador-carrito">{cantidad}</span>
-          </a>
+          </Link>
         </div>
       </header>
     </>
@@ -117,9 +118,9 @@ export function Footer() {
     <footer className="pie">
       <div className="container pie-principal">
         <div>
-          <a className="marca" href="#/">
+          <Link className="marca" to="/">
             grano<span className="marca-sub">CAFÉ &amp; RITUALES</span>
-          </a>
+          </Link>
           <p>
             Una buena taza empieza
             <br />
@@ -128,27 +129,27 @@ export function Footer() {
         </div>
         <div className="pie-enlaces">
           <p>Encuentra tu ritual.</p>
-          <a href="#/productos">
+          <Link to="/productos">
             Nuestro café <Icono />
-          </a>
-          <a href="#/productos?categoria=metodos">
+          </Link>
+          <Link to="/productos?categoria=metodos">
             Métodos de preparación <Icono />
-          </a>
-          <a href="#/productos?categoria=accesorios">
+          </Link>
+          <Link to="/productos?categoria=accesorios">
             Accesorios <Icono />
-          </a>
+          </Link>
         </div>
         <div className="pie-enlaces">
           <p>Hablemos de café.</p>
-          <a href="#/nosotros">
+          <Link to="/nosotros">
             Conoce Grano <Icono />
-          </a>
-          <a href="#/contacto">
+          </Link>
+          <Link to="/contacto">
             Contacto <Icono />
-          </a>
-          <a href="#/acceso">
+          </Link>
+          <Link to="/acceso">
             Tu cuenta <Icono />
-          </a>
+          </Link>
           <a href="mailto:contacto@grano.cl">contacto@grano.cl</a>
           <a href="tel:+56912345678">+56 9 1234 5678</a>
           <span>Lunes a viernes, 9:00–18:00</span>

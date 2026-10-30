@@ -1,3 +1,4 @@
+import { Link, useSearchParams } from "react-router-dom";
 import { usuariosDemostracion } from "../datos/usuarios.js";
 import { useState } from "react";
 import { esRutValido, formatearRut } from "../datos/rut.js";
@@ -8,6 +9,8 @@ function Acceso({
   onCambiarContrasena,
   modo = "completo",
 }) {
+  const [parametros] = useSearchParams();
+  const destino = parametros.get("destino") === "carrito" ? "?destino=carrito" : "";
   const [copiado, setCopiado] = useState("");
   const [mensajeLogin, setMensajeLogin] = useState("");
   const [mensajeRegistro, setMensajeRegistro] = useState("");
@@ -130,7 +133,7 @@ function Acceso({
                 <p className="mensaje-formulario" role="status">
                   {mensajeLogin}
                 </p>
-                <a href="#/registro">Crear una cuenta</a>
+                <Link to={`/registro${destino}`}>Crear una cuenta</Link>
               </>
             )}
             <details
@@ -232,7 +235,7 @@ function Acceso({
       </div>
       {modo !== "completo" && (
         <p className="mt-4">
-          <a href="#/acceso">Volver a iniciar sesión</a>
+          <Link to={`/acceso${destino}`}>Volver a iniciar sesión</Link>
         </p>
       )}
       {modo === "completo" && (

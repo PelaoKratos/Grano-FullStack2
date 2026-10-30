@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { HashRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./styles/bootstrap.min.css";
 import "./styles/estilos.css";
@@ -22,4 +23,8 @@ if (rutasAnteriores[archivoAnterior]) {
 
 const elemento = document.getElementById("root");
 
-createRoot(elemento).render(<App />);
+createRoot(elemento).render(
+  <HashRouter>
+    <App />
+  </HashRouter>,
+);

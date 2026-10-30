@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import imagenRitual from "../assets/ritual-grano.png";
 import imagenTaza from "../assets/fotografia/taza.webp";
 import imagenColombia from "../assets/fotografia/colombia.webp";
@@ -84,9 +85,9 @@ function Nosotros() {
             combina café en grano, utensilios de preparación y tazas para
             acompañar cada pausa.
           </p>
-          <a className="btn btn-outline-success" href="#/contacto">
+          <Link className="btn btn-outline-success" to="/contacto">
             Conversemos
-          </a>
+          </Link>
         </div>
       </div>
     </section>

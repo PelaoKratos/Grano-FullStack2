@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 export default function DetalleProducto({ producto, onAgregar }) {
   return (
     <>
       <nav aria-label="Ruta de navegación" className="mb-4">
-        <a href="#/">Inicio</a> / <a href="#/productos">Colección</a> /{" "}
+        <Link to="/">Inicio</Link> / <Link to="/productos">Colección</Link> /{" "}
         <span aria-current="page">{producto.nombre}</span>
       </nav>
       <section className="producto-detalle">
@@ -36,9 +37,9 @@ export default function DetalleProducto({ producto, onAgregar }) {
             >
               Añadir al carrito
             </button>
-            <a className="btn btn-outline-success" href="#/productos">
+            <Link className="btn btn-outline-success" to="/productos">
               Volver a la colección
-            </a>
+            </Link>
           </div>
         </div>
       </section>

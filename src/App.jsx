@@ -6,7 +6,17 @@ import Carrito from "./components/Carrito.jsx";
 import Contacto from "./components/Contacto.jsx";
 import Nosotros from "./components/Nosotros.jsx";
 import { Header, Footer } from "./components/Layout.jsx";
-import { useRuta, navegar } from "./hooks/useRuta.js";
+import {
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import { leerRuta } from "./datos/rutas.js";
 import { useTienda } from "./hooks/useTienda.js";
 const Acceso = lazy(() => import("./components/Acceso.jsx"));
 const Vendedor = lazy(() => import("./components/Vendedor.jsx"));
@@ -36,8 +46,64 @@ class LimiteError extends Component {
   }
 }
 
+// Preserve bookmarks from the hand-written router without keeping a second router.
+function RutasCompatibles({ children }) {
+  const { pathname, search } = useLocation();
+  const { path } = leerRuta(`#${pathname}`);
+  return path === pathname ? (
+    children
+  ) : (
+    <Navigate to={`${path}${search}`} replace />
+  );
+}
+
+function PaginaNoEncontrada() {
+  return (
+    <section>
+      <h1>No encontramos esta página.</h1>
+      <p>Puedes seguir explorando nuestra colección.</p>
+      <Link className="btn btn-success" to="/productos">
+        Ver la colección
+      </Link>
+    </section>
+  );
+}
+
+function PaginaProducto({ productos, onAgregar }) {
+  const { id } = useParams();
+  const producto = productos.find((p) => p.id === id);
+  return producto ? (
+    <DetalleProducto producto={producto} onAgregar={onAgregar} />
+  ) : (
+    <section>
+      <h1>Este producto no está disponible.</h1>
+      <Link className="btn btn-success mt-4" to="/productos">
+        Volver a la colección
+      </Link>
+    </section>
+  );
+}
+
+function RutaProtegida({ sesion, roles, children }) {
+  if (sesion && roles.includes(sesion.rol)) return children;
+  return (
+    <section>
+      <h1>
+        {sesion
+          ? "No tienes acceso a esta sección."
+          : "Inicia sesión para continuar."}
+      </h1>
+      <Link className="btn btn-success mt-4" to={sesion ? "/" : "/acceso"}>
+        {sesion ? "Volver al inicio" : "Ir a iniciar sesión"}
+      </Link>
+    </section>
+  );
+}
+
 function Tienda() {
-  const { path, params } = useRuta();
+  const { pathname: path } = useLocation();
+  const [params] = useSearchParams();
+  const navegar = useNavigate();
   const tienda = useTienda();
   const [aviso, setAviso] = useState("");
   const [mensajeCompra, setMensajeCompra] = useState("");
@@ -99,116 +165,97 @@ function Tienda() {
     navegar(params.get("destino") === "carrito" ? "/carrito" : "/cuenta");
     return true;
   }
-  const requiereCuenta = (
-    <section>
-      <h1>Inicia sesión para continuar.</h1>
-      <a
-        className="btn btn-success mt-4"
-        href={`#/acceso${path === "/carrito" ? "?destino=carrito" : ""}`}
-      >
-        Ir a iniciar sesión
-      </a>
-    </section>
+  const acceso = (
+    <Acceso
+      key={path}
+      modo={
+        path === "/registro" || params.has("registro")
+          ? "registro"
+          : path === "/cambiar-clave"
+            ? "clave"
+            : "completo"
+      }
+      onIniciar={entrar}
+      onRegistrar={registrar}
+      onCambiarContrasena={tienda.cambiarClave}
+    />
   );
-  let contenido;
-  if (inicio)
-    contenido = <Inicio productos={tienda.productos} onAgregar={agregar} />;
-  else if (path === "/productos")
-    contenido = (
-      <Catalogo
-        productos={tienda.productos}
-        onAgregar={agregar}
-        categoria={params.get("categoria") || "todos"}
+  const contenido = (
+    <Routes>
+      <Route
+        path="/"
+        element={<Inicio productos={tienda.productos} onAgregar={agregar} />}
       />
-    );
-  else if (path.startsWith("/producto/")) {
-    const producto = tienda.productos.find(
-      (p) => p.id === path.slice("/producto/".length),
-    );
-    contenido = producto ? (
-      <DetalleProducto producto={producto} onAgregar={agregar} />
-    ) : (
-      <section>
-        <h1>Este producto no está disponible.</h1>
-        <a className="btn btn-success mt-4" href="#/productos">
-          Volver a la colección
-        </a>
-      </section>
-    );
-  } else if (path === "/carrito")
-    contenido = (
-      <Carrito
-        carrito={tienda.carrito}
-        sesion={tienda.sesion}
-        mensajeCompra={mensajeCompra}
-        onQuitar={tienda.quitar}
-        onCantidad={tienda.cambiarCantidad}
-        onComprar={() => {
-          const pedido = tienda.comprar();
-          if (pedido)
-            setMensajeCompra(
-              `Pedido ${pedido.id} registrado. Gracias por tu compra.`,
-            );
-        }}
+      <Route
+        path="/productos"
+        element={<Catalogo productos={tienda.productos} onAgregar={agregar} />}
       />
-    );
-  else if (["/acceso", "/registro", "/cambiar-clave"].includes(path))
-    contenido = (
-      <Acceso
-        key={path}
-        modo={
-          path === "/registro" || params.has("registro")
-            ? "registro"
-            : path === "/cambiar-clave"
-              ? "clave"
-              : "completo"
+      <Route
+        path="/producto/:id"
+        element={<PaginaProducto productos={tienda.productos} onAgregar={agregar} />}
+      />
+      <Route
+        path="/carrito"
+        element={
+          <Carrito
+            carrito={tienda.carrito}
+            sesion={tienda.sesion}
+            mensajeCompra={mensajeCompra}
+            onQuitar={tienda.quitar}
+            onCantidad={tienda.cambiarCantidad}
+            onComprar={() => {
+              const pedido = tienda.comprar();
+              if (pedido)
+                setMensajeCompra(
+                  `Pedido ${pedido.id} registrado. Gracias por tu compra.`,
+                );
+            }}
+          />
         }
-        onIniciar={entrar}
-        onRegistrar={registrar}
-        onCambiarContrasena={tienda.cambiarClave}
       />
-    );
-  else if (path === "/cuenta")
-    contenido =
-      tienda.sesion?.rol === "comprador" ? (
-        <Cuenta
-          usuario={tienda.usuarios.find(
-            (u) => u.correo === tienda.sesion.correo,
-          )}
-          pedidos={tienda.pedidos.filter(
-            (p) => p.comprador === tienda.sesion.correo,
-          )}
-          onGuardar={tienda.guardarPerfil}
-        />
-      ) : (
-        requiereCuenta
-      );
-  else if (path === "/admin" || path.startsWith("/admin/"))
-    contenido =
-      tienda.sesion?.rol === "admin" ? (
-        <Administracion path={path} tienda={tienda} />
-      ) : (
-        requiereCuenta
-      );
-  else if (path === "/vendedor")
-    contenido = ["vendedor", "admin"].includes(tienda.sesion?.rol) ? (
-      <Vendedor productos={tienda.productos} pedidos={tienda.pedidos} />
-    ) : (
-      requiereCuenta
-    );
-  else if (path === "/contacto")
-    contenido = <Contacto usuario={tienda.sesion} onEnviar={tienda.enviar} />;
-  else if (path === "/nosotros") contenido = <Nosotros />;
-  else
-    contenido = (
-      <section>
-        <h1>No encontramos esta página.</h1>
-        <p>Puedes seguir explorando nuestra colección.</p>
-        <a className="btn btn-success" href="#/productos">
-          Ver la colección
-        </a>
-      </section>
-    );
+      <Route path="/acceso" element={acceso} />
+      <Route path="/registro" element={acceso} />
+      <Route path="/cambiar-clave" element={acceso} />
+      <Route
+        path="/cuenta"
+        element={
+          <RutaProtegida sesion={tienda.sesion} roles={["comprador"]}>
+            <Cuenta
+              usuario={tienda.usuarios.find(
+                (u) => u.correo === tienda.sesion?.correo,
+              )}
+              pedidos={tienda.pedidos.filter(
+                (p) => p.comprador === tienda.sesion?.correo,
+              )}
+              onGuardar={tienda.guardarPerfil}
+            />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/admin/*"
+        element={
+          <RutaProtegida sesion={tienda.sesion} roles={["admin"]}>
+            <Administracion tienda={tienda} />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/vendedor"
+        element={
+          <RutaProtegida sesion={tienda.sesion} roles={["vendedor", "admin"]}>
+            <Vendedor productos={tienda.productos} pedidos={tienda.pedidos} />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/contacto"
+        element={<Contacto usuario={tienda.sesion} onEnviar={tienda.enviar} />}
+      />
+      <Route path="/nosotros" element={<Nosotros />} />
+      <Route path="*" element={<PaginaNoEncontrada />} />
+    </Routes>
+  );
   return (
     <>
       <a
@@ -265,9 +312,9 @@ function Tienda() {
         aria-atomic="true"
       >
         {aviso}{" "}
-        <a href="#/carrito" onClick={() => setAviso("")}>
+        <Link to="/carrito" onClick={() => setAviso("")}>
           Ver carrito
-        </a>
+        </Link>
       </div>
     </>
   );
@@ -275,7 +322,9 @@ function Tienda() {
 export default function App() {
   return (
     <LimiteError>
-      <Tienda />
+      <RutasCompatibles>
+        <Tienda />
+      </RutasCompatibles>
     </LimiteError>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TarjetaProducto from "./TarjetaProducto.jsx";
-import { navegar } from "../hooks/useRuta.js";
+import { useSearchParams } from "react-router-dom";
 const filtros = [
   ["todos", "Todo"],
   ["cafe", "Café en grano"],
@@ -10,8 +10,9 @@ const filtros = [
 export default function Catalogo({
   productos,
   onAgregar,
-  categoria = "todos",
 }) {
+  const [parametros, setParametros] = useSearchParams();
+  const categoria = parametros.get("categoria") || "todos";
   const [busqueda, setBusqueda] = useState("");
   const actual = filtros.some(([id]) => id === categoria) ? categoria : "todos";
   const visibles = productos.filter(
@@ -53,9 +54,12 @@ export default function Catalogo({
               type="button"
               key={id}
               aria-pressed={actual === id}
-              onClick={() =>
-                navegar(`/productos${id === "todos" ? "" : `?categoria=${id}`}`)
-              }
+              onClick={() => {
+                const siguientes = new URLSearchParams(parametros);
+                if (id === "todos") siguientes.delete("categoria");
+                else siguientes.set("categoria", id);
+                setParametros(siguientes);
+              }}
             >
               {label}
             </button>

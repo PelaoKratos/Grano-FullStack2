@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 function AdminResumen({ productos, pedidos, usuarios, mensajes }) {
   const stockCritico = productos.filter(
     (producto) => producto.stock <= producto.critico,
@@ -37,7 +38,7 @@ function AdminResumen({ productos, pedidos, usuarios, mensajes }) {
           ))}
         </ul>
       )}
-      <a href="#/admin/productos">Administrar productos</a>
+      <Link to="/admin/productos">Administrar productos</Link>
     </section>
   );
 }

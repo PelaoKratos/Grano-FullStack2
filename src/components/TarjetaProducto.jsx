@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Icono from "./Icono.jsx";
 export default function TarjetaProducto({
   producto,
@@ -7,9 +8,9 @@ export default function TarjetaProducto({
   const Heading = portada ? "h3" : "h2";
   return (
     <article className={portada ? "cafe-producto" : "card h-100 producto"}>
-      <a
+      <Link
         className={portada ? "cafe-imagen" : ""}
-        href={`#/producto/${producto.id}`}
+        to={`/producto/${producto.id}`}
       >
         <img
           className={portada ? "" : "card-img-top"}
@@ -21,11 +22,11 @@ export default function TarjetaProducto({
           decoding="async"
         />
         {portada && <span className="sabor-etiqueta">{producto.notas}</span>}
-      </a>
+      </Link>
       <div className={portada ? "cafe-info" : "card-body d-flex flex-column"}>
         <p className={portada ? "" : "etiqueta"}>{producto.categoria}</p>
         <Heading className={portada ? "" : "h4"}>
-          <a href={`#/producto/${producto.id}`}>{producto.nombre}</a>
+          <Link to={`/producto/${producto.id}`}>{producto.nombre}</Link>
         </Heading>
         {!portada && (
           <p className="text-secondary">
@@ -57,12 +58,12 @@ export default function TarjetaProducto({
               ${producto.precio.toLocaleString("es-CL")} <small>CLP</small>
             </p>
             <div className="d-flex gap-2 flex-wrap">
-              <a
+              <Link
                 className="btn btn-outline-success"
-                href={`#/producto/${producto.id}`}
+                to={`/producto/${producto.id}`}
               >
                 Ver detalle
-              </a>
+              </Link>
               <button
                 className="btn btn-success"
                 disabled={producto.stock === 0}

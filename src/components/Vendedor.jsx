@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { precioCLP } from "../datos/formato.js";
 
 function Vendedor({ productos, pedidos }) {
@@ -23,7 +24,7 @@ function Vendedor({ productos, pedidos }) {
                   <strong className="aviso-stock"> · Stock crítico</strong>
                 )}
               </p>
-              <a href={`#/producto/${producto.id}`}>Ver producto</a>
+              <Link to={`/producto/${producto.id}`}>Ver producto</Link>
             </li>
           ))}
         </ul>

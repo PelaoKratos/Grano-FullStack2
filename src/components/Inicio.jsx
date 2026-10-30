@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import Icono from "./Icono.jsx";
 import TarjetaProducto from "./TarjetaProducto.jsx";
@@ -20,9 +21,9 @@ export default function Inicio({ productos, onAgregar }) {
               Cafés de origen y pequeños detalles para disfrutar sin apuro.
               Encuentra tu próxima taza favorita.
             </p>
-            <a className="enlace-flecha" href="#/productos">
+            <Link className="enlace-flecha" to="/productos">
               Conoce nuestro café <Icono />
-            </a>
+            </Link>
           </div>
         </div>
         <div className="mesa-cafe">
@@ -80,14 +81,14 @@ export default function Inicio({ productos, onAgregar }) {
                     </button>
                   </div>
                 </div>
-                <a className="mostrador-detalle" href={`#/producto/${cafe.id}`}>
+                <Link className="mostrador-detalle" to={`/producto/${cafe.id}`}>
                   Conocer este café <Icono />
-                </a>
+                </Link>
               </>
             ) : (
               <>
                 <h2>Estamos preparando nuestra próxima selección.</h2>
-                <a href="#/productos">Explorar la colección</a>
+                <Link to="/productos">Explorar la colección</Link>
               </>
             )}
           </div>
@@ -112,9 +113,9 @@ export default function Inicio({ productos, onAgregar }) {
             </h2>
             <p>De lo dulce a lo floral. ¿Por cuál empiezas?</p>
           </div>
-          <a className="enlace-flecha" href="#/productos">
+          <Link className="enlace-flecha" to="/productos">
             Ver la colección <Icono />
-          </a>
+          </Link>
         </div>
         <div className="seleccion-productos">
           {cafes.slice(0, 3).map((p) => (
@@ -139,15 +140,15 @@ export default function Inicio({ productos, onAgregar }) {
               Una pausa, una taza. Encuentra los métodos y accesorios para
               preparar tu café como más te gusta.
             </p>
-            <a className="btn btn-crema" href="#/productos?categoria=metodos">
+            <Link className="btn btn-crema" to="/productos?categoria=metodos">
               Encuentra tu método <Icono />
-            </a>
+            </Link>
           </div>
           <div className="metodos-enlaces">
             {productos
               .filter((p) => ["dripper", "prensa"].includes(p.id))
               .map((p) => (
-                <a key={p.id} href={`#/producto/${p.id}`}>
+                <Link key={p.id} to={`/producto/${p.id}`}>
                   <img
                     src={p.imagen}
                     alt=""
@@ -159,7 +160,7 @@ export default function Inicio({ productos, onAgregar }) {
                   <span>
                     {p.nombre} <Icono />
                   </span>
-                </a>
+                </Link>
               ))}
           </div>
         </div>
@@ -169,9 +170,9 @@ export default function Inicio({ productos, onAgregar }) {
           En Grano reunimos cafés de distintos orígenes y accesorios sencillos
           para quienes disfrutan preparar una taza en casa.
         </p>
-        <a className="enlace-flecha" href="#/nosotros">
+        <Link className="enlace-flecha" to="/nosotros">
           Hay una historia detrás de cada taza <Icono />
-        </a>
+        </Link>
       </section>
     </>
   );
