@@ -27,11 +27,18 @@ after(async () => {
 async function pantalla(ruta, rol) {
   const sesion = usuariosDemostracion.find((u) => u.rol === rol) || null;
   const estado = JSON.stringify({
-    version: 2, productos, usuarios: [], sesion,
-    carrito: [], pedidos: [], mensajes: [],
+    version: 2,
+    productos,
+    usuarios: [],
+    sesion,
+    carrito: [],
+    pedidos: [],
+    mensajes: [],
   });
   globalThis.window = {
-    localStorage: { getItem: (clave) => clave === CLAVE_TIENDA ? estado : null },
+    localStorage: {
+      getItem: (clave) => (clave === CLAVE_TIENDA ? estado : null),
+    },
   };
   const stream = await renderToReadableStream(
     createElement(MemoryRouter, { initialEntries: [ruta] }, createElement(App)),
@@ -51,11 +58,18 @@ test("React Router abre el catálogo con filtros y enlaces de detalle", async ()
 
 test("la ruta dinámica identifica el producto y contempla productos ausentes", async () => {
   assert.match(await pantalla("/producto/etiopia"), /Tueste claro/);
-  assert.match(await pantalla("/producto/no-existe"), /Este producto no está disponible/);
+  assert.match(
+    await pantalla("/producto/no-existe"),
+    /Este producto no está disponible/,
+  );
 });
 
 test("las rutas desconocidas y los segmentos extra muestran la página no encontrada", async () => {
-  for (const ruta of ["/no-existe", "/producto/etiopia/extra", "/vendedor/extra"])
+  for (const ruta of [
+    "/no-existe",
+    "/producto/etiopia/extra",
+    "/vendedor/extra",
+  ])
     assert.match(await pantalla(ruta), /No encontramos esta página/);
 });
 
@@ -73,20 +87,43 @@ test("administración resuelve sus subrutas y marca la sección activa", async (
   ]) {
     const html = await pantalla(`/admin/${seccion}`, "admin");
     assert.match(html, new RegExp(titulo));
-    assert.match(html, new RegExp(`aria-current="page"[^>]*href="/admin/${seccion}"`));
+    assert.match(
+      html,
+      new RegExp(`aria-current="page"[^>]*href="/admin/${seccion}"`),
+    );
   }
-  assert.match(await pantalla("/admin/seccion-inexistente", "admin"), /No encontramos esta sección/);
+  assert.match(
+    await pantalla("/admin/seccion-inexistente", "admin"),
+    /No encontramos esta sección/,
+  );
 });
 
 test("cada rol accede a su panel y no puede entrar a los paneles ajenos", async () => {
   assert.match(await pantalla("/cuenta", "comprador"), /Mis datos/);
-  assert.match(await pantalla("/vendedor", "vendedor"), /Disponibilidad de productos/);
-  assert.match(await pantalla("/vendedor", "admin"), /Disponibilidad de productos/);
-  for (const [ruta, rol] of [["/admin/productos", "comprador"], ["/admin/usuarios", "vendedor"], ["/cuenta", "vendedor"], ["/vendedor", "comprador"]])
+  assert.match(
+    await pantalla("/vendedor", "vendedor"),
+    /Disponibilidad de productos/,
+  );
+  assert.match(
+    await pantalla("/vendedor", "admin"),
+    /Disponibilidad de productos/,
+  );
+  for (const [ruta, rol] of [
+    ["/admin/productos", "comprador"],
+    ["/admin/usuarios", "vendedor"],
+    ["/cuenta", "vendedor"],
+    ["/vendedor", "comprador"],
+  ])
     assert.match(await pantalla(ruta, rol), /No tienes acceso a esta sección/);
 });
 
 test("crear cuenta y volver al acceso conservan el destino del carrito", async () => {
-  assert.match(await pantalla("/acceso?destino=carrito"), /href="\/registro\?destino=carrito"/);
-  assert.match(await pantalla("/registro?destino=carrito"), /href="\/acceso\?destino=carrito"/);
+  assert.match(
+    await pantalla("/acceso?destino=carrito"),
+    /href="\/registro\?destino=carrito"/,
+  );
+  assert.match(
+    await pantalla("/registro?destino=carrito"),
+    /href="\/acceso\?destino=carrito"/,
+  );
 });

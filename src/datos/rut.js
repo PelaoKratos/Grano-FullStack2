@@ -1,3 +1,4 @@
+// Calcula el dígito verificador del RUT mediante el algoritmo módulo 11.
 export function esRutValido(rut) {
   const rutLimpio = rut.replace(/[^0-9kK]/g, "").toUpperCase();
   const cuerpo = rutLimpio.slice(0, -1);

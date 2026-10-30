@@ -8,7 +8,9 @@ export default function Carrito({
   onCantidad,
   onComprar,
 }) {
-  const stockInsuficiente = carrito.some((p) => p.cantidad > p.stock);
+  const stockInsuficiente = carrito.some(
+    (productoCatalogo) => productoCatalogo.cantidad > productoCatalogo.stock,
+  );
   return (
     <>
       <h1>Carrito</h1>
@@ -17,43 +19,51 @@ export default function Carrito({
       </p>
       <section className="panel">
         {carrito.length ? (
-          carrito.map((p) => (
-            <article className="item-carrito" key={p.id}>
-              <img src={p.imagen} alt={p.nombre} />
+          carrito.map((productoCatalogo) => (
+            <article className="item-carrito" key={productoCatalogo.id}>
+              <img
+                src={productoCatalogo.imagen}
+                alt={productoCatalogo.nombre}
+              />
               <div>
-                <h2 className="h5">{p.nombre}</h2>
+                <h2 className="h5">{productoCatalogo.nombre}</h2>
                 <p className="mb-0">
-                  ${p.precio.toLocaleString("es-CL")} CLP · {p.stock}{" "}
-                  disponibles
+                  ${productoCatalogo.precio.toLocaleString("es-CL")} CLP ·{" "}
+                  {productoCatalogo.stock} disponibles
                 </p>
                 <div
                   className="cantidad-carrito"
                   role="group"
-                  aria-label={`Cantidad de ${p.nombre}`}
+                  aria-label={`Cantidad de ${productoCatalogo.nombre}`}
                 >
                   <button
                     type="button"
-                    aria-label={`Disminuir ${p.nombre}`}
-                    disabled={p.cantidad <= 1 || p.stock === 0}
-                    onClick={() => onCantidad(p.id, -1)}
+                    aria-label={`Disminuir ${productoCatalogo.nombre}`}
+                    disabled={
+                      productoCatalogo.cantidad <= 1 ||
+                      productoCatalogo.stock === 0
+                    }
+                    onClick={() => onCantidad(productoCatalogo.id, -1)}
                   >
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M5 12h14" />
                     </svg>
                   </button>
-                  <span aria-live="polite">{p.cantidad}</span>
+                  <span aria-live="polite">{productoCatalogo.cantidad}</span>
                   <button
                     type="button"
-                    aria-label={`Aumentar ${p.nombre}`}
-                    disabled={p.cantidad >= p.stock}
-                    onClick={() => onCantidad(p.id, 1)}
+                    aria-label={`Aumentar ${productoCatalogo.nombre}`}
+                    disabled={
+                      productoCatalogo.cantidad >= productoCatalogo.stock
+                    }
+                    onClick={() => onCantidad(productoCatalogo.id, 1)}
                   >
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M5 12h14M12 5v14" />
                     </svg>
                   </button>
                 </div>
-                {p.cantidad > p.stock && (
+                {productoCatalogo.cantidad > productoCatalogo.stock && (
                   <p className="aviso-stock" role="alert">
                     El stock cambió. Ajusta la cantidad o quita este producto.
                   </p>
@@ -61,8 +71,8 @@ export default function Carrito({
               </div>
               <button
                 className="btn btn-outline-success btn-sm"
-                onClick={() => onQuitar(p.id)}
-                aria-label={`Quitar ${p.nombre}`}
+                onClick={() => onQuitar(productoCatalogo.id)}
+                aria-label={`Quitar ${productoCatalogo.nombre}`}
               >
                 Quitar
               </button>

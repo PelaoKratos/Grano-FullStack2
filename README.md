@@ -36,6 +36,19 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
+## Leer y explicar el código
+
+La [guía del código](docs/GUIA_DEL_CODIGO.md) explica los archivos, el recorrido de una acción, React Router, el guardado y un guion para presentar el proyecto.
+
+La indentación usa dos espacios. Para mantener el formato común:
+
+```sh
+pnpm format
+pnpm format:check
+```
+
+Prettier ordena el código del proyecto; Bootstrap, imágenes, metadatos de diseño y documentos originales conservan sus archivos existentes.
+
 ## Funciones
 
 - Portada con selector de sabores y compra directa.

@@ -1,3 +1,4 @@
+// Equivalencias para los enlaces HTML guardados antes de la migración a React.
 export const rutasAnteriores = {
   "productos.html": "/productos",
   "carrito.html": "/carrito",
@@ -16,15 +17,23 @@ export const rutasAnteriores = {
   "boceto-producto.html": "/productos",
 };
 
+// Solo normaliza enlaces antiguos; la navegación actual la realiza React Router.
 export function leerRuta(hash) {
-  const value = hash.replace(/^#\/?/, "") || "";
-  let [ruta, query = ""] = value.split("?");
+  const rutaSinHash = hash.replace(/^#\/?/, "") || "";
+  let [ruta, consulta = ""] = rutaSinHash.split("?");
   const alias = { inicio: "", nuestrocafe: "productos", login: "acceso" };
   ruta = alias[ruta] ?? ruta;
   if (ruta.startsWith("producto/")) {
-    const ids = ["colombia", "etiopia", "blend", "dripper", "prensa", "taza"];
-    const id = ruta.slice(9);
-    ruta = `producto/${ids[Number(id) - 1] || id}`;
+    const idsProductosBase = [
+      "colombia",
+      "etiopia",
+      "blend",
+      "dripper",
+      "prensa",
+      "taza",
+    ];
+    const idAnterior = ruta.slice(9);
+    ruta = `producto/${idsProductosBase[Number(idAnterior) - 1] || idAnterior}`;
   }
-  return { path: `/${ruta}`, params: new URLSearchParams(query) };
+  return { path: `/${ruta}`, params: new URLSearchParams(consulta) };
 }

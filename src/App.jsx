@@ -18,11 +18,14 @@ import {
 } from "react-router-dom";
 import { leerRuta } from "./datos/rutas.js";
 import { useTienda } from "./hooks/useTienda.js";
+
+// Estas pantallas se descargan solo cuando el usuario necesita abrirlas.
 const Acceso = lazy(() => import("./components/Acceso.jsx"));
 const Vendedor = lazy(() => import("./components/Vendedor.jsx"));
 const Cuenta = lazy(() => import("./components/Cuenta.jsx"));
 const Administracion = lazy(() => import("./components/Administracion.jsx"));
 
+// Un error de pantalla muestra una recuperación sin borrar los datos guardados.
 class LimiteError extends Component {
   state = { error: false };
   static getDerivedStateFromError() {
@@ -46,14 +49,14 @@ class LimiteError extends Component {
   }
 }
 
-// Preserve bookmarks from the hand-written router without keeping a second router.
+// Convierte los enlaces antiguos antes de que React Router abra la pantalla.
 function RutasCompatibles({ children }) {
   const { pathname, search } = useLocation();
-  const { path } = leerRuta(`#${pathname}`);
-  return path === pathname ? (
+  const { path: rutaActual } = leerRuta(`#${pathname}`);
+  return rutaActual === pathname ? (
     children
   ) : (
-    <Navigate to={`${path}${search}`} replace />
+    <Navigate to={`${rutaActual}${search}`} replace />
   );
 }
 
@@ -69,9 +72,12 @@ function PaginaNoEncontrada() {
   );
 }
 
+// El parámetro :id de la URL permite compartir el detalle de un producto.
 function PaginaProducto({ productos, onAgregar }) {
   const { id } = useParams();
-  const producto = productos.find((p) => p.id === id);
+  const producto = productos.find(
+    (productoCatalogo) => productoCatalogo.id === id,
+  );
   return producto ? (
     <DetalleProducto producto={producto} onAgregar={onAgregar} />
   ) : (
@@ -84,8 +90,11 @@ function PaginaProducto({ productos, onAgregar }) {
   );
 }
 
+// El panel se renderiza únicamente si la sesión tiene uno de los roles indicados.
 function RutaProtegida({ sesion, roles, children }) {
-  if (sesion && roles.includes(sesion.rol)) return children;
+  if (sesion && roles.includes(sesion.rol)) {
+    return children;
+  }
   return (
     <section>
       <h1>
@@ -100,32 +109,38 @@ function RutaProtegida({ sesion, roles, children }) {
   );
 }
 
+// Conecta las pantallas con el estado y las acciones expuestas por useTienda.
 function Tienda() {
-  const { pathname: path } = useLocation();
-  const [params] = useSearchParams();
+  const { pathname: rutaActual } = useLocation();
+  const [parametros] = useSearchParams();
   const navegar = useNavigate();
   const tienda = useTienda();
   const [aviso, setAviso] = useState("");
   const [mensajeCompra, setMensajeCompra] = useState("");
-  const main = useRef(null),
-    notice = useRef(null),
-    primeraRuta = useRef(true);
-  const inicio = path === "/";
-  function agregar(producto) {
+  const contenidoPrincipalRef = useRef(null);
+  const avisoCarritoRef = useRef(null);
+  const esPrimeraRutaRef = useRef(true);
+  const esInicio = rutaActual === "/";
+
+  function agregarProducto(producto) {
     if (tienda.agregar(producto)) {
       setAviso(`${producto.nombre} añadido.`);
       setMensajeCompra("");
     }
   }
   useEffect(() => {
-    if (!aviso) return;
-    const timer = setTimeout(() => {
-      if (!notice.current?.contains(document.activeElement)) setAviso("");
+    if (!aviso) {
+      return;
+    }
+    const temporizadorAviso = setTimeout(() => {
+      if (!avisoCarritoRef.current?.contains(document.activeElement)) {
+        setAviso("");
+      }
     }, 5500);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(temporizadorAviso);
   }, [aviso]);
   useEffect(() => {
-    const titles = {
+    const titulosPorRuta = {
       "/": "Inicio",
       "/productos": "Nuestro café",
       "/carrito": "Carrito",
@@ -138,61 +153,113 @@ function Tienda() {
       "/contacto": "Contacto",
       "/nosotros": "Nosotros",
     };
-    document.title = `${(path.startsWith("/admin/") ? "Administración" : titles[path]) || tienda.productos.find((p) => path === `/producto/${p.id}`)?.nombre || "Página no encontrada"} | Grano`;
-    if (primeraRuta.current) {
-      primeraRuta.current = false;
+    let tituloPagina = titulosPorRuta[rutaActual];
+
+    if (rutaActual.startsWith("/admin/")) {
+      tituloPagina = "Administración";
+    }
+
+    if (!tituloPagina) {
+      const productoActual = tienda.productos.find(
+        (productoCatalogo) => rutaActual === `/producto/${productoCatalogo.id}`,
+      );
+      tituloPagina = productoActual?.nombre || "Página no encontrada";
+    }
+
+    document.title = `${tituloPagina} | Grano`;
+    if (esPrimeraRutaRef.current) {
+      esPrimeraRutaRef.current = false;
       return;
     }
+    // Al cambiar de pantalla, el teclado continúa desde el contenido principal.
     window.scrollTo({ top: 0, behavior: "instant" });
-    main.current?.focus({ preventScroll: true });
-  }, [path]);
-  function entrar(correo, clave) {
-    const user = tienda.iniciar(correo, clave);
-    if (user)
-      navegar(
-        user.rol === "admin"
-          ? "/admin"
-          : user.rol === "vendedor"
-            ? "/vendedor"
-            : params.get("destino") === "carrito"
-              ? "/carrito"
-              : "/cuenta",
-      );
-    return user;
+    contenidoPrincipalRef.current?.focus({ preventScroll: true });
+  }, [rutaActual]);
+  function iniciarSesion(correo, clave) {
+    const usuario = tienda.iniciar(correo, clave);
+    if (!usuario) {
+      return usuario;
+    }
+
+    // Cada perfil entra a su panel; el comprador puede volver al carrito.
+    let rutaDestino = "/cuenta";
+    if (usuario.rol === "admin") {
+      rutaDestino = "/admin";
+    } else if (usuario.rol === "vendedor") {
+      rutaDestino = "/vendedor";
+    } else if (parametros.get("destino") === "carrito") {
+      rutaDestino = "/carrito";
+    }
+
+    navegar(rutaDestino);
+    return usuario;
   }
-  function registrar(user) {
-    if (!tienda.registrar(user, true)) return false;
-    navegar(params.get("destino") === "carrito" ? "/carrito" : "/cuenta");
+
+  function registrarComprador(usuario) {
+    if (!tienda.registrar(usuario, true)) {
+      return false;
+    }
+    navegar(parametros.get("destino") === "carrito" ? "/carrito" : "/cuenta");
     return true;
   }
-  const acceso = (
+  function realizarCompra() {
+    const pedido = tienda.comprar();
+    if (pedido) {
+      setMensajeCompra(
+        `Pedido ${pedido.id} registrado. Gracias por tu compra.`,
+      );
+    }
+  }
+
+  function cerrarSesion() {
+    const cerrado = tienda.cerrar();
+    if (cerrado) {
+      setAviso("");
+      setMensajeCompra("");
+    }
+    return cerrado;
+  }
+
+  // El mismo formulario sirve para acceso, registro y cambio de contraseña.
+  let modoAcceso = "completo";
+  if (rutaActual === "/registro" || parametros.has("registro")) {
+    modoAcceso = "registro";
+  } else if (rutaActual === "/cambiar-clave") {
+    modoAcceso = "clave";
+  }
+
+  const pantallaAcceso = (
     <Acceso
-      key={path}
-      modo={
-        path === "/registro" || params.has("registro")
-          ? "registro"
-          : path === "/cambiar-clave"
-            ? "clave"
-            : "completo"
-      }
-      onIniciar={entrar}
-      onRegistrar={registrar}
+      key={rutaActual}
+      modo={modoAcceso}
+      onIniciar={iniciarSesion}
+      onRegistrar={registrarComprador}
       onCambiarContrasena={tienda.cambiarClave}
     />
   );
-  const contenido = (
+  const rutasDeLaTienda = (
     <Routes>
+      {/* Pantallas públicas de la tienda. */}
       <Route
         path="/"
-        element={<Inicio productos={tienda.productos} onAgregar={agregar} />}
+        element={
+          <Inicio productos={tienda.productos} onAgregar={agregarProducto} />
+        }
       />
       <Route
         path="/productos"
-        element={<Catalogo productos={tienda.productos} onAgregar={agregar} />}
+        element={
+          <Catalogo productos={tienda.productos} onAgregar={agregarProducto} />
+        }
       />
       <Route
         path="/producto/:id"
-        element={<PaginaProducto productos={tienda.productos} onAgregar={agregar} />}
+        element={
+          <PaginaProducto
+            productos={tienda.productos}
+            onAgregar={agregarProducto}
+          />
+        }
       />
       <Route
         path="/carrito"
@@ -203,29 +270,26 @@ function Tienda() {
             mensajeCompra={mensajeCompra}
             onQuitar={tienda.quitar}
             onCantidad={tienda.cambiarCantidad}
-            onComprar={() => {
-              const pedido = tienda.comprar();
-              if (pedido)
-                setMensajeCompra(
-                  `Pedido ${pedido.id} registrado. Gracias por tu compra.`,
-                );
-            }}
+            onComprar={realizarCompra}
           />
         }
       />
-      <Route path="/acceso" element={acceso} />
-      <Route path="/registro" element={acceso} />
-      <Route path="/cambiar-clave" element={acceso} />
+      <Route path="/acceso" element={pantallaAcceso} />
+      <Route path="/registro" element={pantallaAcceso} />
+      <Route path="/cambiar-clave" element={pantallaAcceso} />
+      {/* Pantallas que requieren una sesión con el rol correspondiente. */}
       <Route
         path="/cuenta"
         element={
           <RutaProtegida sesion={tienda.sesion} roles={["comprador"]}>
             <Cuenta
               usuario={tienda.usuarios.find(
-                (u) => u.correo === tienda.sesion?.correo,
+                (usuarioRegistrado) =>
+                  usuarioRegistrado.correo === tienda.sesion?.correo,
               )}
               pedidos={tienda.pedidos.filter(
-                (p) => p.comprador === tienda.sesion?.correo,
+                (pedidoGuardado) =>
+                  pedidoGuardado.comprador === tienda.sesion?.correo,
               )}
               onGuardar={tienda.guardarPerfil}
             />
@@ -261,25 +325,22 @@ function Tienda() {
       <a
         className="saltar"
         href="#contenido"
-        onClick={(e) => {
-          e.preventDefault();
-          main.current?.focus();
+        onClick={(evento) => {
+          evento.preventDefault();
+          contenidoPrincipalRef.current?.focus();
         }}
       >
         Saltar al contenido
       </a>
       <Header
-        path={path}
+        path={rutaActual}
         sesion={tienda.sesion}
-        cantidad={tienda.carrito.reduce((n, p) => n + p.cantidad, 0)}
-        onCerrar={() => {
-          const cerrado = tienda.cerrar();
-          if (cerrado) {
-            setAviso("");
-            setMensajeCompra("");
-          }
-          return cerrado;
-        }}
+        cantidad={tienda.carrito.reduce(
+          (cantidadTotal, productoCatalogo) =>
+            cantidadTotal + productoCatalogo.cantidad,
+          0,
+        )}
+        onCerrar={cerrarSesion}
       />
       {tienda.error && (
         <div className="container alert alert-danger mt-3" role="alert">
@@ -288,9 +349,9 @@ function Tienda() {
       )}
       <main
         id="contenido"
-        ref={main}
+        ref={contenidoPrincipalRef}
         tabIndex={-1}
-        className={inicio ? "inicio-grano" : "container area-app"}
+        className={esInicio ? "inicio-grano" : "container area-app"}
       >
         <Suspense
           fallback={
@@ -299,12 +360,12 @@ function Tienda() {
             </p>
           }
         >
-          {contenido}
+          {rutasDeLaTienda}
         </Suspense>
       </main>
       <Footer />
       <div
-        ref={notice}
+        ref={avisoCarritoRef}
         className="aviso-carrito"
         hidden={!aviso}
         role="status"

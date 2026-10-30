@@ -10,7 +10,8 @@ function Acceso({
   modo = "completo",
 }) {
   const [parametros] = useSearchParams();
-  const destino = parametros.get("destino") === "carrito" ? "?destino=carrito" : "";
+  const destino =
+    parametros.get("destino") === "carrito" ? "?destino=carrito" : "";
   const [copiado, setCopiado] = useState("");
   const [mensajeLogin, setMensajeLogin] = useState("");
   const [mensajeRegistro, setMensajeRegistro] = useState("");
@@ -245,26 +246,28 @@ function Acceso({
             Estas cuentas permiten recorrer las funciones de la tienda. Sus
             credenciales se mantienen disponibles.
           </p>
-          {usuariosDemostracion.map((u) => (
-            <div className="cuenta-demostracion" key={u.correo}>
+          {usuariosDemostracion.map((usuarioRegistrado) => (
+            <div className="cuenta-demostracion" key={usuarioRegistrado.correo}>
               <div>
-                <strong>{u.nombre}</strong>
+                <strong>{usuarioRegistrado.nombre}</strong>
                 <p>
-                  {u.correo}
+                  {usuarioRegistrado.correo}
                   <br />
-                  Contraseña: <code>{u.contrasena}</code>
+                  Contraseña: <code>{usuarioRegistrado.contrasena}</code>
                 </p>
               </div>
               <button
                 type="button"
                 className="boton-secundario"
-                aria-label={`Copiar datos de ${u.nombre}`}
+                aria-label={`Copiar datos de ${usuarioRegistrado.nombre}`}
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(
-                      `${u.correo}\n${u.contrasena}`,
+                      `${usuarioRegistrado.correo}\n${usuarioRegistrado.contrasena}`,
                     );
-                    setCopiado(`Datos de ${u.nombre} copiados.`);
+                    setCopiado(
+                      `Datos de ${usuarioRegistrado.nombre} copiados.`,
+                    );
                   } catch {
                     setCopiado(
                       "Selecciona y copia el correo y la contraseña que aparecen aquí.",

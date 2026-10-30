@@ -5,7 +5,9 @@ function AdminProductos({ productos, onGuardar, onEliminar }) {
   const formularioRef = useRef(null);
   const [editado, setEditado] = useState(null);
   useEffect(() => {
-    if (editado) formularioRef.current?.querySelector("input")?.focus();
+    if (editado) {
+      formularioRef.current?.querySelector("input")?.focus();
+    }
   }, [editado]);
   const [mensaje, setMensaje] = useState("");
 
@@ -55,12 +57,16 @@ function AdminProductos({ productos, onGuardar, onEliminar }) {
   }
 
   function eliminar(producto) {
-    if (!window.confirm(`¿Quitar ${producto.nombre} del catálogo?`)) return;
+    if (!window.confirm(`¿Quitar ${producto.nombre} del catálogo?`)) {
+      return;
+    }
     if (!onEliminar(producto.id)) {
       setMensaje("No se pudo quitar el producto. Vuelve a intentarlo.");
       return;
     }
-    if (editado?.id === producto.id) setEditado(null);
+    if (editado?.id === producto.id) {
+      setEditado(null);
+    }
     setMensaje("Producto quitado del catálogo.");
   }
 

@@ -1,22 +1,36 @@
 import { esRutValido, formatearRut } from "./rut.js";
+
 const categorias = ["Café en grano", "Métodos", "Accesorios"];
 const roles = ["comprador", "vendedor", "admin"];
 export const estadosPedido = ["Recibido", "En preparación", "Entregado"];
-const entero = (value) =>
-  value !== "" &&
-  value !== null &&
-  Number.isInteger(Number(value)) &&
-  Number(value) >= 0;
-const sesionDe = (u) => ({ nombre: u.nombre, correo: u.correo, rol: u.rol });
+const esEnteroNoNegativo = (valor) =>
+  valor !== "" &&
+  valor !== null &&
+  Number.isInteger(Number(valor)) &&
+  Number(valor) >= 0;
+const crearSesionDeUsuario = (cuentaGuardada) => ({
+  nombre: cuentaGuardada.nombre,
+  correo: cuentaGuardada.correo,
+  rol: cuentaGuardada.rol,
+});
+// Calcula el siguiente estado sin escribir en localStorage ni modificar el recibido.
+// useTienda se encarga de guardarlo únicamente cuando la acción resulta válida.
 export function operar(estado, accion) {
   const usuario = estado.usuarios.find(
-    (u) => u.correo === estado.sesion?.correo && u.activo !== false,
+    (cuentaGuardada) =>
+      cuentaGuardada.correo === estado.sesion?.correo &&
+      cuentaGuardada.activo !== false,
   );
-  const correcto = (cambios, resultado = true) => ({
+  const respuestaCorrecta = (cambios, resultado = true) => ({
     estado: { ...estado, ...cambios },
     resultado,
   });
-  const error = (mensaje) => ({ estado, resultado: false, mensaje });
+  const respuestaConError = (mensaje) => ({
+    estado,
+    resultado: false,
+    mensaje,
+  });
+  // Estas acciones pertenecen exclusivamente a administración.
   if (
     [
       "PRODUCTO_GUARDAR",
@@ -26,46 +40,63 @@ export function operar(estado, accion) {
       "MENSAJE_LEIDO",
     ].includes(accion.tipo) &&
     usuario?.rol !== "admin"
-  )
-    return error("Inicia sesión como administrador para realizar esta acción.");
+  ) {
+    return respuestaConError(
+      "Inicia sesión como administrador para realizar esta acción.",
+    );
+  }
   switch (accion.tipo) {
+    // Acceso, registro y mantenimiento de las cuentas.
     case "INICIAR": {
-      const user = estado.usuarios.find(
-        (u) =>
-          u.correo === accion.correo.trim().toLowerCase() &&
-          u.contrasena === accion.contrasena &&
-          u.activo !== false,
+      const usuarioEncontrado = estado.usuarios.find(
+        (cuentaGuardada) =>
+          cuentaGuardada.correo === accion.correo.trim().toLowerCase() &&
+          cuentaGuardada.contrasena === accion.contrasena &&
+          cuentaGuardada.activo !== false,
       );
-      return user
-        ? correcto({ sesion: sesionDe(user) }, user)
-        : error("Correo o contraseña incorrectos, o cuenta desactivada.");
+      return usuarioEncontrado
+        ? respuestaCorrecta(
+            { sesion: crearSesionDeUsuario(usuarioEncontrado) },
+            usuarioEncontrado,
+          )
+        : respuestaConError(
+            "Correo o contraseña incorrectos, o cuenta desactivada.",
+          );
     }
     case "CERRAR":
-      return correcto({ sesion: null, carrito: [] });
+      return respuestaCorrecta({ sesion: null, carrito: [] });
     case "REGISTRAR": {
-      if (!accion.entrar && usuario?.rol !== "admin")
-        return error("Esta acción requiere una cuenta de administrador.");
-      const datos = accion.usuario,
-        correo = datos.correo.trim().toLowerCase(),
-        nombre = datos.nombre.trim();
+      if (!accion.entrar && usuario?.rol !== "admin") {
+        return respuestaConError(
+          "Esta acción requiere una cuenta de administrador.",
+        );
+      }
+      const datos = accion.usuario;
+      const correo = datos.correo.trim().toLowerCase();
+      const nombre = datos.nombre.trim();
       if (
         !nombre ||
         !/^\S+@\S+\.\S+$/.test(correo) ||
         datos.contrasena.length < 6 ||
         !roles.includes(datos.rol)
-      )
-        return error("Revisa el nombre, correo, rol y contraseña.");
-      if (accion.entrar && !esRutValido(datos.rut || ""))
-        return error("Ingresa un RUT válido.");
+      ) {
+        return respuestaConError("Revisa el nombre, correo, rol y contraseña.");
+      }
+      if (accion.entrar && !esRutValido(datos.rut || "")) {
+        return respuestaConError("Ingresa un RUT válido.");
+      }
       const rut = datos.rut ? formatearRut(datos.rut) : "";
       if (
         estado.usuarios.some(
-          (u) =>
-            u.correo === correo ||
-            (rut && u.rut && formatearRut(u.rut) === rut),
+          (cuentaGuardada) =>
+            cuentaGuardada.correo === correo ||
+            (rut &&
+              cuentaGuardada.rut &&
+              formatearRut(cuentaGuardada.rut) === rut),
         )
-      )
-        return error("Ya existe una cuenta con ese RUT o correo.");
+      ) {
+        return respuestaConError("Ya existe una cuenta con ese RUT o correo.");
+      }
       const nuevo = {
         ...datos,
         nombre,
@@ -75,75 +106,107 @@ export function operar(estado, accion) {
         activo: true,
         cuentaDemostracion: false,
       };
-      return correcto({
+      return respuestaCorrecta({
         usuarios: [...estado.usuarios, nuevo],
-        sesion: accion.entrar ? sesionDe(nuevo) : estado.sesion,
+        sesion: accion.entrar ? crearSesionDeUsuario(nuevo) : estado.sesion,
       });
     }
     case "PERFIL": {
-      if (!usuario || accion.usuario.correo !== usuario.correo)
-        return error("Inicia sesión para guardar tu perfil.");
+      if (!usuario || accion.usuario.correo !== usuario.correo) {
+        return respuestaConError("Inicia sesión para guardar tu perfil.");
+      }
       const nombre = accion.usuario.nombre.trim();
-      if (!nombre) return error("Ingresa tu nombre.");
+      if (!nombre) {
+        return respuestaConError("Ingresa tu nombre.");
+      }
       const actualizado = { ...usuario, nombre };
-      for (const campo of ["telefono", "direccion", "comuna", "region"])
+      for (const campo of ["telefono", "direccion", "comuna", "region"]) {
         actualizado[campo] = String(accion.usuario[campo] || "").trim();
-      return correcto({
-        usuarios: estado.usuarios.map((u) =>
-          u.correo === usuario.correo ? actualizado : u,
+      }
+      return respuestaCorrecta({
+        usuarios: estado.usuarios.map((cuentaGuardada) =>
+          cuentaGuardada.correo === usuario.correo
+            ? actualizado
+            : cuentaGuardada,
         ),
-        sesion: sesionDe(actualizado),
+        sesion: crearSesionDeUsuario(actualizado),
       });
     }
     case "CLAVE": {
-      const user = estado.usuarios.find(
-        (u) =>
-          u.correo === accion.correo.trim().toLowerCase() &&
-          u.contrasena === accion.actual &&
-          u.activo !== false,
+      const usuarioEncontrado = estado.usuarios.find(
+        (cuentaGuardada) =>
+          cuentaGuardada.correo === accion.correo.trim().toLowerCase() &&
+          cuentaGuardada.contrasena === accion.actual &&
+          cuentaGuardada.activo !== false,
       );
-      if (!user || user.cuentaDemostracion || accion.nueva.length < 6)
-        return error(
-          user?.cuentaDemostracion
+      if (
+        !usuarioEncontrado ||
+        usuarioEncontrado.cuentaDemostracion ||
+        accion.nueva.length < 6
+      ) {
+        return respuestaConError(
+          usuarioEncontrado?.cuentaDemostracion
             ? "Las cuentas de prueba mantienen sus contraseñas de demostración."
             : "No pudimos validar los datos o la contraseña nueva.",
         );
-      return correcto({
-        usuarios: estado.usuarios.map((u) =>
-          u.correo === user.correo ? { ...u, contrasena: accion.nueva } : u,
+      }
+      return respuestaCorrecta({
+        usuarios: estado.usuarios.map((cuentaGuardada) =>
+          cuentaGuardada.correo === usuarioEncontrado.correo
+            ? { ...cuentaGuardada, contrasena: accion.nueva }
+            : cuentaGuardada,
         ),
       });
     }
+    // El carrito usa el stock actual y nunca admite más unidades de las disponibles.
     case "AGREGAR": {
-      const p = estado.productos.find((p) => p.id === accion.id),
-        linea = estado.carrito.find((p) => p.id === accion.id);
-      if (!p || (linea?.cantidad || 0) >= p.stock)
-        return error("No hay más stock disponible de este producto.");
-      return correcto({
+      const productoCatalogo = estado.productos.find(
+        (productoCatalogo) => productoCatalogo.id === accion.id,
+      );
+      const linea = estado.carrito.find(
+        (productoCatalogo) => productoCatalogo.id === accion.id,
+      );
+      if (
+        !productoCatalogo ||
+        (linea?.cantidad || 0) >= productoCatalogo.stock
+      ) {
+        return respuestaConError(
+          "No hay más stock disponible de este producto.",
+        );
+      }
+      return respuestaCorrecta({
         carrito: linea
           ? estado.carrito.map((item) =>
-              item.id === p.id
+              item.id === productoCatalogo.id
                 ? { ...item, cantidad: item.cantidad + 1 }
                 : item,
             )
-          : [...estado.carrito, { ...p, cantidad: 1 }],
+          : [...estado.carrito, { ...productoCatalogo, cantidad: 1 }],
       });
     }
     case "CANTIDAD": {
-      const p = estado.productos.find((p) => p.id === accion.id);
-      if (!p || !p.stock)
-        return error(
+      const productoCatalogo = estado.productos.find(
+        (productoCatalogo) => productoCatalogo.id === accion.id,
+      );
+      if (!productoCatalogo || !productoCatalogo.stock) {
+        return respuestaConError(
           "Este producto está agotado. Puedes quitarlo del carrito.",
         );
-      if (![-1, 1].includes(accion.cambio)) return error("Cantidad no válida.");
-      return correcto({
+      }
+      if (![-1, 1].includes(accion.cambio)) {
+        return respuestaConError("Cantidad no válida.");
+      }
+      return respuestaCorrecta({
         carrito: estado.carrito.map((item) =>
-          item.id === p.id
+          item.id === productoCatalogo.id
             ? {
                 ...item,
                 cantidad: Math.max(
                   1,
-                  Math.min(p.stock, item.cantidad + accion.cambio),
+                  Math.min(
+                    productoCatalogo.stock,
+                    item.cantidad + accion.cambio,
+                  ),
                 ),
               }
             : item,
@@ -151,25 +214,33 @@ export function operar(estado, accion) {
       });
     }
     case "QUITAR":
-      return correcto({
+      return respuestaCorrecta({
         carrito: estado.carrito.filter((item) => item.id !== accion.id),
       });
     case "COMPRAR": {
-      if (usuario?.rol !== "comprador" || !estado.carrito.length)
-        return error(
+      if (usuario?.rol !== "comprador" || !estado.carrito.length) {
+        return respuestaConError(
           "Inicia sesión como comprador y agrega productos al carrito.",
         );
+      }
+      // Se revisan todas las líneas antes de descontar una sola unidad.
       const lineas = estado.carrito.map((item) => ({
         item,
-        producto: estado.productos.find((p) => p.id === item.id),
+        producto: estado.productos.find(
+          (productoCatalogo) => productoCatalogo.id === item.id,
+        ),
       }));
       if (
         lineas.some(
           ({ item, producto }) =>
             !producto || item.cantidad > producto.stock || item.cantidad < 1,
         )
-      )
-        return error("Revisa las cantidades: el stock disponible cambió.");
+      ) {
+        return respuestaConError(
+          "Revisa las cantidades: el stock disponible cambió.",
+        );
+      }
+      // El pedido conserva una copia del nombre y precio vigentes al comprar.
       const productosPedido = lineas.map(({ item, producto }) => ({
         id: producto.id,
         nombre: producto.nombre,
@@ -182,15 +253,22 @@ export function operar(estado, accion) {
         comprador: usuario.correo,
         estado: "Recibido",
         productos: productosPedido,
-        total: productosPedido.reduce((t, p) => t + p.precio * p.cantidad, 0),
+        total: productosPedido.reduce(
+          (importeAcumulado, productoCatalogo) =>
+            importeAcumulado +
+            productoCatalogo.precio * productoCatalogo.cantidad,
+          0,
+        ),
       };
-      return correcto(
+      // Inventario, pedido nuevo y vaciado del carrito forman el mismo cambio.
+      return respuestaCorrecta(
         {
-          productos: estado.productos.map((p) => ({
-            ...p,
+          productos: estado.productos.map((productoCatalogo) => ({
+            ...productoCatalogo,
             stock:
-              p.stock -
-              (estado.carrito.find((item) => item.id === p.id)?.cantidad || 0),
+              productoCatalogo.stock -
+              (estado.carrito.find((item) => item.id === productoCatalogo.id)
+                ?.cantidad || 0),
           })),
           pedidos: [pedido, ...estado.pedidos],
           carrito: [],
@@ -198,41 +276,47 @@ export function operar(estado, accion) {
         pedido,
       );
     }
+    // Administración del catálogo, usuarios, mensajes y pedidos.
     case "PRODUCTO_GUARDAR": {
-      const datos = accion.producto,
-        nombre = datos.nombre.trim(),
-        precio = Number(datos.precio),
-        stock = datos.stock ?? 10,
-        critico = datos.critico ?? 3;
-      const anterior = estado.productos.find((p) => p.id === datos.id);
+      const datos = accion.producto;
+      const nombre = datos.nombre.trim();
+      const precio = Number(datos.precio);
+      const stock = datos.stock ?? 10;
+      const critico = datos.critico ?? 3;
+      const anterior = estado.productos.find(
+        (productoCatalogo) => productoCatalogo.id === datos.id,
+      );
       if (
         !nombre ||
         !Number.isFinite(precio) ||
         precio <= 0 ||
-        !entero(stock) ||
-        !entero(critico) ||
+        !esEnteroNoNegativo(stock) ||
+        !esEnteroNoNegativo(critico) ||
         !categorias.includes(datos.categoria) ||
         !datos.descripcion.trim() ||
         !datos.detalle.trim() ||
         estado.productos.some(
-          (p) =>
-            p.id !== anterior?.id &&
-            p.nombre.toLowerCase() === nombre.toLowerCase(),
+          (productoCatalogo) =>
+            productoCatalogo.id !== anterior?.id &&
+            productoCatalogo.nombre.toLowerCase() === nombre.toLowerCase(),
         )
-      )
-        return error(
+      ) {
+        return respuestaConError(
           "Revisa el nombre, precio, stock y descripción del producto.",
         );
+      }
       if (
         datos.imagen &&
         !/^data:image\/(png|jpeg|webp);base64,/.test(datos.imagen)
-      )
-        return error("Elige una imagen JPG, PNG o WebP.");
+      ) {
+        return respuestaConError("Elige una imagen JPG, PNG o WebP.");
+      }
       if (
         datos.imagen &&
         Math.floor((datos.imagen.split(",")[1].length * 3) / 4) > 500000
-      )
-        return error("La imagen no puede superar 500 KB.");
+      ) {
+        return respuestaConError("La imagen no puede superar 500 KB.");
+      }
       const producto = {
         ...anterior,
         id: anterior?.id || accion.idNuevo,
@@ -249,66 +333,81 @@ export function operar(estado, accion) {
             ? anterior.notas
             : datos.descripcion.trim(),
       };
-      return correcto({
+      return respuestaCorrecta({
         productos: anterior
-          ? estado.productos.map((p) => (p.id === anterior.id ? producto : p))
+          ? estado.productos.map((productoCatalogo) =>
+              productoCatalogo.id === anterior.id ? producto : productoCatalogo,
+            )
           : [...estado.productos, producto],
       });
     }
     case "PRODUCTO_ELIMINAR":
-      return correcto({
-        productos: estado.productos.filter((p) => p.id !== accion.id),
-        carrito: estado.carrito.filter((p) => p.id !== accion.id),
+      return respuestaCorrecta({
+        productos: estado.productos.filter(
+          (productoCatalogo) => productoCatalogo.id !== accion.id,
+        ),
+        carrito: estado.carrito.filter(
+          (productoCatalogo) => productoCatalogo.id !== accion.id,
+        ),
       });
     case "USUARIO_GUARDAR": {
       const anterior = estado.usuarios.find(
-          (u) => u.correo === accion.usuario.correo,
-        ),
-        datos = accion.usuario;
-      if (!anterior || anterior.cuentaDemostracion)
-        return error(
+        (cuentaGuardada) => cuentaGuardada.correo === accion.usuario.correo,
+      );
+      const datos = accion.usuario;
+      if (!anterior || anterior.cuentaDemostracion) {
+        return respuestaConError(
           "Las cuentas de prueba no se pueden desactivar ni cambiar de rol.",
         );
-      if (!roles.includes(datos.rol) || typeof datos.activo !== "boolean")
-        return error("Revisa el rol y estado de la cuenta.");
+      }
+      if (!roles.includes(datos.rol) || typeof datos.activo !== "boolean") {
+        return respuestaConError("Revisa el rol y estado de la cuenta.");
+      }
       if (
         anterior.correo === usuario.correo &&
         (datos.rol !== "admin" || !datos.activo)
-      )
-        return error(
+      ) {
+        return respuestaConError(
           "No puedes desactivar tu cuenta de administrador ni quitarte ese rol.",
         );
-      return correcto({
-        usuarios: estado.usuarios.map((u) =>
-          u.correo === anterior.correo
-            ? { ...u, rol: datos.rol, activo: datos.activo }
-            : u,
+      }
+      return respuestaCorrecta({
+        usuarios: estado.usuarios.map((cuentaGuardada) =>
+          cuentaGuardada.correo === anterior.correo
+            ? { ...cuentaGuardada, rol: datos.rol, activo: datos.activo }
+            : cuentaGuardada,
         ),
       });
     }
     case "MENSAJE_ENVIAR": {
-      if (!accion.mensaje.texto.trim())
-        return error("Escribe un mensaje antes de enviarlo.");
-      return correcto({
+      if (!accion.mensaje.texto.trim()) {
+        return respuestaConError("Escribe un mensaje antes de enviarlo.");
+      }
+      return respuestaCorrecta({
         mensajes: [{ ...accion.mensaje, estado: "Nuevo" }, ...estado.mensajes],
       });
     }
     case "MENSAJE_LEIDO":
-      return correcto({
-        mensajes: estado.mensajes.map((m, i) =>
-          i === accion.indice ? { ...m, estado: "Leído" } : m,
+      return respuestaCorrecta({
+        mensajes: estado.mensajes.map((mensajeGuardado, indiceMensaje) =>
+          indiceMensaje === accion.indice
+            ? { ...mensajeGuardado, estado: "Leído" }
+            : mensajeGuardado,
         ),
       });
     case "PEDIDO_ESTADO": {
-      if (!estadosPedido.includes(accion.estado))
-        return error("El estado del pedido no es válido.");
-      return correcto({
-        pedidos: estado.pedidos.map((p) =>
-          p.id === accion.id ? { ...p, estado: accion.estado } : p,
+      if (!estadosPedido.includes(accion.estado)) {
+        return respuestaConError("El estado del pedido no es válido.");
+      }
+      return respuestaCorrecta({
+        pedidos: estado.pedidos.map((pedidoGuardado) =>
+          pedidoGuardado.id === accion.id
+            ? { ...pedidoGuardado, estado: accion.estado }
+            : pedidoGuardado,
         ),
       });
     }
     default:
-      return error("Acción no disponible.");
+      return respuestaConError("Acción no disponible.");
   }
 }

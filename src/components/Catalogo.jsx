@@ -7,21 +7,19 @@ const filtros = [
   ["metodos", "Métodos"],
   ["accesorios", "Accesorios"],
 ];
-export default function Catalogo({
-  productos,
-  onAgregar,
-}) {
+export default function Catalogo({ productos, onAgregar }) {
   const [parametros, setParametros] = useSearchParams();
   const categoria = parametros.get("categoria") || "todos";
   const [busqueda, setBusqueda] = useState("");
   const actual = filtros.some(([id]) => id === categoria) ? categoria : "todos";
   const visibles = productos.filter(
-    (p) =>
+    (productoCatalogo) =>
       (actual === "todos" ||
-        (actual === "cafe" && p.categoria === "Café en grano") ||
-        (actual === "metodos" && p.categoria === "Métodos") ||
-        (actual === "accesorios" && p.categoria === "Accesorios")) &&
-      p.nombre
+        (actual === "cafe" && productoCatalogo.categoria === "Café en grano") ||
+        (actual === "metodos" && productoCatalogo.categoria === "Métodos") ||
+        (actual === "accesorios" &&
+          productoCatalogo.categoria === "Accesorios")) &&
+      productoCatalogo.nombre
         .toLocaleLowerCase("es")
         .includes(busqueda.trim().toLocaleLowerCase("es")),
   );
@@ -39,7 +37,7 @@ export default function Catalogo({
           id="buscar-producto"
           type="search"
           value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
+          onChange={(evento) => setBusqueda(evento.target.value)}
           placeholder="Colombia, taza, prensa…"
         />
       </div>
@@ -56,8 +54,11 @@ export default function Catalogo({
               aria-pressed={actual === id}
               onClick={() => {
                 const siguientes = new URLSearchParams(parametros);
-                if (id === "todos") siguientes.delete("categoria");
-                else siguientes.set("categoria", id);
+                if (id === "todos") {
+                  siguientes.delete("categoria");
+                } else {
+                  siguientes.set("categoria", id);
+                }
                 setParametros(siguientes);
               }}
             >
@@ -76,9 +77,12 @@ export default function Catalogo({
         </p>
       )}
       <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-        {visibles.map((p) => (
-          <div className="col" key={p.id}>
-            <TarjetaProducto producto={p} onAgregar={onAgregar} />
+        {visibles.map((productoCatalogo) => (
+          <div className="col" key={productoCatalogo.id}>
+            <TarjetaProducto
+              producto={productoCatalogo}
+              onAgregar={onAgregar}
+            />
           </div>
         ))}
       </div>

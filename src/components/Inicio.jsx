@@ -5,8 +5,11 @@ import TarjetaProducto from "./TarjetaProducto.jsx";
 import fotografia from "../assets/ritual-grano.png";
 export default function Inicio({ productos, onAgregar }) {
   const [sabor, setSabor] = useState("colombia");
-  const cafes = productos.filter((p) => p.categoria === "Café en grano");
-  const cafe = cafes.find((p) => p.id === sabor) || cafes[0];
+  const cafes = productos.filter(
+    (productoCatalogo) => productoCatalogo.categoria === "Café en grano",
+  );
+  const cafe =
+    cafes.find((productoCatalogo) => productoCatalogo.id === sabor) || cafes[0];
   return (
     <>
       <section className="container portada" aria-labelledby="titulo-portada">
@@ -48,7 +51,11 @@ export default function Inicio({ productos, onAgregar }) {
                     ["etiopia", "Flores"],
                     ["blend", "Chocolate"],
                   ]
-                    .filter(([id]) => cafes.some((p) => p.id === id))
+                    .filter(([id]) =>
+                      cafes.some(
+                        (productoCatalogo) => productoCatalogo.id === id,
+                      ),
+                    )
                     .map(([id, label]) => (
                       <button
                         key={id}
@@ -118,10 +125,10 @@ export default function Inicio({ productos, onAgregar }) {
           </Link>
         </div>
         <div className="seleccion-productos">
-          {cafes.slice(0, 3).map((p) => (
+          {cafes.slice(0, 3).map((productoCatalogo) => (
             <TarjetaProducto
-              key={p.id}
-              producto={p}
+              key={productoCatalogo.id}
+              producto={productoCatalogo}
               onAgregar={onAgregar}
               portada
             />
@@ -146,11 +153,16 @@ export default function Inicio({ productos, onAgregar }) {
           </div>
           <div className="metodos-enlaces">
             {productos
-              .filter((p) => ["dripper", "prensa"].includes(p.id))
-              .map((p) => (
-                <Link key={p.id} to={`/producto/${p.id}`}>
+              .filter((productoCatalogo) =>
+                ["dripper", "prensa"].includes(productoCatalogo.id),
+              )
+              .map((productoCatalogo) => (
+                <Link
+                  key={productoCatalogo.id}
+                  to={`/producto/${productoCatalogo.id}`}
+                >
                   <img
-                    src={p.imagen}
+                    src={productoCatalogo.imagen}
                     alt=""
                     width="1200"
                     height="1200"
@@ -158,7 +170,7 @@ export default function Inicio({ productos, onAgregar }) {
                     decoding="async"
                   />
                   <span>
-                    {p.nombre} <Icono />
+                    {productoCatalogo.nombre} <Icono />
                   </span>
                 </Link>
               ))}

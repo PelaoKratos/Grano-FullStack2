@@ -1,0 +1,18 @@
+# Dependencias, compilación y archivos temporales.
+node_modules/
+dist/
+tmp/
+.vite/
+pnpm-lock.yaml
+
+# Recursos y biblioteca externa: se conserva su contenido original.
+src/assets/
+public/
+src/styles/bootstrap.min.css
+docs/*.docx
+docs/*.xlsx
+
+# Metadatos del sistema visual, independientes del formato del código.
+.impeccable/
+DESIGN.md
+PRODUCT.md

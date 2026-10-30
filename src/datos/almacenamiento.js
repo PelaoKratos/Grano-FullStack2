@@ -1,195 +1,296 @@
 import { usuariosDemostracion } from "./usuarios.js";
+
+// Se conserva la clave original para recuperar datos de versiones anteriores.
 export const CLAVE_TIENDA = "grano-tienda-react-v1";
-const ids = ["colombia", "etiopia", "blend", "dripper", "prensa", "taza"];
+const idsProductosBase = [
+  "colombia",
+  "etiopia",
+  "blend",
+  "dripper",
+  "prensa",
+  "taza",
+];
+// Las primeras versiones identificaban los seis productos con números del 1 al 6.
 export const normalizarId = (id) =>
-  ids[Number(id) - 1] && /^\d+$/.test(String(id))
-    ? ids[Number(id) - 1]
+  idsProductosBase[Number(id) - 1] && /^\d+$/.test(String(id))
+    ? idsProductosBase[Number(id) - 1]
     : String(id ?? "");
-const lista = (value) => (Array.isArray(value) ? value : []);
-function leer(storage, key, fallback = null) {
+const asegurarLista = (valor) => (Array.isArray(valor) ? valor : []);
+// Si una clave está vacía o tiene JSON dañado, se usa el valor alternativo.
+function leerJSON(almacenamiento, clave, valorAlternativo = null) {
   try {
-    return JSON.parse(storage.getItem(key)) ?? fallback;
+    return JSON.parse(almacenamiento.getItem(clave)) ?? valorAlternativo;
   } catch {
-    return fallback;
+    return valorAlternativo;
   }
 }
-const unir = (primero, segundo, key) => [
-  ...new Map(
-    [...segundo, ...primero].map((item) => [key(item), item]),
-  ).values(),
-];
-const correo = (u) =>
-  typeof u?.correo === "string" ? u.correo.trim().toLowerCase() : "";
 
-function normalizarProductos(items, iniciales) {
-  const unicos = new Map();
-  for (const p of lista(items)) {
+function combinarSinDuplicados(primeros, segundos, obtenerClave) {
+  const registrosPorClave = new Map();
+
+  // Se leen primero los secundarios: el primer grupo prevalece si hay repetidos.
+  for (const registro of [...segundos, ...primeros]) {
+    registrosPorClave.set(obtenerClave(registro), registro);
+  }
+
+  return [...registrosPorClave.values()];
+}
+
+const normalizarCorreo = (usuarioGuardado) =>
+  typeof usuarioGuardado?.correo === "string"
+    ? usuarioGuardado.correo.trim().toLowerCase()
+    : "";
+
+function normalizarProductos(items, productosIniciales) {
+  const productosUnicos = new Map();
+  for (const registroGuardado of asegurarLista(items)) {
     if (
-      !p ||
-      p.id === undefined ||
-      typeof p.nombre !== "string" ||
-      !p.nombre.trim() ||
-      !Number.isFinite(Number(p.precio)) ||
-      Number(p.precio) <= 0
-    )
+      !registroGuardado ||
+      registroGuardado.id === undefined ||
+      typeof registroGuardado.nombre !== "string" ||
+      !registroGuardado.nombre.trim() ||
+      !Number.isFinite(Number(registroGuardado.precio)) ||
+      Number(registroGuardado.precio) <= 0
+    ) {
       continue;
-    const id = normalizarId(p.id),
-      base = iniciales.find((item) => item.id === id);
-    unicos.set(id, {
-      ...p,
+    }
+    const id = normalizarId(registroGuardado.id);
+    const productoInicial = productosIniciales.find(
+      (registro) => registro.id === id,
+    );
+    productosUnicos.set(id, {
+      ...registroGuardado,
       id,
-      nombre: p.nombre.trim(),
-      precio: Number(p.precio),
-      categoria: p.categoria || "Café en grano",
-      descripcion: p.descripcion || "",
-      detalle: p.detalle || "",
-      stock: Number.isInteger(p.stock) && p.stock >= 0 ? p.stock : 10,
-      critico: Number.isInteger(p.critico) && p.critico >= 0 ? p.critico : 3,
+      nombre: registroGuardado.nombre.trim(),
+      precio: Number(registroGuardado.precio),
+      categoria: registroGuardado.categoria || "Café en grano",
+      descripcion: registroGuardado.descripcion || "",
+      detalle: registroGuardado.detalle || "",
+      stock:
+        Number.isInteger(registroGuardado.stock) && registroGuardado.stock >= 0
+          ? registroGuardado.stock
+          : 10,
+      critico:
+        Number.isInteger(registroGuardado.critico) &&
+        registroGuardado.critico >= 0
+          ? registroGuardado.critico
+          : 3,
+      // Una imagen propia tiene prioridad sobre la foto del catálogo base.
       imagen:
-        typeof p.imagen === "string" && p.imagen.startsWith("data:")
-          ? p.imagen
-          : base?.imagen || "",
+        typeof registroGuardado.imagen === "string" &&
+        registroGuardado.imagen.startsWith("data:")
+          ? registroGuardado.imagen
+          : productoInicial?.imagen || "",
     });
   }
-  return [...unicos.values()];
+  return [...productosUnicos.values()];
 }
+// Agrupa las líneas repetidas y descarta cantidades o precios no válidos.
 export function normalizarCarrito(items, productos) {
-  const resultado = new Map();
-  for (const item of lista(items)) {
-    if (!item || typeof item !== "object") continue;
-    const id = normalizarId(item.id),
-      actual = productos.find((p) => p.id === id);
-    const precio = Number(item.precio ?? actual?.precio),
-      cantidad = item.cantidad === undefined ? 1 : Number(item.cantidad);
+  const carritoPorProducto = new Map();
+  for (const registro of asegurarLista(items)) {
+    if (!registro || typeof registro !== "object") {
+      continue;
+    }
+    const id = normalizarId(registro.id);
+    const productoActual = productos.find(
+      (registroGuardado) => registroGuardado.id === id,
+    );
+    const precio = Number(registro.precio ?? productoActual?.precio);
+    const cantidad =
+      registro.cantidad === undefined ? 1 : Number(registro.cantidad);
     if (
       !id ||
       !Number.isFinite(precio) ||
       precio <= 0 ||
       !Number.isInteger(cantidad) ||
       cantidad <= 0
-    )
+    ) {
       continue;
-    const linea = {
-      ...item,
+    }
+    const lineaCarrito = {
+      ...registro,
       id,
-      nombre: String(item.nombre || actual?.nombre || "Producto"),
+      nombre: String(registro.nombre || productoActual?.nombre || "Producto"),
       precio,
       cantidad,
-      imagen: actual?.imagen || item.imagen || "",
+      imagen: productoActual?.imagen || registro.imagen || "",
     };
-    if (resultado.has(id)) resultado.get(id).cantidad += cantidad;
-    else resultado.set(id, linea);
+    if (carritoPorProducto.has(id)) {
+      carritoPorProducto.get(id).cantidad += cantidad;
+    } else {
+      carritoPorProducto.set(id, lineaCarrito);
+    }
   }
-  return [...resultado.values()];
+  return [...carritoPorProducto.values()];
 }
 export const totalCarrito = (items) =>
-  items.reduce((total, p) => total + p.precio * p.cantidad, 0);
-export function cargarEstado(storage, iniciales) {
-  const guardado = leer(storage, CLAVE_TIENDA);
-  const valido =
-    [1, 2].includes(guardado?.version) &&
-    Array.isArray(guardado.usuarios) &&
-    (guardado.version !== 2 || Array.isArray(guardado.productos));
-  const usuariosPrevios = lista(leer(storage, "granoUsuariosReact"));
-  const catalogoPrevio = lista(leer(storage, "granoProductosReact"));
-  const catalogoCompleto = leer(storage, "granoCatalogoVersion", 0) === 2;
-  const origen = valido
-    ? guardado
+  items.reduce(
+    (total, registroGuardado) =>
+      total + registroGuardado.precio * registroGuardado.cantidad,
+    0,
+  );
+// Recupera el esquema actual o importa el estado de las antiguas versiones.
+export function cargarEstado(storage, productosIniciales) {
+  const estadoGuardado = leerJSON(storage, CLAVE_TIENDA);
+  const esEstadoGuardadoValido =
+    [1, 2].includes(estadoGuardado?.version) &&
+    Array.isArray(estadoGuardado.usuarios) &&
+    (estadoGuardado.version !== 2 || Array.isArray(estadoGuardado.productos));
+  const usuariosPrevios = asegurarLista(
+    leerJSON(storage, "granoUsuariosReact"),
+  );
+  const catalogoPrevio = asegurarLista(
+    leerJSON(storage, "granoProductosReact"),
+  );
+  const catalogoCompleto = leerJSON(storage, "granoCatalogoVersion", 0) === 2;
+  const datosDeOrigen = esEstadoGuardadoValido
+    ? estadoGuardado
     : {
-        usuarios: unir(
-          lista(leer(storage, "usuarios-grano")),
+        usuarios: combinarSinDuplicados(
+          asegurarLista(leerJSON(storage, "usuarios-grano")),
           usuariosPrevios,
-          correo,
+          normalizarCorreo,
         ),
         sesion:
-          leer(storage, "sesion-grano") ?? leer(storage, "granoSesionReact"),
+          leerJSON(storage, "sesion-grano") ??
+          leerJSON(storage, "granoSesionReact"),
         carrito:
-          leer(storage, "carrito-grano") ??
-          leer(storage, "granoCarritoReact", []),
-        pedidos: unir(
-          lista(leer(storage, "pedidos-grano")),
-          lista(leer(storage, "granoPedidosReact")),
-          (p) => p?.id,
+          leerJSON(storage, "carrito-grano") ??
+          leerJSON(storage, "granoCarritoReact", []),
+        pedidos: combinarSinDuplicados(
+          asegurarLista(leerJSON(storage, "pedidos-grano")),
+          asegurarLista(leerJSON(storage, "granoPedidosReact")),
+          (registroGuardado) => registroGuardado?.id,
         ),
-        mensajes: unir(
-          lista(leer(storage, "mensajes-grano")),
-          lista(leer(storage, "granoMensajesReact")),
-          (m) => JSON.stringify([m?.fecha, m?.correo, m?.texto]),
+        mensajes: combinarSinDuplicados(
+          asegurarLista(leerJSON(storage, "mensajes-grano")),
+          asegurarLista(leerJSON(storage, "granoMensajesReact")),
+          (mensajeGuardado) =>
+            JSON.stringify([
+              mensajeGuardado?.fecha,
+              mensajeGuardado?.correo,
+              mensajeGuardado?.texto,
+            ]),
         ),
       };
-  let entrada;
-  if (valido && guardado.version === 2) entrada = guardado.productos;
-  else if (valido) {
-    // Version 1 could not edit base products. Recover stock/edits from the complete
-    // base-branch catalog, while respecting custom products deleted in version 1.
-    const bases = catalogoCompleto
-      ? catalogoPrevio.filter((p) => ids.includes(normalizarId(p?.id)))
-      : iniciales;
-    entrada = [...bases, ...lista(guardado.productosNuevos)];
-  } else
-    entrada = catalogoCompleto
+  let catalogoAImportar;
+  if (esEstadoGuardadoValido && estadoGuardado.version === 2) {
+    catalogoAImportar = estadoGuardado.productos;
+  } else if (esEstadoGuardadoValido) {
+    // El esquema 1 no permitía editar productos base. Se recuperan sus cambios
+    // sin volver a crear los productos personalizados que el usuario eliminó.
+    const productosBase = catalogoCompleto
+      ? catalogoPrevio.filter((registroGuardado) =>
+          idsProductosBase.includes(normalizarId(registroGuardado?.id)),
+        )
+      : productosIniciales;
+    catalogoAImportar = [
+      ...productosBase,
+      ...asegurarLista(estadoGuardado.productosNuevos),
+    ];
+  } else {
+    catalogoAImportar = catalogoCompleto
       ? catalogoPrevio
-      : [...iniciales, ...catalogoPrevio];
-  const productos = normalizarProductos(entrada, iniciales);
-  const usuarios = lista(origen.usuarios)
+      : [...productosIniciales, ...catalogoPrevio];
+  }
+  const productos = normalizarProductos(catalogoAImportar, productosIniciales);
+  const usuarios = asegurarLista(datosDeOrigen.usuarios)
     .filter(
-      (u) =>
-        u &&
-        correo(u) &&
-        typeof u.nombre === "string" &&
-        typeof u.contrasena === "string",
+      (usuarioGuardado) =>
+        usuarioGuardado &&
+        normalizarCorreo(usuarioGuardado) &&
+        typeof usuarioGuardado.nombre === "string" &&
+        typeof usuarioGuardado.contrasena === "string",
     )
-    .map((u) => {
-      const previo = usuariosPrevios.find((p) => correo(p) === correo(u));
-      const rol =
-        valido && guardado.version === 1 && previo?.rol === "vendedor"
+    .map((usuarioGuardado) => {
+      const usuarioAnterior = usuariosPrevios.find(
+        (registroGuardado) =>
+          normalizarCorreo(registroGuardado) ===
+          normalizarCorreo(usuarioGuardado),
+      );
+      const rolConservado =
+        esEstadoGuardadoValido &&
+        estadoGuardado.version === 1 &&
+        usuarioAnterior?.rol === "vendedor"
           ? "vendedor"
-          : u.rol;
+          : usuarioGuardado.rol;
       return {
-        ...u,
-        correo: correo(u),
-        rol: ["admin", "vendedor", "comprador"].includes(rol)
-          ? rol
+        ...usuarioGuardado,
+        correo: normalizarCorreo(usuarioGuardado),
+        rol: ["admin", "vendedor", "comprador"].includes(rolConservado)
+          ? rolConservado
           : "comprador",
-        activo: u.activo !== false,
+        activo: usuarioGuardado.activo !== false,
       };
     });
-  for (const demo of usuariosDemostracion) {
-    const existente = usuarios.find((u) => u.correo === demo.correo);
-    if (existente) Object.assign(existente, demo);
-    else usuarios.push({ ...demo });
+  // Las tres cuentas de prueba conservan siempre sus credenciales y permisos.
+  for (const usuarioDemostracion of usuariosDemostracion) {
+    const usuarioExistente = usuarios.find(
+      (usuarioGuardado) =>
+        usuarioGuardado.correo === usuarioDemostracion.correo,
+    );
+    if (usuarioExistente) {
+      Object.assign(usuarioExistente, usuarioDemostracion);
+    } else {
+      usuarios.push({ ...usuarioDemostracion });
+    }
   }
-  const actual = usuarios.find(
-    (u) => u.correo === origen.sesion?.correo && u.activo,
+  const usuarioDeSesion = usuarios.find(
+    (usuarioGuardado) =>
+      usuarioGuardado.correo === datosDeOrigen.sesion?.correo &&
+      usuarioGuardado.activo,
   );
   return {
     version: 2,
     productos,
     usuarios,
-    sesion: actual
-      ? { nombre: actual.nombre, correo: actual.correo, rol: actual.rol }
+    sesion: usuarioDeSesion
+      ? {
+          nombre: usuarioDeSesion.nombre,
+          correo: usuarioDeSesion.correo,
+          rol: usuarioDeSesion.rol,
+        }
       : null,
-    carrito: normalizarCarrito(origen.carrito, productos).filter((p) =>
-      productos.some((actual) => actual.id === p.id),
+    carrito: normalizarCarrito(datosDeOrigen.carrito, productos).filter(
+      (registroGuardado) =>
+        productos.some(
+          (productoCatalogo) => productoCatalogo.id === registroGuardado.id,
+        ),
     ),
-    pedidos: lista(origen.pedidos)
-      .filter((p) => p && p.id && typeof p.comprador === "string")
-      .map((p) => {
-        const items = normalizarCarrito(p.productos, productos);
+    pedidos: asegurarLista(datosDeOrigen.pedidos)
+      .filter(
+        (pedidoGuardado) =>
+          pedidoGuardado &&
+          pedidoGuardado.id &&
+          typeof pedidoGuardado.comprador === "string",
+      )
+      .map((pedidoGuardado) => {
+        const productosDelPedido = normalizarCarrito(
+          pedidoGuardado.productos,
+          productos,
+        );
         return {
-          ...p,
-          productos: items,
-          total: Number.isFinite(Number(p.total))
-            ? Number(p.total)
-            : totalCarrito(items),
-          estado: p.estado || "Recibido",
+          ...pedidoGuardado,
+          productos: productosDelPedido,
+          total: Number.isFinite(Number(pedidoGuardado.total))
+            ? Number(pedidoGuardado.total)
+            : totalCarrito(productosDelPedido),
+          estado: pedidoGuardado.estado || "Recibido",
         };
       }),
-    mensajes: lista(origen.mensajes)
-      .filter((m) => m && typeof m.texto === "string")
-      .map((m) => ({ ...m, estado: m.estado || "Nuevo" })),
+    mensajes: asegurarLista(datosDeOrigen.mensajes)
+      .filter(
+        (mensajeGuardado) =>
+          mensajeGuardado && typeof mensajeGuardado.texto === "string",
+      )
+      .map((mensajeGuardado) => ({
+        ...mensajeGuardado,
+        estado: mensajeGuardado.estado || "Nuevo",
+      })),
   };
 }
+// Una sola escritura conserva inventario, pedidos y carrito juntos.
 export function guardarEstado(storage, estado) {
   storage.setItem(CLAVE_TIENDA, JSON.stringify(estado));
 }

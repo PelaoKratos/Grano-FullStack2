@@ -14,13 +14,16 @@ const archivoAnterior = location.pathname.split("/").pop();
 if (rutasAnteriores[archivoAnterior]) {
   const parametros = new URLSearchParams(location.search);
   let ruta = rutasAnteriores[archivoAnterior];
-  if (parametros.has("categoria") && archivoAnterior === "productos.html")
+  if (parametros.has("categoria") && archivoAnterior === "productos.html") {
     ruta += `?categoria=${encodeURIComponent(parametros.get("categoria"))}`;
-  if (parametros.has("destino") && archivoAnterior === "login.html")
+  }
+  if (parametros.has("destino") && archivoAnterior === "login.html") {
     ruta += `?destino=${encodeURIComponent(parametros.get("destino"))}`;
+  }
   history.replaceState(null, "", `./#${ruta}`);
 }
 
+// React reemplaza el contenido de #root y HashRouter gestiona las URL con #.
 const elemento = document.getElementById("root");
 
 createRoot(elemento).render(

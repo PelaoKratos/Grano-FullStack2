@@ -59,7 +59,10 @@ export default function Administracion({ tienda }) {
         <Route
           path="mensajes"
           element={
-            <AdminMensajes mensajes={tienda.mensajes} onMarcar={tienda.marcarMensaje} />
+            <AdminMensajes
+              mensajes={tienda.mensajes}
+              onMarcar={tienda.marcarMensaje}
+            />
           }
         />
         <Route

@@ -1,4 +1,4 @@
-/* React page shells inherit the approved visual system from diseno.css. */
+/* Las pantallas React heredan el sistema visual definido en diseno.css. */
 .menu-admin {
   display: flex;
   flex-wrap: wrap;

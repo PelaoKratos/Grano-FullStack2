@@ -1,14 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Icono from "./Icono.jsx";
-export function Header({ path, sesion, cantidad, onCerrar }) {
+export function Header({ path: rutaActual, sesion, cantidad, onCerrar }) {
   const navegar = useNavigate();
   const [abierto, setAbierto] = useState(false);
-  useEffect(() => setAbierto(false), [path]);
+  useEffect(() => setAbierto(false), [rutaActual]);
   useEffect(() => {
-    function escape(e) {
+    function escape(evento) {
       if (
-        e.key === "Escape" &&
+        evento.key === "Escape" &&
         document
           .querySelector(".menu-toggle")
           ?.getAttribute("aria-expanded") === "true"
@@ -44,8 +44,10 @@ export function Header({ path, sesion, cantidad, onCerrar }) {
             id="menu-principal"
             className={`nav-grano ${abierto ? "menu-abierto" : ""}`}
             aria-label="Navegación principal"
-            onClick={(event) => {
-              if (event.target.closest("a")) setAbierto(false);
+            onClick={(evento) => {
+              if (evento.target.closest("a")) {
+                setAbierto(false);
+              }
             }}
           >
             {[
@@ -56,9 +58,9 @@ export function Header({ path, sesion, cantidad, onCerrar }) {
             ].map(([ruta, texto]) => (
               <Link
                 key={ruta}
-                className={`nav-link ${path === ruta || (ruta === "/productos" && path.startsWith("/producto/")) ? "active" : ""}`}
+                className={`nav-link ${rutaActual === ruta || (ruta === "/productos" && rutaActual.startsWith("/producto/")) ? "active" : ""}`}
                 to={ruta}
-                aria-current={path === ruta ? "page" : undefined}
+                aria-current={rutaActual === ruta ? "page" : undefined}
               >
                 {texto}
               </Link>
