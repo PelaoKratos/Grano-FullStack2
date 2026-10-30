@@ -152,6 +152,15 @@ export function Footer() {
           <Link to="/acceso">
             Tu cuenta <Icono />
           </Link>
+          <Link to="/blog">
+            Historias del café <Icono />
+          </Link>
+          <Link to="/categorias">
+            Categorías <Icono />
+          </Link>
+          <Link to="/ofertas">
+            Ofertas <Icono />
+          </Link>
           <a href="mailto:contacto@grano.cl">contacto@grano.cl</a>
           <a href="tel:+56912345678">+56 9 1234 5678</a>
           <span>Lunes a viernes, 9:00–18:00</span>

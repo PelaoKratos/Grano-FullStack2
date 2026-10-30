@@ -112,6 +112,12 @@ pnpm build
 
 ## Guion breve para una presentación
 
+El recorrido de compra ahora pasa por `Checkout.jsx`. El formulario precarga el perfil y entrega los datos a `realizarCompra` en `App.jsx`. `validarEntrega` comprueba los campos; `operar` valida stock y pago simulado y devuelve el nuevo estado. Solo una confirmación aprobada y guardada abre `/compra/confirmada/:id`. El rechazo muestra `/compra/error`, conserva el carrito y permite reintentar con los mismos datos.
+
+`ResumenPedido` se reutiliza en checkout, resultados y administración. Los pedidos anteriores sin dirección siguen siendo válidos. Las categorías se guardan como una lista adicional en el mismo esquema 2; al renombrarlas se actualizan los productos, y los reportes suman los precios históricos de cada pedido.
+
+Jasmine define los casos de componentes con `describe`, `it`, `expect` y espías de callbacks. Karma prepara un navegador Chrome sin ventanas y ejecuta esos casos; Vite convierte el JSX del archivo de pruebas. Los eventos se envían al DOM real y `act` permite comprobar la actualización de React antes de verificar el resultado.
+
 1. Explicar que es una tienda React de demostración con persistencia local.
 2. Mostrar `main.jsx` y las rutas de `App.jsx`.
 3. Abrir `TarjetaProducto.jsx` y seguir el botón Añadir hasta `useTienda`.

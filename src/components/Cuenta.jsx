@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-function Cuenta({ usuario, pedidos, onGuardar }) {
+function Cuenta({ usuario, pedidos = [], onGuardar, mostrarHistorial = true }) {
   const [mensaje, setMensaje] = useState("");
 
   function guardarDatos(evento) {
@@ -74,27 +75,33 @@ function Cuenta({ usuario, pedidos, onGuardar }) {
         </p>
       </section>
 
-      <section className="panel-formulario">
-        <h2>Historial de pedidos</h2>
-        {pedidos.length === 0 ? (
-          <p>Todavía no tienes compras registradas.</p>
-        ) : (
-          <ul className="lista-pedidos">
-            {pedidos.map((pedido) => (
-              <li key={pedido.id}>
-                {pedido.id} · {pedido.fecha} · {pedido.estado} · $
-                {pedido.total.toLocaleString("es-CL")} CLP
-                <br />
-                {pedido.productos
-                  .map(
-                    (producto) => `${producto.nombre} × ${producto.cantidad}`,
-                  )
-                  .join(", ")}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {mostrarHistorial && (
+        <section className="panel-formulario">
+          <h2>Historial de pedidos</h2>
+          {pedidos.length === 0 ? (
+            <p>Todavía no tienes compras registradas.</p>
+          ) : (
+            <ul className="lista-pedidos">
+              {pedidos.map((pedido) => (
+                <li key={pedido.id}>
+                  {pedido.id} · {pedido.fecha} · {pedido.estado} · $
+                  {pedido.total.toLocaleString("es-CL")} CLP
+                  <br />
+                  {pedido.productos
+                    .map(
+                      (producto) => `${producto.nombre} × ${producto.cantidad}`,
+                    )
+                    .join(", ")}
+                  <br />
+                  <Link to={`/compra/confirmada/${pedido.id}`}>
+                    Ver comprobante
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
     </section>
   );
 }

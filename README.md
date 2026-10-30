@@ -36,6 +36,8 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
+`pnpm test` ejecuta 40 pruebas de lógica, persistencia y rutas y 17 pruebas de componentes con Jasmine y Karma. Requiere Chrome instalado para ejecutarlo sin ventanas. En Windows también se detecta Edge como alternativa; puedes indicar el navegador con `CHROME_BIN`. Para ejecutar cada grupo por separado usa `pnpm test:logica` o `pnpm test:componentes`. La configuración está en `karma.conf.cjs` y `vite.pruebas.config.js`.
+
 ## Leer y explicar el código
 
 La [guía del código](docs/GUIA_DEL_CODIGO.md) explica los archivos, el recorrido de una acción, React Router, el guardado y un guion para presentar el proyecto.
@@ -60,6 +62,11 @@ Prettier ordena el código del proyecto; Bootstrap, imágenes y documentos origi
 - Administración por secciones: resumen, edición y eliminación del catálogo completo, stock crítico, roles y activación de usuarios, estados de pedidos y mensajes. Imágenes JPG, PNG o WebP de hasta 500 KB.
 - Panel de vendedor para consultar productos, disponibilidad y pedidos.
 - Navegación móvil, historial del navegador, recarga de rutas y páginas no encontradas.
+- Categorías con acceso al catálogo filtrado y gestión desde administración.
+- Checkout con datos precargados del perfil, envío a domicilio o retiro y aprobación o rechazo de pago de demostración.
+- Resultados de compra y comprobantes recuperables desde el historial o administración.
+- Ofertas configurables mediante un precio anterior mayor al vigente, sin alterar los precios iniciales.
+- Historias del café, reportes administrativos, edición de usuarios ordinarios e historial por usuario.
 
 Cuentas públicas de prueba (también visibles en la pantalla de acceso):
 
@@ -91,6 +98,15 @@ Es una demostración local: no incluye servidor, pagos reales ni autenticación 
 - `src/assets/`: imágenes, tipografías y licencias.
 - `src/datos/operaciones.js`: validaciones y cambios de estado de la tienda.
 - `tests/`: pruebas de migración, stock, compra, permisos, catálogo, persistencia, rutas y RUT. `enrutamiento.test.js` renderiza el árbol real con `MemoryRouter`, incluidas las pantallas diferidas, sin abrir un navegador.
+- `tests/componentes.spec.jsx`: pruebas Jasmine de renderizado, props, estado y eventos en Chrome mediante Karma, incluido el flujo completo de compra y el fallo de guardado.
+- `src/components/Checkout.jsx`, `ResultadoCompra.jsx` y `ResumenPedido.jsx`: datos de entrega y resultado de la compra simulada.
+- `src/datos/categorias.js` y `compra.js`: categorías, validación de entrega, ofertas y resumen de ventas.
+
+## Entrega de la evaluación 2
+
+La [guía de entrega](docs/ENTREGA_2.md) relaciona la pauta con las pantallas y las pruebas y propone el recorrido de presentación. Los documentos actualizados son `docs/Anexo 4 - ERS Grano.docx`, `docs/Anexo 3 - Requerimientos Grano.xlsx` y `docs/Cobertura del testing V2.docx`.
+
+Los nuevos enlaces se encuentran en el catálogo y el pie de página; la navegación principal y el sistema visual se conservan. Para demostrar ofertas, edita un producto desde administración e indica un precio anterior mayor al precio actual. El catálogo inicial no activa descuentos automáticamente.
 
 `PRODUCT.md` y `DESIGN.md` documentan el producto y el diseño. La portada y las seis imágenes de producto son ilustrativas. Los productos usan WebP locales optimizados en `src/assets/fotografia/`, compartidos por el catálogo, los detalles y el carrito.
 

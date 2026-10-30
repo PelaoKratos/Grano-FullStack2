@@ -1,13 +1,16 @@
 import { useState } from "react";
 import TarjetaProducto from "./TarjetaProducto.jsx";
-import { useSearchParams } from "react-router-dom";
-const filtros = [
-  ["todos", "Todo"],
-  ["cafe", "Café en grano"],
-  ["metodos", "Métodos"],
-  ["accesorios", "Accesorios"],
-];
-export default function Catalogo({ productos, onAgregar }) {
+import { Link, useSearchParams } from "react-router-dom";
+import { categoriasBase, claveCategoria } from "../datos/categorias.js";
+export default function Catalogo({
+  productos,
+  onAgregar,
+  categorias = categoriasBase,
+}) {
+  const filtros = [
+    ["todos", "Todo"],
+    ...categorias.map((nombre) => [claveCategoria(nombre), nombre]),
+  ];
   const [parametros, setParametros] = useSearchParams();
   const categoria = parametros.get("categoria") || "todos";
   const [busqueda, setBusqueda] = useState("");
@@ -15,10 +18,7 @@ export default function Catalogo({ productos, onAgregar }) {
   const visibles = productos.filter(
     (productoCatalogo) =>
       (actual === "todos" ||
-        (actual === "cafe" && productoCatalogo.categoria === "Café en grano") ||
-        (actual === "metodos" && productoCatalogo.categoria === "Métodos") ||
-        (actual === "accesorios" &&
-          productoCatalogo.categoria === "Accesorios")) &&
+        claveCategoria(productoCatalogo.categoria) === actual) &&
       productoCatalogo.nombre
         .toLocaleLowerCase("es")
         .includes(busqueda.trim().toLocaleLowerCase("es")),
@@ -29,6 +29,10 @@ export default function Catalogo({ productos, onAgregar }) {
         <h1>Encuentra tu próximo ritual.</h1>
         <p className="text-secondary">
           Cafés, métodos y accesorios. Precios en pesos chilenos.
+        </p>
+        <p className="mt-3">
+          <Link to="/categorias">Explorar categorías</Link> ·{" "}
+          <Link to="/ofertas">Ver ofertas</Link>
         </p>
       </div>
       <div className="busqueda-catalogo">

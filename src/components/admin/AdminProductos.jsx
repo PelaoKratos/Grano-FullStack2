@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { precioCLP } from "../../datos/formato.js";
 
-function AdminProductos({ productos, onGuardar, onEliminar }) {
+function AdminProductos({
+  productos,
+  categorias = ["Café en grano", "Métodos", "Accesorios"],
+  onGuardar,
+  onEliminar,
+}) {
   const formularioRef = useRef(null);
   const [editado, setEditado] = useState(null);
   useEffect(() => {
@@ -23,6 +28,7 @@ function AdminProductos({ productos, onGuardar, onEliminar }) {
       descripcion: datos.get("descripcion"),
       detalle: datos.get("detalle"),
       precio: datos.get("precio"),
+      precioAnterior: datos.get("precioAnterior"),
       stock: datos.get("stock"),
       critico: datos.get("critico"),
     };
@@ -88,9 +94,9 @@ function AdminProductos({ productos, onGuardar, onEliminar }) {
           name="categoria"
           defaultValue={editado?.categoria || "Café en grano"}
         >
-          <option>Café en grano</option>
-          <option>Métodos</option>
-          <option>Accesorios</option>
+          {categorias.map((categoria) => (
+            <option key={categoria}>{categoria}</option>
+          ))}
         </select>
         <label htmlFor="producto-descripcion">Descripción corta</label>
         <input
@@ -119,6 +125,21 @@ function AdminProductos({ productos, onGuardar, onEliminar }) {
           defaultValue={editado?.precio || ""}
           required
         />
+        <label htmlFor="producto-precio-anterior">
+          Precio anterior para oferta (opcional)
+        </label>
+        <input
+          id="producto-precio-anterior"
+          name="precioAnterior"
+          type="number"
+          min="0"
+          step="1"
+          defaultValue={editado?.precioAnterior || ""}
+        />
+        <p className="ayuda-formulario">
+          Para activar una oferta, el precio anterior debe ser mayor al precio
+          actual. Déjalo vacío para quitar la oferta.
+        </p>
         <label htmlFor="producto-stock">Stock disponible</label>
         <input
           id="producto-stock"

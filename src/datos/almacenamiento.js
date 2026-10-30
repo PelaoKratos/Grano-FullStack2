@@ -1,4 +1,5 @@
 import { usuariosDemostracion } from "./usuarios.js";
+import { obtenerCategorias } from "./categorias.js";
 
 // Se conserva la clave original para recuperar datos de versiones anteriores.
 export const CLAVE_TIENDA = "grano-tienda-react-v1";
@@ -244,6 +245,7 @@ export function cargarEstado(storage, productosIniciales) {
   return {
     version: 2,
     productos,
+    categorias: obtenerCategorias({ ...datosDeOrigen, productos }),
     usuarios,
     sesion: usuarioDeSesion
       ? {

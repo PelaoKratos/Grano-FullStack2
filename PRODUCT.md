@@ -20,6 +20,8 @@ El enrutamiento usa React Router DOM 7: `HashRouter`, `Routes`, `Route`, `Link`,
 
 ## Brand Commitments
 
+La entrega V2 añade categorías, ofertas configurables, historias del café y checkout con datos del perfil, envío o retiro y pago simulado aprobado o rechazado. Los resultados incluyen resumen y comprobante recuperable. Administración incorpora categorías, reportes, perfil, edición de usuarios ordinarios e historial por usuario. La clave y el esquema 2 se mantienen; las ofertas no cambian los precios iniciales automáticamente. Jasmine y Karma verifican renderizado, props, estado y eventos en Chrome sin ventanas, junto a las pruebas de reglas y migraciones existentes.
+
 Nombre Grano, café y rituales. Identidad cálida y artesanal, con colores crema y verde y tipografías Bitter y Karla. Los cambios de diseño conservan el contenido y las funciones de la tienda.
 
 ## Evidence on Hand

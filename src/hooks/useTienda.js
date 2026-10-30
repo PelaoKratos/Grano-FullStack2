@@ -91,9 +91,11 @@ export function useTienda() {
     });
   }
 
-  function comprar() {
+  function comprar(entrega, resultadoPago = "aprobado") {
     return ejecutar({
       tipo: "COMPRAR",
+      entrega,
+      resultadoPago,
       idPedido: `GR-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
       fecha: new Date().toLocaleDateString("es-CL"),
     });
@@ -128,6 +130,10 @@ export function useTienda() {
     crearProducto: guardarProducto,
     quitarProducto: (id) => ejecutar({ tipo: "PRODUCTO_ELIMINAR", id }),
     guardarUsuario: (usuario) => ejecutar({ tipo: "USUARIO_GUARDAR", usuario }),
+    guardarCategoria: (anterior, nombre) =>
+      ejecutar({ tipo: "CATEGORIA_GUARDAR", anterior, nombre }),
+    quitarCategoria: (nombre) =>
+      ejecutar({ tipo: "CATEGORIA_ELIMINAR", nombre }),
     marcarMensaje: (indice) => ejecutar({ tipo: "MENSAJE_LEIDO", indice }),
     cambiarEstadoPedido: (id, estado) =>
       ejecutar({ tipo: "PEDIDO_ESTADO", id, estado }),

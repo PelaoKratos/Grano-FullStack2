@@ -96,13 +96,18 @@ export default function Carrito({
             </strong>
           </div>
           {sesion?.rol === "comprador" ? (
-            <button
+            <Link
               className="btn btn-success"
-              disabled={stockInsuficiente}
-              onClick={onComprar}
+              to={stockInsuficiente ? "/carrito" : "/checkout"}
+              aria-disabled={stockInsuficiente}
+              onClick={(evento) => {
+                if (stockInsuficiente) {
+                  evento.preventDefault();
+                }
+              }}
             >
               Realizar compra
-            </button>
+            </Link>
           ) : !sesion ? (
             <Link className="btn btn-success" to="/acceso?destino=carrito">
               Inicia sesión para comprar

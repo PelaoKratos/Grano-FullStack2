@@ -5,6 +5,13 @@ import DetalleProducto from "./components/DetalleProducto.jsx";
 import Carrito from "./components/Carrito.jsx";
 import Contacto from "./components/Contacto.jsx";
 import Nosotros from "./components/Nosotros.jsx";
+import Checkout from "./components/Checkout.jsx";
+import ResultadoCompra from "./components/ResultadoCompra.jsx";
+import Categorias from "./components/Categorias.jsx";
+import Ofertas from "./components/Ofertas.jsx";
+import { Blog, Articulo } from "./components/Blog.jsx";
+import { totalCarrito } from "./datos/almacenamiento.js";
+import { articulos } from "./datos/articulos.js";
 import { Header, Footer } from "./components/Layout.jsx";
 import {
   Link,
@@ -152,18 +159,32 @@ function Tienda() {
       "/admin": "Administración",
       "/contacto": "Contacto",
       "/nosotros": "Nosotros",
+      "/checkout": "Finalizar compra",
+      "/categorias": "Categorías",
+      "/ofertas": "Ofertas",
+      "/blog": "Historias del café",
+      "/compra/error": "Resultado de compra",
     };
     let tituloPagina = titulosPorRuta[rutaActual];
 
     if (rutaActual.startsWith("/admin/")) {
       tituloPagina = "Administración";
     }
+    if (rutaActual.startsWith("/compra/confirmada/")) {
+      tituloPagina = "Pedido registrado";
+    }
 
     if (!tituloPagina) {
       const productoActual = tienda.productos.find(
         (productoCatalogo) => rutaActual === `/producto/${productoCatalogo.id}`,
       );
-      tituloPagina = productoActual?.nombre || "Página no encontrada";
+      const articuloActual = articulos.find(
+        (articulo) => rutaActual === `/blog/${articulo.slug}`,
+      );
+      tituloPagina =
+        productoActual?.nombre ||
+        articuloActual?.titulo ||
+        "Página no encontrada";
     }
 
     document.title = `${tituloPagina} | Grano`;
@@ -202,13 +223,30 @@ function Tienda() {
     navegar(parametros.get("destino") === "carrito" ? "/carrito" : "/cuenta");
     return true;
   }
-  function realizarCompra() {
-    const pedido = tienda.comprar();
+  function realizarCompra(entrega, resultadoPago) {
+    const resumen = {
+      productos: tienda.carrito.map((producto) => ({ ...producto })),
+      total: totalCarrito(tienda.carrito),
+      entrega,
+    };
+    const pedido = tienda.comprar(entrega, resultadoPago);
     if (pedido) {
       setMensajeCompra(
         `Pedido ${pedido.id} registrado. Gracias por tu compra.`,
       );
+      navegar(`/compra/confirmada/${pedido.id}`);
+    } else {
+      navegar("/compra/error", {
+        state: {
+          resumen,
+          mensaje:
+            resultadoPago === "rechazado"
+              ? "El pago de demostración fue rechazado. Tu carrito y el stock se conservan."
+              : "No pudimos registrar el pedido. Revisa el stock, los datos y el espacio disponible del navegador.",
+        },
+      });
     }
+    return pedido;
   }
 
   function cerrarSesion() {
@@ -249,7 +287,11 @@ function Tienda() {
       <Route
         path="/productos"
         element={
-          <Catalogo productos={tienda.productos} onAgregar={agregarProducto} />
+          <Catalogo
+            productos={tienda.productos}
+            categorias={tienda.categorias}
+            onAgregar={agregarProducto}
+          />
         }
       />
       <Route
@@ -275,6 +317,57 @@ function Tienda() {
         }
       />
       <Route path="/acceso" element={pantallaAcceso} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:slug" element={<Articulo />} />
+      <Route
+        path="/categorias"
+        element={
+          <Categorias
+            categorias={tienda.categorias}
+            productos={tienda.productos}
+          />
+        }
+      />
+      <Route
+        path="/ofertas"
+        element={
+          <Ofertas productos={tienda.productos} onAgregar={agregarProducto} />
+        }
+      />
+      <Route
+        path="/checkout"
+        element={
+          <RutaProtegida sesion={tienda.sesion} roles={["comprador"]}>
+            <Checkout
+              usuario={tienda.usuarios.find(
+                (usuario) => usuario.correo === tienda.sesion?.correo,
+              )}
+              carrito={tienda.carrito}
+              onComprar={realizarCompra}
+            />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/compra/confirmada/:id"
+        element={
+          <RutaProtegida sesion={tienda.sesion} roles={["comprador"]}>
+            <ResultadoCompra pedidos={tienda.pedidos} sesion={tienda.sesion} />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/compra/error"
+        element={
+          <RutaProtegida sesion={tienda.sesion} roles={["comprador"]}>
+            <ResultadoCompra
+              pedidos={tienda.pedidos}
+              sesion={tienda.sesion}
+              error
+            />
+          </RutaProtegida>
+        }
+      />
       <Route path="/registro" element={pantallaAcceso} />
       <Route path="/cambiar-clave" element={pantallaAcceso} />
       {/* Pantallas que requieren una sesión con el rol correspondiente. */}
@@ -342,7 +435,7 @@ function Tienda() {
         )}
         onCerrar={cerrarSesion}
       />
-      {tienda.error && (
+      {tienda.error && rutaActual !== "/compra/error" && (
         <div className="container alert alert-danger mt-3" role="alert">
           {tienda.error}
         </div>

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Icono from "./Icono.jsx";
+import { estaEnOferta } from "../datos/compra.js";
 export default function TarjetaProducto({
   producto,
   onAgregar,
@@ -24,6 +25,12 @@ export default function TarjetaProducto({
         {portada && <span className="sabor-etiqueta">{producto.notas}</span>}
       </Link>
       <div className={portada ? "cafe-info" : "card-body d-flex flex-column"}>
+        {estaEnOferta(producto) && (
+          <p className="stock-producto">
+            Oferta · antes{" "}
+            <del>${producto.precioAnterior.toLocaleString("es-CL")} CLP</del>
+          </p>
+        )}
         <p className={portada ? "" : "etiqueta"}>{producto.categoria}</p>
         <Heading className={portada ? "" : "h4"}>
           <Link to={`/producto/${producto.id}`}>{producto.nombre}</Link>

@@ -1,4 +1,5 @@
 import { precioCLP } from "../../datos/formato.js";
+import { Link } from "react-router-dom";
 
 function AdminPedidos({ pedidos, onCambiarEstado }) {
   return (
@@ -21,6 +22,11 @@ function AdminPedidos({ pedidos, onCambiarEstado }) {
                   .join(", ")}
               </p>
               <label htmlFor={`estado-${pedido.id}`}>Estado</label>
+              <p>
+                <Link to={`/admin/pedidos/${pedido.id}`}>
+                  Ver detalle y comprobante
+                </Link>
+              </p>
               <select
                 id={`estado-${pedido.id}`}
                 value={pedido.estado}

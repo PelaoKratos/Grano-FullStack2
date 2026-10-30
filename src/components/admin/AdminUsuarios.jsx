@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-function AdminUsuarios({ usuarios, sesion, onCrear, onGuardar }) {
+function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
   const [mensaje, setMensaje] = useState("");
 
   function crear(evento) {
@@ -63,6 +64,69 @@ function AdminUsuarios({ usuarios, sesion, onCrear, onGuardar }) {
               </button>
               {usuario.cuentaDemostracion && <small>Cuenta de prueba</small>}
             </div>
+            {!usuario.cuentaDemostracion && (
+              <details className="mt-3">
+                <summary>Editar datos del usuario</summary>
+                <form
+                  onSubmit={(evento) => {
+                    evento.preventDefault();
+                    const datos = new FormData(evento.currentTarget);
+                    cambiar(
+                      usuario,
+                      Object.fromEntries(
+                        [
+                          "nombre",
+                          "telefono",
+                          "direccion",
+                          "comuna",
+                          "region",
+                        ].map((campo) => [campo, datos.get(campo).trim()]),
+                      ),
+                    );
+                  }}
+                >
+                  {[
+                    ["nombre", "Nombre"],
+                    ["telefono", "Teléfono"],
+                    ["direccion", "Dirección"],
+                    ["comuna", "Comuna"],
+                    ["region", "Región"],
+                  ].map(([campo, etiqueta]) => (
+                    <div key={campo}>
+                      <label htmlFor={`usuario-${usuario.correo}-${campo}`}>
+                        {etiqueta}
+                      </label>
+                      <input
+                        id={`usuario-${usuario.correo}-${campo}`}
+                        name={campo}
+                        defaultValue={usuario[campo] || ""}
+                        required={campo === "nombre"}
+                      />
+                    </div>
+                  ))}
+                  <button type="submit">Guardar datos</button>
+                </form>
+              </details>
+            )}
+            <details className="mt-3">
+              <summary>Historial de compras</summary>
+              {pedidos.some((pedido) => pedido.comprador === usuario.correo) ? (
+                <ul>
+                  {pedidos
+                    .filter((pedido) => pedido.comprador === usuario.correo)
+                    .map((pedido) => (
+                      <li key={pedido.id}>
+                        <Link to={`/admin/pedidos/${pedido.id}`}>
+                          {pedido.id}
+                        </Link>{" "}
+                        · {pedido.estado}
+                      </li>
+                    ))}
+                </ul>
+              ) : (
+                <p>Sin compras registradas.</p>
+              )}
+            </details>
           </li>
         ))}
       </ul>

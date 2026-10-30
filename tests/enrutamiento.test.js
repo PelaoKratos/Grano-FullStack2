@@ -11,7 +11,7 @@ let servidor, App, productos;
 before(async () => {
   servidor = await createServer({
     cacheDir: "node_modules/.vite-tests",
-    server: { middlewareMode: true, hmr: false },
+    server: { middlewareMode: true, hmr: false, watch: null },
     appType: "custom",
     logLevel: "error",
   });
@@ -69,13 +69,15 @@ test("las rutas desconocidas y los segmentos extra muestran la página no encont
     "/no-existe",
     "/producto/etiopia/extra",
     "/vendedor/extra",
-  ])
+  ]) {
     assert.match(await pantalla(ruta), /No encontramos esta página/);
+  }
 });
 
 test("las rutas privadas no exponen paneles sin sesión", async () => {
-  for (const ruta of ["/admin", "/admin/productos", "/cuenta", "/vendedor"])
+  for (const ruta of ["/admin", "/admin/productos", "/cuenta", "/vendedor"]) {
     assert.match(await pantalla(ruta), /Inicia sesión para continuar/);
+  }
 });
 
 test("administración resuelve sus subrutas y marca la sección activa", async () => {
@@ -113,8 +115,9 @@ test("cada rol accede a su panel y no puede entrar a los paneles ajenos", async 
     ["/admin/usuarios", "vendedor"],
     ["/cuenta", "vendedor"],
     ["/vendedor", "comprador"],
-  ])
+  ]) {
     assert.match(await pantalla(ruta, rol), /No tienes acceso a esta sección/);
+  }
 });
 
 test("crear cuenta y volver al acceso conservan el destino del carrito", async () => {
@@ -126,4 +129,47 @@ test("crear cuenta y volver al acceso conservan el destino del carrito", async (
     await pantalla("/registro?destino=carrito"),
     /href="\/acceso\?destino=carrito"/,
   );
+});
+
+test("las nuevas vistas públicas resuelven categorías, ofertas y artículos", async () => {
+  assert.match(await pantalla("/categorias"), /Café en grano/);
+  assert.match(await pantalla("/ofertas"), /Por ahora no hay ofertas/);
+  assert.match(await pantalla("/blog"), /Elegir un café por sus notas/);
+  assert.match(
+    await pantalla("/blog/elegir-por-sabor"),
+    /ingredientes añadidos/,
+  );
+  assert.match(
+    await pantalla("/blog/desconocido"),
+    /No encontramos esta historia/,
+  );
+});
+
+test("checkout y comprobantes requieren comprador y no exponen pedidos ajenos", async () => {
+  for (const ruta of [
+    "/checkout",
+    "/compra/error",
+    "/compra/confirmada/GR-AJENO",
+  ]) {
+    assert.match(await pantalla(ruta), /Inicia sesión para continuar/);
+    assert.match(await pantalla(ruta, "vendedor"), /No tienes acceso/);
+  }
+  assert.match(
+    await pantalla("/compra/confirmada/GR-AJENO", "comprador"),
+    /No encontramos el resumen/,
+  );
+});
+
+test("categorías, reportes y perfil administrativo conservan permisos y navegación", async () => {
+  for (const [ruta, titulo] of [
+    ["categorias", /Categorías del catálogo/],
+    ["reportes", /Reportes de la tienda/],
+    ["perfil", /Mis datos/],
+  ]) {
+    assert.match(await pantalla(`/admin/${ruta}`, "admin"), titulo);
+    assert.match(
+      await pantalla(`/admin/${ruta}`, "comprador"),
+      /No tienes acceso/,
+    );
+  }
 });

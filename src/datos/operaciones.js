@@ -1,6 +1,7 @@
 import { esRutValido, formatearRut } from "./rut.js";
+import { obtenerCategorias, claveCategoria } from "./categorias.js";
+import { normalizarEntrega, validarEntrega } from "./compra.js";
 
-const categorias = ["Café en grano", "Métodos", "Accesorios"];
 const roles = ["comprador", "vendedor", "admin"];
 export const estadosPedido = ["Recibido", "En preparación", "Entregado"];
 const esEnteroNoNegativo = (valor) =>
@@ -38,6 +39,8 @@ export function operar(estado, accion) {
       "USUARIO_GUARDAR",
       "PEDIDO_ESTADO",
       "MENSAJE_LEIDO",
+      "CATEGORIA_GUARDAR",
+      "CATEGORIA_ELIMINAR",
     ].includes(accion.tipo) &&
     usuario?.rol !== "admin"
   ) {
@@ -223,6 +226,25 @@ export function operar(estado, accion) {
           "Inicia sesión como comprador y agrega productos al carrito.",
         );
       }
+      // Los pedidos anteriores sin entrega siguen siendo compatibles.
+      const entrega =
+        accion.entrega === undefined ? null : normalizarEntrega(accion.entrega);
+      if (entrega && validarEntrega(entrega)) {
+        return respuestaConError(validarEntrega(entrega));
+      }
+      if (
+        accion.resultadoPago &&
+        !["aprobado", "rechazado"].includes(accion.resultadoPago)
+      ) {
+        return respuestaConError(
+          "El resultado del pago de demostración no es válido.",
+        );
+      }
+      if (accion.resultadoPago === "rechazado") {
+        return respuestaConError(
+          "El pago de demostración fue rechazado. Puedes volver a intentarlo; tu carrito se conserva.",
+        );
+      }
       // Se revisan todas las líneas antes de descontar una sola unidad.
       const lineas = estado.carrito.map((item) => ({
         item,
@@ -252,6 +274,7 @@ export function operar(estado, accion) {
         fecha: accion.fecha,
         comprador: usuario.correo,
         estado: "Recibido",
+        ...(entrega ? { entrega } : {}),
         productos: productosPedido,
         total: productosPedido.reduce(
           (importeAcumulado, productoCatalogo) =>
@@ -283,6 +306,13 @@ export function operar(estado, accion) {
       const precio = Number(datos.precio);
       const stock = datos.stock ?? 10;
       const critico = datos.critico ?? 3;
+      const precioAnterior =
+        datos.precioAnterior === undefined
+          ? Number(
+              estado.productos.find((producto) => producto.id === datos.id)
+                ?.precioAnterior || 0,
+            )
+          : Number(datos.precioAnterior || 0);
       const anterior = estado.productos.find(
         (productoCatalogo) => productoCatalogo.id === datos.id,
       );
@@ -292,7 +322,10 @@ export function operar(estado, accion) {
         precio <= 0 ||
         !esEnteroNoNegativo(stock) ||
         !esEnteroNoNegativo(critico) ||
-        !categorias.includes(datos.categoria) ||
+        !obtenerCategorias(estado).includes(datos.categoria) ||
+        !Number.isFinite(precioAnterior) ||
+        precioAnterior < 0 ||
+        (precioAnterior > 0 && precioAnterior <= precio) ||
         !datos.descripcion.trim() ||
         !datos.detalle.trim() ||
         estado.productos.some(
@@ -325,6 +358,7 @@ export function operar(estado, accion) {
         descripcion: datos.descripcion.trim(),
         detalle: datos.detalle.trim(),
         precio,
+        precioAnterior,
         stock: Number(stock),
         critico: Number(critico),
         imagen: datos.imagen || anterior?.imagen || "",
@@ -339,6 +373,55 @@ export function operar(estado, accion) {
               productoCatalogo.id === anterior.id ? producto : productoCatalogo,
             )
           : [...estado.productos, producto],
+      });
+    }
+    case "CATEGORIA_GUARDAR": {
+      const categorias = obtenerCategorias(estado);
+      const nombre = String(accion.nombre || "").trim();
+      const clave = claveCategoria(nombre);
+      if (
+        !nombre ||
+        nombre.length > 60 ||
+        !clave ||
+        clave === "todos" ||
+        (accion.anterior && !categorias.includes(accion.anterior)) ||
+        categorias.some(
+          (categoria) =>
+            categoria !== accion.anterior &&
+            claveCategoria(categoria) === clave,
+        )
+      ) {
+        return respuestaConError(
+          "Ingresa un nombre de categoría único de hasta 60 caracteres.",
+        );
+      }
+      return respuestaCorrecta({
+        categorias: accion.anterior
+          ? categorias.map((categoria) =>
+              categoria === accion.anterior ? nombre : categoria,
+            )
+          : [...categorias, nombre],
+        productos: estado.productos.map((producto) =>
+          producto.categoria === accion.anterior
+            ? { ...producto, categoria: nombre }
+            : producto,
+        ),
+      });
+    }
+    case "CATEGORIA_ELIMINAR": {
+      if (
+        estado.productos.some(
+          (producto) => producto.categoria === accion.nombre,
+        )
+      ) {
+        return respuestaConError(
+          "Quita o cambia los productos de categoría antes de eliminarla.",
+        );
+      }
+      return respuestaCorrecta({
+        categorias: obtenerCategorias(estado).filter(
+          (categoria) => categoria !== accion.nombre,
+        ),
       });
     }
     case "PRODUCTO_ELIMINAR":
@@ -363,6 +446,9 @@ export function operar(estado, accion) {
       if (!roles.includes(datos.rol) || typeof datos.activo !== "boolean") {
         return respuestaConError("Revisa el rol y estado de la cuenta.");
       }
+      if (datos.nombre !== undefined && !String(datos.nombre).trim()) {
+        return respuestaConError("Ingresa el nombre del usuario.");
+      }
       if (
         anterior.correo === usuario.correo &&
         (datos.rol !== "admin" || !datos.activo)
@@ -372,9 +458,33 @@ export function operar(estado, accion) {
         );
       }
       return respuestaCorrecta({
+        sesion:
+          anterior.correo === usuario.correo
+            ? {
+                ...estado.sesion,
+                nombre: String(datos.nombre || anterior.nombre).trim(),
+              }
+            : estado.sesion,
         usuarios: estado.usuarios.map((cuentaGuardada) =>
           cuentaGuardada.correo === anterior.correo
-            ? { ...cuentaGuardada, rol: datos.rol, activo: datos.activo }
+            ? {
+                ...cuentaGuardada,
+                rol: datos.rol,
+                activo: datos.activo,
+                nombre: String(datos.nombre || cuentaGuardada.nombre).trim(),
+                telefono: String(
+                  datos.telefono ?? cuentaGuardada.telefono ?? "",
+                ).trim(),
+                direccion: String(
+                  datos.direccion ?? cuentaGuardada.direccion ?? "",
+                ).trim(),
+                comuna: String(
+                  datos.comuna ?? cuentaGuardada.comuna ?? "",
+                ).trim(),
+                region: String(
+                  datos.region ?? cuentaGuardada.region ?? "",
+                ).trim(),
+              }
             : cuentaGuardada,
         ),
       });

@@ -10,9 +10,11 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test tests/*.test.js",
+    "test": "pnpm test:logica && pnpm test:componentes",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:logica": "node --test tests/*.test.js",
+    "test:componentes": "vite build --config vite.pruebas.config.js && karma start karma.conf.cjs --single-run"
   },
   "dependencies": {
     "react": "19.3.1",
@@ -21,6 +23,10 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "6.1.2",
+    "jasmine-core": "7.0.2",
+    "karma": "6.4.4",
+    "karma-chrome-launcher": "3.2.0",
+    "karma-jasmine": "5.1.0",
     "prettier": "3.9.10",
     "vite": "8.3.4"
   }
