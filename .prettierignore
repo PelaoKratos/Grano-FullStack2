@@ -13,6 +13,5 @@ docs/*.docx
 docs/*.xlsx
 
 # Metadatos del sistema visual, independientes del formato del código.
-.impeccable/
 DESIGN.md
 PRODUCT.md

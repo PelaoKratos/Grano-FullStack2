@@ -6,8 +6,3 @@ react/node_modules/
 react/dist/
 ~$*
 .DS_Store
-.impeccable/review/
-.impeccable/questions/
-.impeccable/mocks/
-.impeccable/live/
-.impeccable/config.local.json

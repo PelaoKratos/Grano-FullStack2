@@ -1,8 +1,0 @@
-{
-  "source": "AI-generated illustrative product photography",
-  "tool": "OpenAI built-in image_gen.imagegen",
-  "createdAt": "2026-10-30",
-  "reference": "../ritual-grano.png",
-  "prompt": "Use case: product-mockup. Asset: one square realistic Grano catalog photograph. Input image is visual style reference only. Match its warm window light from left, rustic walnut tabletop, forest-green textured linen, creamy highlights, realistic tactile materials, softly blurred cozy interior and subtle natural shadows. Subject: one handmade cream ceramic pour-over coffee dripper with spiral ribs, conical shape, circular base and one side handle. It is empty, no paper filter, placed directly on the table. The entire ceramic dripper is visible including its opening and round foot, believable proportions. No coffee bag, cup or additional brewing equipment. No lettering. Eye-level three-quarter close product photograph with breathing room all around, main subject centered and occupying 65% of frame height. Sharp product, natural 50mm lens rendering, same photography session as reference. No collage, illustration, CGI, borders, watermark, extra text, certifications or claims. Square output.",
-  "processing": "Resized proportionally to 1200 px and encoded as WebP, quality 86. No scene edits."
-}

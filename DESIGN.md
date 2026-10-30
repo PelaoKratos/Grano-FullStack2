@@ -246,7 +246,7 @@ La notificación del carrito aparece sin mover el foco, anuncia la adición y of
 - **Do** mantener juntos nombre, sabor, precio y acción de compra.
 - **Do** usar Bitter para titulares y Karla para lectura y controles.
 - **Do** mantener el foco visible, los estados seleccionados y la preferencia de movimiento reducido.
-- **Do** conservar la portada original y su lenguaje fotográfico en todo el catálogo y en Nosotros. Las seis imágenes de producto se encuentran en `src/assets/fotografia/`; sus archivos `.webp.json` conservan los prompts y la procedencia de generación con IA. No son fotos de productos físicos.
+- **Do** conservar la portada original y su lenguaje fotográfico en todo el catálogo y en Nosotros. Las seis imágenes ilustrativas de producto se encuentran en `src/assets/fotografia/` y se comparten entre las distintas pantallas de la tienda.
 
 ### Don't:
 - **Don't** añadir sombras a las tarjetas de producto o a los paneles planos.

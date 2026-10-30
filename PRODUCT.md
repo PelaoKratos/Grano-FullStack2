@@ -1,7 +1,5 @@
 # Grano
 
-<!-- impeccable:product-schema 1 -->
-
 ## Platform
 
 web
@@ -22,11 +20,11 @@ El enrutamiento usa React Router DOM 7: `HashRouter`, `Routes`, `Route`, `Link`,
 
 ## Brand Commitments
 
-Nombre Grano, café y rituales. El usuario eligió una tienda cálida y artesanal y autorizó un rediseño conservando contenido y funciones. Referencia de trabajo: https://github.com/anthropics/claude-cookbooks/blob/main/coding/prompting_for_frontend_aesthetics.ipynb
+Nombre Grano, café y rituales. Identidad cálida y artesanal, con colores crema y verde y tipografías Bitter y Karla. Los cambios de diseño conservan el contenido y las funciones de la tienda.
 
 ## Evidence on Hand
 
-README.md, componentes React, catálogo y fotografías ilustrativas locales generadas con IA. La portada original fija el estilo realista y artesanal para todas las imágenes de la tienda. Los SVG se reservan para iconos y favicon. No inventar testimonios, premios, compromisos de envío, certificaciones ni datos de productores.
+README.md, componentes React, catálogo e imágenes ilustrativas locales. La portada original fija el estilo realista y artesanal para todas las imágenes de la tienda. Los SVG se reservan para iconos y favicon. No inventar testimonios, premios, compromisos de envío, certificaciones ni datos de productores.
 
 ## Product Principles
 

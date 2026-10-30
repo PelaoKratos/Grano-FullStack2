@@ -47,7 +47,7 @@ pnpm format
 pnpm format:check
 ```
 
-Prettier ordena el código del proyecto; Bootstrap, imágenes, metadatos de diseño y documentos originales conservan sus archivos existentes.
+Prettier ordena el código del proyecto; Bootstrap, imágenes y documentos originales conservan sus archivos existentes.
 
 ## Funciones
 
@@ -92,7 +92,7 @@ Es una demostración local: no incluye servidor, pagos reales ni autenticación 
 - `src/datos/operaciones.js`: validaciones y cambios de estado de la tienda.
 - `tests/`: pruebas de migración, stock, compra, permisos, catálogo, persistencia, rutas y RUT. `enrutamiento.test.js` renderiza el árbol real con `MemoryRouter`, incluidas las pantallas diferidas, sin abrir un navegador.
 
-`PRODUCT.md` y `DESIGN.md` documentan el producto y el diseño. La portada y las seis fotografías de producto son imágenes ilustrativas generadas con IA; no son fotos de productos físicos. La portada conserva su indicación de generación en el PNG y en `src/assets/ritual-grano.prompt.txt`. Los productos usan WebP locales optimizados en `src/assets/fotografia/`, con el prompt completo y su procedencia en cada archivo `.webp.json`.
+`PRODUCT.md` y `DESIGN.md` documentan el producto y el diseño. La portada y las seis imágenes de producto son ilustrativas. Los productos usan WebP locales optimizados en `src/assets/fotografia/`, compartidos por el catálogo, los detalles y el carrito.
 
 ## Rama de diseño
 

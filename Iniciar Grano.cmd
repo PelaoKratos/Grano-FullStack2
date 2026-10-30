@@ -3,7 +3,6 @@ setlocal
 cd /d "%~dp0"
 set "granoNode="
 for /f "delims=" %%N in ('where node 2^>nul') do if not defined granoNode set "granoNode=%%N"
-if not defined granoNode set "granoNode=%USERPROFILE%\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe"
 if not exist "%granoNode%" (
   echo Instala Node.js 22.12 o superior y vuelve a abrir este archivo.
   pause
@@ -15,8 +14,9 @@ if not exist "node_modules\vite\bin\vite.js" (
   if not errorlevel 1 (
     call npm install
   ) else (
-    if exist "%USERPROFILE%\.cache\codex-runtimes\codex-primary-runtime\dependencies\bin\fallback\pnpm.cmd" (
-      call "%USERPROFILE%\.cache\codex-runtimes\codex-primary-runtime\dependencies\bin\fallback\pnpm.cmd" install --frozen-lockfile
+    where pnpm >nul 2>nul
+    if not errorlevel 1 (
+      call pnpm install --frozen-lockfile
     ) else (
       echo Instala las dependencias con npm install y vuelve a abrir este archivo.
       pause
