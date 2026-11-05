@@ -1,6 +1,8 @@
 import { precioCLP } from "../../datos/formato.js";
 import { Link } from "react-router-dom";
 
+// Lista los pedidos con un enlace al comprobante y un control para cambiar su
+// estado.
 function AdminPedidos({ pedidos, onCambiarEstado }) {
   return (
     <section className="panel-formulario">

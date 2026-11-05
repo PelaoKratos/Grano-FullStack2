@@ -1,5 +1,7 @@
 import { precioCLP } from "../datos/formato.js";
 
+// Presenta los productos, el total y los datos de entrega disponibles en el
+// resumen.
 export default function ResumenPedido({ pedido }) {
   return (
     <section className="panel-formulario">

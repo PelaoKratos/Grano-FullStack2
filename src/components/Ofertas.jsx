@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import TarjetaProducto from "./TarjetaProducto.jsx";
 import { estaEnOferta } from "../datos/compra.js";
 
+// Muestra los productos que tienen un precio vigente menor que su precio
+// anterior.
 export default function Ofertas({ productos, onAgregar }) {
   const ofertas = productos.filter(estaEnOferta);
   return (

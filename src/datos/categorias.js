@@ -18,6 +18,8 @@ export function claveCategoria(nombre) {
   );
 }
 
+// Combina las categorías configuradas con las que usan los productos y quita
+// duplicados.
 export function obtenerCategorias(estado) {
   return [
     ...new Set(

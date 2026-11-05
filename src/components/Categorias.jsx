@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { claveCategoria } from "../datos/categorias.js";
 
+// Lista las categorías con la cantidad de productos y enlaza al catálogo
+// filtrado.
 export default function Categorias({ categorias, productos }) {
   return (
     <section>

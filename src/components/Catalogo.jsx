@@ -2,6 +2,8 @@ import { useState } from "react";
 import TarjetaProducto from "./TarjetaProducto.jsx";
 import { Link, useSearchParams } from "react-router-dom";
 import { categoriasBase, claveCategoria } from "../datos/categorias.js";
+// Filtra el catálogo por nombre y por categoría. La categoría queda en la URL
+// para compartir el filtro.
 export default function Catalogo({
   productos,
   onAgregar,

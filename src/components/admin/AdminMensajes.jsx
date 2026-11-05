@@ -1,3 +1,5 @@
+// Muestra los mensajes de contacto y permite marcar como leídos los que siguen
+// pendientes.
 function AdminMensajes({ mensajes, onMarcar }) {
   return (
     <section className="panel-formulario">

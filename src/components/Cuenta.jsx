@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+// Presenta los datos editables del perfil y, cuando corresponde, los pedidos
+// del usuario.
 function Cuenta({ usuario, pedidos = [], onGuardar, mostrarHistorial = true }) {
   const [mensaje, setMensaje] = useState("");
 
+  // Lee los campos del formulario y solicita guardar los cambios del perfil.
   function guardarDatos(evento) {
     evento.preventDefault();
     const datos = new FormData(evento.target);

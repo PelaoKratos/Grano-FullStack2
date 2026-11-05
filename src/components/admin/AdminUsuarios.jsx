@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+// Permite gestionar cuentas, roles y activación, y consultar el historial de
+// pedidos por usuario.
 function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
   const [mensaje, setMensaje] = useState("");
 
+  // Lee los datos de una cuenta nueva y muestra si el registro se completó.
   function crear(evento) {
     evento.preventDefault();
     const datos = new FormData(evento.currentTarget);
@@ -21,6 +24,8 @@ function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
     setMensaje("Usuario creado correctamente.");
   }
 
+  // Combina los cambios del formulario con la cuenta existente y solicita
+  // guardarla.
   function cambiar(usuario, cambio) {
     if (!onGuardar({ ...usuario, ...cambio })) {
       setMensaje("No puedes desactivar tu propia cuenta de administrador.");

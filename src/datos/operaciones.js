@@ -4,11 +4,14 @@ import { normalizarEntrega, validarEntrega } from "./compra.js";
 
 const roles = ["comprador", "vendedor", "admin"];
 export const estadosPedido = ["Recibido", "En preparación", "Entregado"];
+// Valida que el valor represente un entero desde cero. Acepta números escritos
+// en formularios.
 const esEnteroNoNegativo = (valor) =>
   valor !== "" &&
   valor !== null &&
   Number.isInteger(Number(valor)) &&
   Number(valor) >= 0;
+// Extrae de la cuenta solo los datos que identifican la sesión.
 const crearSesionDeUsuario = (cuentaGuardada) => ({
   nombre: cuentaGuardada.nombre,
   correo: cuentaGuardada.correo,
@@ -22,10 +25,14 @@ export function operar(estado, accion) {
       cuentaGuardada.correo === estado.sesion?.correo &&
       cuentaGuardada.activo !== false,
   );
+  // Une los cambios con el estado existente y devuelve el resultado de la
+  // acción.
   const respuestaCorrecta = (cambios, resultado = true) => ({
     estado: { ...estado, ...cambios },
     resultado,
   });
+  // Devuelve el estado original junto con el motivo por el que se rechazó la
+  // acción.
   const respuestaConError = (mensaje) => ({
     estado,
     resultado: false,
@@ -66,8 +73,11 @@ export function operar(estado, accion) {
             "Correo o contraseña incorrectos, o cuenta desactivada.",
           );
     }
+    // Al cerrar la sesión, se vacía también el carrito.
     case "CERRAR":
       return respuestaCorrecta({ sesion: null, carrito: [] });
+    // El registro público abre sesión como comprador. Un admin puede crear
+    // cuentas con otros roles desde su panel.
     case "REGISTRAR": {
       if (!accion.entrar && usuario?.rol !== "admin") {
         return respuestaConError(
@@ -187,6 +197,7 @@ export function operar(estado, accion) {
           : [...estado.carrito, { ...productoCatalogo, cantidad: 1 }],
       });
     }
+    // Ajusta la cantidad entre una unidad y el stock disponible.
     case "CANTIDAD": {
       const productoCatalogo = estado.productos.find(
         (productoCatalogo) => productoCatalogo.id === accion.id,
@@ -300,6 +311,7 @@ export function operar(estado, accion) {
       );
     }
     // Administración del catálogo, usuarios, mensajes y pedidos.
+    // Al editar, se conservan el identificador y la imagen si no se reemplaza.
     case "PRODUCTO_GUARDAR": {
       const datos = accion.producto;
       const nombre = datos.nombre.trim();
@@ -375,6 +387,7 @@ export function operar(estado, accion) {
           : [...estado.productos, producto],
       });
     }
+    // Un cambio de nombre se aplica también a los productos de la categoría.
     case "CATEGORIA_GUARDAR": {
       const categorias = obtenerCategorias(estado);
       const nombre = String(accion.nombre || "").trim();
@@ -408,6 +421,7 @@ export function operar(estado, accion) {
         ),
       });
     }
+    // Solo se pueden eliminar categorías que no tengan productos asignados.
     case "CATEGORIA_ELIMINAR": {
       if (
         estado.productos.some(
@@ -433,6 +447,7 @@ export function operar(estado, accion) {
           (productoCatalogo) => productoCatalogo.id !== accion.id,
         ),
       });
+    // Protege las cuentas de prueba y el acceso del administrador actual.
     case "USUARIO_GUARDAR": {
       const anterior = estado.usuarios.find(
         (cuentaGuardada) => cuentaGuardada.correo === accion.usuario.correo,

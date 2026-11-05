@@ -1,8 +1,12 @@
 import { useState } from "react";
 
+// Muestra el formulario de contacto y usa los datos de la sesión cuando están
+// disponibles.
 function Contacto({ usuario, onEnviar }) {
   const [mensaje, setMensaje] = useState("");
 
+  // Arma el mensaje con fecha y estado inicial y limpia el formulario cuando se
+  // guarda.
   function enviarMensaje(evento) {
     evento.preventDefault();
     const datos = new FormData(evento.target);

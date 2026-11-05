@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { precioCLP } from "../../datos/formato.js";
 
+// Reúne el formulario de productos y los controles para administrar el catálogo
+// y el stock.
 function AdminProductos({
   productos,
   categorias = ["Café en grano", "Métodos", "Accesorios"],
@@ -16,6 +18,7 @@ function AdminProductos({
   }, [editado]);
   const [mensaje, setMensaje] = useState("");
 
+  // Prepara los datos del producto y convierte la imagen si supera la validación.
   function guardar(evento) {
     evento.preventDefault();
     const formulario = evento.currentTarget;
@@ -33,6 +36,8 @@ function AdminProductos({
       critico: datos.get("critico"),
     };
 
+    // Envía el producto con la imagen disponible y limpia el formulario si se
+    // guardó.
     function terminar(imagen) {
       if (!onGuardar({ ...producto, imagen })) {
         setMensaje(
@@ -62,6 +67,8 @@ function AdminProductos({
     lector.readAsDataURL(archivo);
   }
 
+  // Pide confirmación para quitar un producto y cierra su edición si se
+  // eliminó.
   function eliminar(producto) {
     if (!window.confirm(`¿Quitar ${producto.nombre} del catálogo?`)) {
       return;

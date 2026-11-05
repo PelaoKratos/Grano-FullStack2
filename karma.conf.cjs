@@ -21,6 +21,8 @@ if (!process.env.CHROME_BIN && process.platform === "win32") {
     candidatos.find((archivo) => fs.existsSync(archivo)) || "";
 }
 
+// Configura Karma para ejecutar las pruebas Jasmine compiladas en un navegador
+// sin ventanas.
 module.exports = (config) =>
   config.set({
     frameworks: ["jasmine"],

@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { articulos } from "../datos/articulos.js";
 
+// Lista las historias del café y enlaza cada una con su página de lectura.
 export function Blog() {
   return (
     <section>
@@ -24,6 +25,7 @@ export function Blog() {
   );
 }
 
+// Usa el identificador de la URL para elegir qué historia mostrar.
 export function Articulo() {
   const { slug } = useParams();
   const articulo = articulos.find((articulo) => articulo.slug === slug);

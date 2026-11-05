@@ -35,9 +35,12 @@ const Administracion = lazy(() => import("./components/Administracion.jsx"));
 // Un error de pantalla muestra una recuperación sin borrar los datos guardados.
 class LimiteError extends Component {
   state = { error: false };
+  // React llama a este método cuando falla una pantalla hija para activar la
+  // vista de recuperación.
   static getDerivedStateFromError() {
     return { error: true };
   }
+  // Muestra la tienda o el botón de recarga según el estado de error.
   render() {
     return this.state.error ? (
       <main className="container area-app">
@@ -67,6 +70,8 @@ function RutasCompatibles({ children }) {
   );
 }
 
+// Muestra una salida hacia el catálogo cuando la dirección no coincide con
+// ninguna ruta.
 function PaginaNoEncontrada() {
   return (
     <section>
@@ -129,12 +134,15 @@ function Tienda() {
   const esPrimeraRutaRef = useRef(true);
   const esInicio = rutaActual === "/";
 
+  // Pide agregar una unidad al carrito y muestra el aviso solo si se guardó.
   function agregarProducto(producto) {
     if (tienda.agregar(producto)) {
       setAviso(`${producto.nombre} añadido.`);
       setMensajeCompra("");
     }
   }
+  // Oculta el aviso después de unos segundos si el foco del teclado está fuera
+  // de él.
   useEffect(() => {
     if (!aviso) {
       return;
@@ -146,6 +154,8 @@ function Tienda() {
     }, 5500);
     return () => clearTimeout(temporizadorAviso);
   }, [aviso]);
+  // Actualiza el título, el desplazamiento y el foco al navegar entre
+  // pantallas.
   useEffect(() => {
     const titulosPorRuta = {
       "/": "Inicio",
@@ -196,6 +206,7 @@ function Tienda() {
     window.scrollTo({ top: 0, behavior: "instant" });
     contenidoPrincipalRef.current?.focus({ preventScroll: true });
   }, [rutaActual]);
+  // Inicia sesión y elige la pantalla de destino según el rol del usuario.
   function iniciarSesion(correo, clave) {
     const usuario = tienda.iniciar(correo, clave);
     if (!usuario) {
@@ -216,6 +227,7 @@ function Tienda() {
     return usuario;
   }
 
+  // Abre la sesión nueva y conserva el destino solicitado antes del registro.
   function registrarComprador(usuario) {
     if (!tienda.registrar(usuario, true)) {
       return false;
@@ -223,6 +235,8 @@ function Tienda() {
     navegar(parametros.get("destino") === "carrito" ? "/carrito" : "/cuenta");
     return true;
   }
+  // Intenta registrar el pedido y dirige al comprobante o al resumen del
+  // intento fallido.
   function realizarCompra(entrega, resultadoPago) {
     const resumen = {
       productos: tienda.carrito.map((producto) => ({ ...producto })),
@@ -249,6 +263,8 @@ function Tienda() {
     return pedido;
   }
 
+  // Pide cerrar la sesión y limpia los avisos de compra cuando la operación se
+  // guarda.
   function cerrarSesion() {
     const cerrado = tienda.cerrar();
     if (cerrado) {
@@ -473,6 +489,8 @@ function Tienda() {
     </>
   );
 }
+// Monta la tienda con soporte para rutas antiguas y una pantalla de
+// recuperación ante errores.
 export default function App() {
   return (
     <LimiteError>

@@ -5,6 +5,7 @@ import imagenColombia from "../assets/fotografia/colombia.webp";
 import { useState } from "react";
 import Icono from "./Icono.jsx";
 
+// Presenta la historia de Grano y controla la imagen activa de la galería.
 function Nosotros() {
   const [actual, setActual] = useState(0);
   const imagenes = [

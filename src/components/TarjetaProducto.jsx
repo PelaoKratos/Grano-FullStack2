@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import Icono from "./Icono.jsx";
 import { estaEnOferta } from "../datos/compra.js";
+// Reutiliza la ficha breve en portada y catálogo con su precio, enlace y botón
+// de compra.
 export default function TarjetaProducto({
   producto,
   onAgregar,

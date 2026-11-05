@@ -3,6 +3,8 @@ import { usuariosDemostracion } from "../datos/usuarios.js";
 import { useState } from "react";
 import { esRutValido, formatearRut } from "../datos/rut.js";
 
+// Muestra los formularios de acceso, registro o cambio de contraseña según la
+// ruta.
 function Acceso({
   onIniciar,
   onRegistrar,
@@ -19,6 +21,8 @@ function Acceso({
   const [rut, setRut] = useState("");
   const [mensajeRut, setMensajeRut] = useState("");
 
+  // Lee el correo y la contraseña del formulario y muestra un mensaje si se
+  // rechaza el acceso.
   function iniciarSesion(evento) {
     evento.preventDefault();
     const datos = new FormData(evento.target);
@@ -32,6 +36,8 @@ function Acceso({
     setMensajeLogin("");
   }
 
+  // Valida el RUT y la confirmación de contraseña antes de solicitar una cuenta
+  // de comprador.
   function registrarCuenta(evento) {
     evento.preventDefault();
     const datos = new FormData(evento.target);
@@ -61,6 +67,8 @@ function Acceso({
     // Al crear la cuenta, App abre la sesión y muestra Mi cuenta.
   }
 
+  // Revisa el dígito verificador y aplica el formato chileno cuando el RUT es
+  // válido.
   function revisarRut() {
     if (rut.length === 0) {
       setMensajeRut("");
@@ -72,6 +80,8 @@ function Acceso({
     }
   }
 
+  // Envía las credenciales y la nueva contraseña, y limpia el formulario si se
+  // guardó el cambio.
   function cambiarContrasena(evento) {
     evento.preventDefault();
     const datos = new FormData(evento.target);

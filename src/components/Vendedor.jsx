@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { precioCLP } from "../datos/formato.js";
 
+// Permite al vendedor consultar el stock del catálogo y revisar los pedidos
+// registrados.
 function Vendedor({ productos, pedidos }) {
   return (
     <section className="panel-vendedor">

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Icono from "./Icono.jsx";
 import TarjetaProducto from "./TarjetaProducto.jsx";
 import fotografia from "../assets/ritual-grano.png";
+// Muestra la portada y permite elegir un café del catálogo para añadirlo.
 export default function Inicio({ productos, onAgregar }) {
   const [sabor, setSabor] = useState("colombia");
   const cafes = productos.filter(

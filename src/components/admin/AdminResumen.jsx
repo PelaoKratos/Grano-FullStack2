@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+// Reúne los indicadores del panel y señala los productos que alcanzaron su
+// stock crítico.
 function AdminResumen({ productos, pedidos, usuarios, mensajes }) {
   const stockCritico = productos.filter(
     (producto) => producto.stock <= producto.critico,

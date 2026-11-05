@@ -1,6 +1,8 @@
 import { resumirVentas } from "../../datos/compra.js";
 import { precioCLP } from "../../datos/formato.js";
 
+// Presenta los totales de venta, el recuento por estado y los productos con
+// stock crítico.
 export default function AdminReportes({ pedidos, productos }) {
   const reporte = resumirVentas(pedidos, productos);
   return (

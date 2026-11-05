@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+// Lista las categorías y ofrece controles para crearlas, renombrarlas o
+// eliminarlas.
 export default function AdminCategorias({
   categorias,
   productos,
@@ -9,6 +11,8 @@ export default function AdminCategorias({
   const [editada, setEditada] = useState("");
   const [nombre, setNombre] = useState("");
   const [mensaje, setMensaje] = useState("");
+  // Solicita crear o renombrar la categoría y reinicia el formulario si se
+  // guardó.
   function guardar(evento) {
     evento.preventDefault();
     if (!onGuardar(editada, nombre)) {

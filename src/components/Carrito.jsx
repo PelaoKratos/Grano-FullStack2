@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { totalCarrito } from "../datos/almacenamiento.js";
+// Muestra cantidades y total del carrito y controla si se puede avanzar según
+// el stock y la sesión.
 export default function Carrito({
   carrito,
   sesion,

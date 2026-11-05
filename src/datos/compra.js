@@ -1,3 +1,5 @@
+// Devuelve el primer problema de contacto o entrega, o una cadena vacía si los
+// datos son válidos.
 export function validarEntrega(entrega) {
   if (!entrega || !["domicilio", "retiro"].includes(entrega.metodo)) {
     return "Selecciona una opción de entrega.";
@@ -22,6 +24,8 @@ export function validarEntrega(entrega) {
   return "";
 }
 
+// Conserva los campos de entrega esperados, limpia espacios y limita el largo
+// de cada valor.
 export function normalizarEntrega(datos) {
   const entrega = {};
   for (const campo of [
@@ -41,10 +45,13 @@ export function normalizarEntrega(datos) {
   return entrega;
 }
 
+// Detecta una oferta si el precio anterior es un número válido mayor que el
+// vigente.
 export const estaEnOferta = (producto) =>
   Number.isFinite(Number(producto.precioAnterior)) &&
   Number(producto.precioAnterior) > producto.precio;
 
+// Calcula las ventas, agrupa los pedidos por estado y detecta el stock crítico.
 export function resumirVentas(pedidos, productos) {
   return {
     cantidad: pedidos.length,

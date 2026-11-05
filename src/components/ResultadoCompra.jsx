@@ -1,6 +1,8 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import ResumenPedido from "./ResumenPedido.jsx";
 
+// Muestra el comprobante del comprador o el resumen temporal de un intento
+// fallido.
 export default function ResultadoCompra({ pedidos, sesion, error = false }) {
   const { id } = useParams();
   const { state } = useLocation();

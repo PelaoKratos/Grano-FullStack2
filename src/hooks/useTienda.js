@@ -22,6 +22,8 @@ export function useTienda() {
   const estadoActualRef = useRef(estado);
   const [error, setError] = useState("");
 
+  // Aplica las reglas de la tienda y actualiza la pantalla cuando se confirma
+  // el guardado.
   function ejecutar(accion) {
     // Se vuelve a leer el navegador por si otra pestaña cambió el stock o la sesión.
     const estadoGuardado = cargarEstado(almacenamiento, productosIniciales);
@@ -59,6 +61,8 @@ export function useTienda() {
       setError("El almacenamiento del navegador no está disponible.");
     }
 
+    // Recarga el estado de Grano si otra pestaña modifica la clave de la
+    // tienda.
     function sincronizar(evento) {
       if (evento.key === CLAVE_TIENDA) {
         const estadoGuardado = cargarEstado(almacenamiento, productosIniciales);
@@ -83,6 +87,8 @@ export function useTienda() {
     cantidad: lineaCarrito.cantidad,
   }));
 
+  // Envía los datos del catálogo y proporciona un identificador para los
+  // productos nuevos.
   function guardarProducto(producto) {
     return ejecutar({
       tipo: "PRODUCTO_GUARDAR",
@@ -91,6 +97,8 @@ export function useTienda() {
     });
   }
 
+  // Envía la compra a las reglas de la tienda con un identificador de pedido y
+  // la fecha local.
   function comprar(entrega, resultadoPago = "aprobado") {
     return ejecutar({
       tipo: "COMPRAR",

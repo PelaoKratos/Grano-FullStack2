@@ -10,6 +10,8 @@ import Cuenta from "./Cuenta.jsx";
 import ResumenPedido from "./ResumenPedido.jsx";
 import { useParams } from "react-router-dom";
 
+// Busca el pedido por el identificador de la URL para mostrar su comprobante en
+// administración.
 function DetallePedidoAdmin({ pedidos }) {
   const { id } = useParams();
   const pedido = pedidos.find((pedido) => pedido.id === id);
@@ -36,6 +38,8 @@ const secciones = [
   ["perfil", "Mi perfil"],
 ];
 
+// Organiza las secciones del panel y conecta cada una con los datos y las
+// acciones de la tienda.
 export default function Administracion({ tienda }) {
   return (
     <section className="administracion-app">

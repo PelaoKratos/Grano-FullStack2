@@ -4,6 +4,8 @@ import { totalCarrito } from "../datos/almacenamiento.js";
 import { normalizarEntrega, validarEntrega } from "../datos/compra.js";
 import ResumenPedido from "./ResumenPedido.jsx";
 
+// Prepara los datos de entrega con el perfil o el intento anterior y presenta
+// el pago de demostración.
 export default function Checkout({ usuario, carrito, onComprar }) {
   const { state } = useLocation();
   const [entrega, setEntrega] = useState(() =>
@@ -13,9 +15,13 @@ export default function Checkout({ usuario, carrito, onComprar }) {
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
 
+  // Actualiza el campo de entrega cuyo nombre coincide con el del control
+  // editado.
   function cambiar(evento) {
     setEntrega({ ...entrega, [evento.target.name]: evento.target.value });
   }
+  // Valida los datos de entrega y solicita la compra con el resultado de pago
+  // seleccionado.
   function confirmar(evento) {
     evento.preventDefault();
     if (enviando) {

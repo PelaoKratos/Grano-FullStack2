@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+// Muestra la ficha del producto y permite agregarlo al carrito según su
+// disponibilidad.
 export default function DetalleProducto({ producto, onAgregar }) {
   return (
     <>

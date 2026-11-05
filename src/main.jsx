@@ -10,6 +10,7 @@ import "./styles/diseno.css";
 import "./styles/react.css";
 import { rutasAnteriores } from "./datos/rutas.js";
 
+// Traduce las direcciones HTML antiguas antes de que React procese la ruta.
 const archivoAnterior = location.pathname.split("/").pop();
 if (rutasAnteriores[archivoAnterior]) {
   const parametros = new URLSearchParams(location.search);

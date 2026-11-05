@@ -1,3 +1,5 @@
+// Dibuja un SVG decorativo para el menú, la bolsa o la flecha según el tipo
+// solicitado.
 export default function Icono({ tipo = "flecha" }) {
   return (
     <svg

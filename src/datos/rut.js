@@ -28,6 +28,8 @@ export function esRutValido(rut) {
   return digito === digitoCorrecto;
 }
 
+// Presenta el cuerpo del RUT con puntos y separa el dígito verificador con un
+// guion.
 export function formatearRut(rut) {
   const rutLimpio = rut.replace(/[^0-9kK]/g, "").toUpperCase();
   const cuerpo = rutLimpio.slice(0, -1);

@@ -1,11 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Icono from "./Icono.jsx";
+// Muestra la navegación según la sesión, el contador del carrito y el menú
+// móvil.
 export function Header({ path: rutaActual, sesion, cantidad, onCerrar }) {
   const navegar = useNavigate();
   const [abierto, setAbierto] = useState(false);
   useEffect(() => setAbierto(false), [rutaActual]);
   useEffect(() => {
+    // Cierra el menú abierto al pulsar Escape y devuelve el foco al botón del
+    // menú.
     function escape(evento) {
       if (
         evento.key === "Escape" &&
@@ -115,6 +119,8 @@ export function Header({ path: rutaActual, sesion, cantidad, onCerrar }) {
     </>
   );
 }
+// Muestra los enlaces de navegación y la información de marca del pie de
+// página.
 export function Footer() {
   return (
     <footer className="pie">

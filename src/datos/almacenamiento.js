@@ -16,6 +16,7 @@ export const normalizarId = (id) =>
   idsProductosBase[Number(id) - 1] && /^\d+$/.test(String(id))
     ? idsProductosBase[Number(id) - 1]
     : String(id ?? "");
+// Usa una lista vacía cuando los datos recuperados no son un arreglo.
 const asegurarLista = (valor) => (Array.isArray(valor) ? valor : []);
 // Si una clave está vacía o tiene JSON dañado, se usa el valor alternativo.
 function leerJSON(almacenamiento, clave, valorAlternativo = null) {
@@ -26,6 +27,8 @@ function leerJSON(almacenamiento, clave, valorAlternativo = null) {
   }
 }
 
+// Combina registros de distintos orígenes usando una clave común, como el
+// correo.
 function combinarSinDuplicados(primeros, segundos, obtenerClave) {
   const registrosPorClave = new Map();
 
@@ -37,11 +40,15 @@ function combinarSinDuplicados(primeros, segundos, obtenerClave) {
   return [...registrosPorClave.values()];
 }
 
+// Unifica el formato del correo para comparar cuentas guardadas en distintas
+// versiones.
 const normalizarCorreo = (usuarioGuardado) =>
   typeof usuarioGuardado?.correo === "string"
     ? usuarioGuardado.correo.trim().toLowerCase()
     : "";
 
+// Recupera productos válidos, unifica sus identificadores y completa los campos
+// faltantes.
 function normalizarProductos(items, productosIniciales) {
   const productosUnicos = new Map();
   for (const registroGuardado of asegurarLista(items)) {
@@ -125,6 +132,7 @@ export function normalizarCarrito(items, productos) {
   }
   return [...carritoPorProducto.values()];
 }
+// Suma los subtotales de todas las líneas del carrito en pesos chilenos.
 export const totalCarrito = (items) =>
   items.reduce(
     (total, registroGuardado) =>
