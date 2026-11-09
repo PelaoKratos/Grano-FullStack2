@@ -1,6 +1,9 @@
 tmp/
 node_modules/
+dist/
+.vite/
 react/node_modules/
 react/dist/
 ~$*
 .DS_Store
+entrega/

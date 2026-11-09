@@ -1,0 +1,33 @@
+{
+  "name": "grano",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "pnpm test:logica && pnpm test:componentes",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:logica": "node --test tests/*.test.js",
+    "test:componentes": "vite build --config vite.pruebas.config.js && karma start karma.conf.cjs --single-run"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router-dom": "7.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.1.2",
+    "jasmine-core": "7.0.2",
+    "karma": "6.4.4",
+    "karma-chrome-launcher": "3.2.0",
+    "karma-jasmine": "5.1.0",
+    "prettier": "3.9.10",
+    "vite": "8.3.4"
+  }
+}
