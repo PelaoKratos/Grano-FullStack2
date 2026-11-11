@@ -131,6 +131,25 @@ test("crear cuenta y volver al acceso conservan el destino del carrito", async (
   );
 });
 
+test("inicio de sesión, registro y cambio de contraseña tienen pantallas separadas", async () => {
+  const login = await pantalla("/acceso");
+  assert.match(login, /id="login-correo"/);
+  assert.match(login, /Copiar datos/);
+  assert.doesNotMatch(login, /id="registro-nombre"|id="clave-nueva"/);
+
+  const registro = await pantalla("/registro");
+  assert.match(registro, /id="registro-rut"/);
+  assert.match(registro, /id="registro-confirmacion"/);
+  assert.doesNotMatch(
+    registro,
+    /id="login-correo"|id="clave-nueva"|Copiar datos/,
+  );
+
+  const cambio = await pantalla("/cambiar-clave");
+  assert.match(cambio, /id="clave-nueva"/);
+  assert.doesNotMatch(cambio, /id="login-correo"|id="registro-nombre"/);
+});
+
 test("las nuevas vistas públicas resuelven categorías, ofertas y artículos", async () => {
   assert.match(await pantalla("/categorias"), /Café en grano/);
   assert.match(await pantalla("/ofertas"), /Por ahora no hay ofertas/);

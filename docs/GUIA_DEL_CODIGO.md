@@ -4,22 +4,28 @@ Grano es una tienda de demostración hecha con React. Permite explorar productos
 
 ## Por dónde empezar a leer
 
-| Archivo o carpeta             | Responsabilidad                                                    |
-| ----------------------------- | ------------------------------------------------------------------ |
-| `index.html`                  | Contiene el elemento `root` donde se monta React.                  |
-| `src/main.jsx`                | Carga los estilos y monta `App` dentro de `HashRouter`.            |
-| `src/App.jsx`                 | Reúne la tienda, las rutas, los permisos y los avisos.             |
-| `src/components/`             | Contiene las pantallas y piezas reutilizables de la interfaz.      |
-| `src/components/admin/`       | Separa productos, usuarios, pedidos, mensajes y resumen.           |
-| `src/hooks/useTienda.js`      | Conecta las pantallas con las operaciones y el guardado.           |
-| `src/datos/operaciones.js`    | Valida cada acción y calcula el siguiente estado.                  |
-| `src/datos/almacenamiento.js` | Lee, migra y guarda los datos de localStorage.                     |
-| `src/datos/productos.js`      | Define el catálogo inicial y sus imágenes.                         |
-| `src/datos/rut.js`            | Valida y formatea el RUT.                                          |
-| `src/styles/`                 | Define colores, tipografías, componentes y adaptación a pantallas. |
-| `tests/`                      | Comprueba las reglas de compra, los datos y las rutas.             |
+| Archivo o carpeta                  | Responsabilidad                                                    |
+| ---------------------------------- | ------------------------------------------------------------------ |
+| `index.html`                       | Contiene el elemento `root` donde se monta React.                  |
+| `src/main.jsx`                     | Carga los estilos y monta `App` dentro de `HashRouter`.            |
+| `src/App.jsx`                      | Reúne la tienda con cabecera, contenido, pie de página y avisos.   |
+| `src/routes/`                      | Organiza las rutas, los permisos y los enlaces anteriores.         |
+| `src/pages/`                       | Separa login, registro, cambio de contraseña y otras páginas.      |
+| `src/components/`                  | Contiene las pantallas y piezas reutilizables de la interfaz.      |
+| `src/components/admin/`            | Separa productos, usuarios, pedidos, mensajes y resumen.           |
+| `src/hooks/useTienda.js`           | Conecta las pantallas con las operaciones y el guardado.           |
+| `src/hooks/useAccionesTienda.js`   | Agrupa acciones de acceso, carrito y compra con su navegación.     |
+| `src/hooks/useNavegacionPagina.js` | Actualiza título y foco al cambiar de página.                      |
+| `src/datos/operaciones.js`         | Valida cada acción y calcula el siguiente estado.                  |
+| `src/datos/almacenamiento.js`      | Lee, migra y guarda los datos de localStorage.                     |
+| `src/datos/productos.js`           | Define el catálogo inicial y sus imágenes.                         |
+| `src/datos/rut.js`                 | Valida y formatea el RUT.                                          |
+| `src/styles/`                      | Define colores, tipografías, componentes y adaptación a pantallas. |
+| `tests/`                           | Comprueba las reglas de compra, los datos y las rutas.             |
 
-Un orden útil de lectura es `main.jsx`, `App.jsx`, `TarjetaProducto.jsx`, `useTienda.js`, `operaciones.js` y `almacenamiento.js`.
+Un orden útil de lectura es `main.jsx`, `App.jsx`, `routes/RutasTienda.jsx`, `TarjetaProducto.jsx`, `useAccionesTienda.js`, `useTienda.js`, `operaciones.js` y `almacenamiento.js`.
+
+En `/acceso` solo aparece el formulario para iniciar sesión, junto con las cuentas de prueba. El enlace Crear una cuenta abre `/registro`, que tiene su propio formulario y validaciones. Cambiar contraseña abre `/cambiar-clave`. Cada formulario está en su archivo dentro de `pages/`, y los enlaces conservan el destino del carrito cuando el usuario venía desde allí.
 
 ## Cómo se reparten las responsabilidades
 
@@ -45,7 +51,7 @@ Por eso un formulario no necesita escribir directamente en localStorage. Las ope
 
 1. `TarjetaProducto` recibe `producto` y `onAgregar` mediante props.
 2. El botón llama a `onAgregar(producto)`.
-3. En `App.jsx`, `agregarProducto` llama a `tienda.agregar(producto)`.
+3. En `useAccionesTienda.js`, `agregarProducto` llama a `tienda.agregar(producto)`.
 4. `useTienda` envía la acción `{ tipo: "AGREGAR", id: producto.id }` a `ejecutar`.
 5. `operar` revisa el stock y aumenta la cantidad o crea una nueva línea.
 6. Si el resultado es válido y se puede guardar, React actualiza el carrito y muestra el aviso.
@@ -60,7 +66,7 @@ Si falta stock o falla el guardado, la tienda no muestra una compra exitosa. Las
 
 ## Cómo funciona React Router
 
-`HashRouter` permite usar direcciones como `#/productos` en un alojamiento estático. En `App.jsx`, cada `Route` indica qué componente debe mostrarse.
+`HashRouter` permite usar direcciones como `#/productos` en un alojamiento estático. En `routes/RutasTienda.jsx`, cada `Route` indica qué componente debe mostrarse. `RutaProtegida.jsx` comprueba el rol y `RutasCompatibles.jsx` adapta enlaces anteriores.
 
 | Elemento           | Para qué se usa en Grano                                     |
 | ------------------ | ------------------------------------------------------------ |
@@ -112,14 +118,14 @@ pnpm build
 
 ## Guion breve para una presentación
 
-El recorrido de compra ahora pasa por `Checkout.jsx`. El formulario precarga el perfil y entrega los datos a `realizarCompra` en `App.jsx`. `validarEntrega` comprueba los campos; `operar` valida stock y pago simulado y devuelve el nuevo estado. Solo una confirmación aprobada y guardada abre `/compra/confirmada/:id`. El rechazo muestra `/compra/error`, conserva el carrito y permite reintentar con los mismos datos.
+El recorrido de compra pasa por `Checkout.jsx`. El formulario precarga el perfil y entrega los datos a `realizarCompra` en `useAccionesTienda.js`. `validarEntrega` comprueba los campos; `operar` valida stock y pago simulado y devuelve el nuevo estado. Solo una confirmación aprobada y guardada abre `/compra/confirmada/:id`. El rechazo muestra `/compra/error`, conserva el carrito y permite reintentar con los mismos datos.
 
 `ResumenPedido` se reutiliza en checkout, resultados y administración. Los pedidos anteriores sin dirección siguen siendo válidos. Las categorías se guardan como una lista adicional en el mismo esquema 2; al renombrarlas se actualizan los productos, y los reportes suman los precios históricos de cada pedido.
 
 Jasmine define los casos de componentes con `describe`, `it`, `expect` y espías de callbacks. Karma prepara un navegador Chrome sin ventanas y ejecuta esos casos; Vite convierte el JSX del archivo de pruebas. Los eventos se envían al DOM real y `act` permite comprobar la actualización de React antes de verificar el resultado.
 
 1. Explicar que es una tienda React de demostración con persistencia local.
-2. Mostrar `main.jsx` y las rutas de `App.jsx`.
+2. Mostrar `main.jsx`, la composición de `App.jsx` y las rutas de `routes/RutasTienda.jsx`.
 3. Abrir `TarjetaProducto.jsx` y seguir el botón Añadir hasta `useTienda`.
 4. Mostrar la acción `COMPRAR` y explicar por qué inventario, pedido y carrito se guardan juntos.
 5. Mostrar los paneles por rol y las pruebas del proyecto.

@@ -70,6 +70,76 @@ const comprador = {
 };
 const carrito = [{ ...productos[0], cantidad: 2 }];
 
+describe("Páginas de acceso separadas", () => {
+  beforeEach(() => {
+    const estado = cargarEstado({ getItem: () => null }, productos);
+    localStorage.setItem(CLAVE_TIENDA, JSON.stringify(estado));
+  });
+
+  it("permite ir del login al registro y volver conservando el destino", async () => {
+    await mostrar(<App />, "/acceso?destino=carrito");
+    expect(contenedor.querySelector("#login-correo")).not.toBeNull();
+    expect(contenedor.querySelector("#registro-nombre")).toBeNull();
+    await clic(
+      contenedor.querySelector('main a[href="/registro?destino=carrito"]'),
+    );
+    expect(contenedor.querySelector("#login-correo")).toBeNull();
+    expect(contenedor.querySelector("#registro-nombre")).not.toBeNull();
+    await clic(
+      contenedor.querySelector('main a[href="/acceso?destino=carrito"]'),
+    );
+    expect(contenedor.querySelector("#login-correo")).not.toBeNull();
+    expect(contenedor.querySelector("#registro-nombre")).toBeNull();
+  });
+
+  it("el enlace antiguo de registro abre la nueva página", async () => {
+    await mostrar(<App />, "/acceso?registro&destino=carrito");
+    expect(contenedor.querySelector("#registro-nombre")).not.toBeNull();
+    expect(contenedor.querySelector("#login-correo")).toBeNull();
+    expect(
+      contenedor.querySelector('main a[href="/acceso?destino=carrito"]'),
+    ).not.toBeNull();
+  });
+
+  it("valida el registro y abre la sesión nueva regresando al carrito", async () => {
+    await mostrar(<App />, "/registro?destino=carrito");
+    await escribir("#registro-nombre", "Cliente nuevo");
+    await escribir("#registro-correo", "nuevo-grano@example.test");
+    await escribir("#registro-rut", "12.345.678-4");
+    await escribir("#registro-contrasena", "Prueba123");
+    await escribir("#registro-confirmacion", "Distinta123");
+    await enviar();
+    expect(contenedor.textContent).toContain("Ingresa un RUT válido");
+    expect(JSON.parse(localStorage.getItem(CLAVE_TIENDA)).sesion).toBeNull();
+
+    await escribir("#registro-rut", "12.345.678-5");
+    await enviar();
+    expect(contenedor.textContent).toContain("Las contraseñas no coinciden");
+    expect(JSON.parse(localStorage.getItem(CLAVE_TIENDA)).sesion).toBeNull();
+
+    await escribir("#registro-confirmacion", "Prueba123");
+    await enviar();
+    expect(JSON.parse(localStorage.getItem(CLAVE_TIENDA)).sesion.correo).toBe(
+      "nuevo-grano@example.test",
+    );
+    expect(contenedor.querySelector("main h1").textContent).toBe("Carrito");
+  });
+
+  it("permite iniciar sesión desde la página individual y regresar al carrito", async () => {
+    await mostrar(<App />, "/acceso?destino=carrito");
+    await escribir("#login-correo", "comprador@duocuc.cl");
+    await escribir("#login-contrasena", "incorrecta");
+    await enviar();
+    expect(contenedor.textContent).toContain("Correo o contraseña incorrectos");
+    await escribir("#login-contrasena", "Cliente123");
+    await enviar();
+    expect(JSON.parse(localStorage.getItem(CLAVE_TIENDA)).sesion.rol).toBe(
+      "comprador",
+    );
+    expect(contenedor.querySelector("main h1").textContent).toBe("Carrito");
+  });
+});
+
 describe("Renderizado y props", () => {
   it("muestra el nombre, precio e imagen recibidos", async () => {
     await mostrar(

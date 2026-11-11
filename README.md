@@ -36,7 +36,7 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`pnpm test` ejecuta 40 pruebas de lógica, persistencia y rutas y 17 pruebas de componentes con Jasmine y Karma. Requiere Chrome instalado para ejecutarlo sin ventanas. En Windows también se detecta Edge como alternativa; puedes indicar el navegador con `CHROME_BIN`. Para ejecutar cada grupo por separado usa `pnpm test:logica` o `pnpm test:componentes`. La configuración está en `karma.conf.cjs` y `vite.pruebas.config.js`.
+`pnpm test` ejecuta 41 pruebas de lógica, persistencia y rutas y 21 pruebas de componentes con Jasmine y Karma. Requiere Chrome instalado para ejecutarlo sin ventanas. En Windows también se detecta Edge como alternativa; puedes indicar el navegador con `CHROME_BIN`. Para ejecutar cada grupo por separado usa `pnpm test:logica` o `pnpm test:componentes`. La configuración está en `karma.conf.cjs` y `vite.pruebas.config.js`.
 
 ## Leer y explicar el código
 
@@ -57,6 +57,7 @@ Prettier ordena el código del proyecto; Bootstrap, imágenes y documentos origi
 - Catálogo con búsqueda por nombre, filtros y fichas compartibles por URL.
 - Carrito con controles de cantidad, validación de stock, total actualizado y persistencia.
 - Inicio de sesión, registro con confirmación de contraseña, validación de RUT y cambio de contraseña de demostración.
+- Inicio de sesión, registro y cambio de contraseña en páginas separadas. Los enlaces entre formularios conservan el regreso al carrito.
 - Perfil, dirección, comuna, región e historial de pedidos.
 - Contacto y mensajes que administración puede marcar como leídos.
 - Administración por secciones: resumen, edición y eliminación del catálogo completo, stock crítico, roles y activación de usuarios, estados de pedidos y mensajes. Imágenes JPG, PNG o WebP de hasta 500 KB.
@@ -88,11 +89,15 @@ Es una demostración local: no incluye servidor, pagos reales ni autenticación 
 
 ## Estructura
 
-- `src/App.jsx`: composición de la aplicación, rutas declaradas con `Routes` y `Route`, detalle con `useParams`, accesos por rol, compatibilidad con enlaces antiguos y página no encontrada.
+- `src/App.jsx`: composición de la aplicación y sus partes comunes: cabecera, contenido, pie de página y avisos.
+- `src/routes/`: rutas con `Routes` y `Route`, accesos por rol y compatibilidad con enlaces antiguos.
+- `src/pages/`: páginas independientes de login, registro y cambio de contraseña, detalle por ID y página no encontrada.
 - `src/components/`: navegación, portada, catálogo, formularios y administración.
 - `src/main.jsx`: `HashRouter` de React Router DOM; conserva enlaces por hash en alojamiento estático.
 - `src/components/Administracion.jsx`: subrutas de administración y navegación activa con `NavLink`.
 - `src/hooks/useTienda.js`: operaciones de la tienda y guardado.
+- `src/hooks/useAccionesTienda.js`: acciones de acceso, carrito y compra que muestran avisos o cambian de pantalla.
+- `src/hooks/useNavegacionPagina.js`: título de la página, desplazamiento y foco del teclado al navegar.
 - `src/datos/`: catálogo, validación de RUT y migración de almacenamiento.
 - `src/styles/diseno.css`: sistema visual artesanal; `react.css` adapta las pantallas React.
 - `src/assets/`: imágenes, tipografías y licencias.
