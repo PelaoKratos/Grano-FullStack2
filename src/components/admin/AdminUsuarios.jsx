@@ -1,3 +1,4 @@
+import Boton from "../Boton.jsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -57,8 +58,9 @@ function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
                 <option value="vendedor">Vendedor</option>
                 <option value="admin">Administrador</option>
               </select>
-              <button
-                className="boton-secundario"
+              <Boton
+                variante="secundario"
+
                 type="button"
                 disabled={
                   usuario.correo === sesion.correo || usuario.cuentaDemostracion
@@ -66,7 +68,7 @@ function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
                 onClick={() => cambiar(usuario, { activo: !usuario.activo })}
               >
                 {usuario.activo ? "Desactivar" : "Activar"}
-              </button>
+              </Boton>
               {usuario.cuentaDemostracion && <small>Cuenta de prueba</small>}
             </div>
             {!usuario.cuentaDemostracion && (
@@ -109,7 +111,7 @@ function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
                       />
                     </div>
                   ))}
-                  <button type="submit">Guardar datos</button>
+                  <Boton type="submit">Guardar datos</Boton>
                 </form>
               </details>
             )}
@@ -155,7 +157,7 @@ function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
           <option value="vendedor">Vendedor</option>
           <option value="admin">Administrador</option>
         </select>
-        <button type="submit">Crear usuario</button>
+        <Boton type="submit">Crear usuario</Boton>
       </form>
       <p className="mensaje-formulario" role="status">
         {mensaje}

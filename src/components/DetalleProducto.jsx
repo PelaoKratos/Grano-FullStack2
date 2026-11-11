@@ -1,3 +1,4 @@
+import BotonAgregar from "./BotonAgregar.jsx";
 import { Link } from "react-router-dom";
 // Muestra la ficha del producto y permite agregarlo al carrito según su
 // disponibilidad.
@@ -32,13 +33,11 @@ export default function DetalleProducto({ producto, onAgregar }) {
               : "Producto agotado"}
           </p>
           <div className="d-flex flex-wrap gap-2">
-            <button
-              className="btn btn-success"
-              disabled={producto.stock === 0}
-              onClick={() => onAgregar(producto)}
-            >
-              Añadir al carrito
-            </button>
+            <BotonAgregar
+              producto={producto}
+              onAgregar={onAgregar}
+              texto="Añadir al carrito"
+            />
             <Link className="btn btn-outline-success" to="/productos">
               Volver a la colección
             </Link>

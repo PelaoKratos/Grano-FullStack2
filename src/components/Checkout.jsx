@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { totalCarrito } from "../datos/almacenamiento.js";
@@ -139,9 +140,9 @@ export default function Checkout({ usuario, carrito, onComprar }) {
                 {error}
               </p>
             )}
-            <button type="submit" disabled={enviando}>
+            <Boton type="submit" disabled={enviando}>
               {enviando ? "Registrando pedido…" : "Confirmar pedido"}
-            </button>
+            </Boton>
           </form>
         </section>
         <ResumenPedido

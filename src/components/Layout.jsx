@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Icono from "./Icono.jsx";
@@ -34,7 +35,8 @@ export function Header({ path: rutaActual, sesion, cantidad, onCerrar }) {
           <Link className="marca" to="/" aria-label="Grano, inicio">
             grano<span className="marca-sub">CAFÉ &amp; RITUALES</span>
           </Link>
-          <button
+          <Boton
+            variante="control"
             className="menu-toggle"
             type="button"
             aria-controls="menu-principal"
@@ -43,7 +45,7 @@ export function Header({ path: rutaActual, sesion, cantidad, onCerrar }) {
           >
             <Icono tipo="menu" />
             <span>Menú</span>
-          </button>
+          </Boton>
           <nav
             id="menu-principal"
             className={`nav-grano ${abierto ? "menu-abierto" : ""}`}
@@ -87,7 +89,8 @@ export function Header({ path: rutaActual, sesion, cantidad, onCerrar }) {
                       ? "Panel de vendedor"
                       : sesion.nombre}
                 </Link>
-                <button
+                <Boton
+                  variante="control"
                   className="cerrar-sesion"
                   onClick={() => {
                     if (onCerrar()) {
@@ -97,7 +100,7 @@ export function Header({ path: rutaActual, sesion, cantidad, onCerrar }) {
                   }}
                 >
                   Cerrar sesión
-                </button>
+                </Boton>
               </div>
             ) : (
               <Link className="nav-link enlace-login" to="/acceso">

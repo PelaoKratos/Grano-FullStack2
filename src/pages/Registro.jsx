@@ -1,3 +1,4 @@
+import Boton from "../components/Boton.jsx";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { esRutValido, formatearRut } from "../datos/rut.js";
@@ -114,7 +115,7 @@ export default function Registro({ onRegistrar }) {
             minLength="6"
             required
           />
-          <button type="submit">Crear cuenta</button>
+          <Boton type="submit">Crear cuenta</Boton>
         </form>
         <p className="mensaje-formulario" role="status">
           {mensajeRegistro}

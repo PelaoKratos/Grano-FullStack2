@@ -1,3 +1,5 @@
+import Boton from "./Boton.jsx";
+import BotonAgregar from "./BotonAgregar.jsx";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Icono from "./Icono.jsx";
@@ -58,14 +60,15 @@ export default function Inicio({ productos, onAgregar }) {
                       ),
                     )
                     .map(([id, label]) => (
-                      <button
+                      <Boton
+                        variante="control"
                         key={id}
                         type="button"
                         aria-pressed={cafe.id === id}
                         onClick={() => setSabor(id)}
                       >
                         {label}
-                      </button>
+                      </Boton>
                     ))}
                 </div>
                 <div
@@ -79,14 +82,11 @@ export default function Inicio({ productos, onAgregar }) {
                     <span className="precio">
                       ${cafe.precio.toLocaleString("es-CL")} <small>CLP</small>
                     </span>
-                    <button
-                      className="btn btn-success"
-                      disabled={cafe.stock === 0}
-                      onClick={() => onAgregar(cafe)}
-                      aria-label={`Añadir ${cafe.nombre} al carrito`}
-                    >
-                      {cafe.stock === 0 ? "Agotado" : "Añadir"} <Icono />
-                    </button>
+                    <BotonAgregar
+                      producto={cafe}
+                      onAgregar={onAgregar}
+                      conIcono
+                    />
                   </div>
                 </div>
                 <Link className="mostrador-detalle" to={`/producto/${cafe.id}`}>

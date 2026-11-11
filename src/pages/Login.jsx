@@ -1,3 +1,4 @@
+import Boton from "../components/Boton.jsx";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import CuentasDemostracion from "../components/CuentasDemostracion.jsx";
@@ -48,7 +49,7 @@ export default function Login({ onIniciar }) {
             required
           />
 
-          <button type="submit">Iniciar sesión</button>
+          <Boton type="submit">Iniciar sesión</Boton>
         </form>
         <p className="mensaje-formulario" role="status">
           {mensajeLogin}

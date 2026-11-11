@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -71,7 +72,7 @@ function Cuenta({ usuario, pedidos = [], onGuardar, mostrarHistorial = true }) {
             name="region"
             defaultValue={usuario.region || ""}
           />
-          <button type="submit">Guardar datos</button>
+          <Boton type="submit">Guardar datos</Boton>
         </form>
         <p className="mensaje-formulario" role="status">
           {mensaje}

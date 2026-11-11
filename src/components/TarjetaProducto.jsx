@@ -1,5 +1,5 @@
+import BotonAgregar from "./BotonAgregar.jsx";
 import { Link } from "react-router-dom";
-import Icono from "./Icono.jsx";
 import { estaEnOferta } from "../datos/compra.js";
 // Reutiliza la ficha breve en portada y catálogo con su precio, enlace y botón
 // de compra.
@@ -52,14 +52,7 @@ export default function TarjetaProducto({
             <span className="precio">
               ${producto.precio.toLocaleString("es-CL")} <small>CLP</small>
             </span>
-            <button
-              className="btn btn-success"
-              disabled={producto.stock === 0}
-              onClick={() => onAgregar(producto)}
-              aria-label={`Añadir ${producto.nombre} al carrito`}
-            >
-              {producto.stock === 0 ? "Agotado" : "Añadir"} <Icono />
-            </button>
+            <BotonAgregar producto={producto} onAgregar={onAgregar} conIcono />
           </div>
         ) : (
           <>
@@ -73,14 +66,7 @@ export default function TarjetaProducto({
               >
                 Ver detalle
               </Link>
-              <button
-                className="btn btn-success"
-                disabled={producto.stock === 0}
-                onClick={() => onAgregar(producto)}
-                aria-label={`Añadir ${producto.nombre} al carrito`}
-              >
-                {producto.stock === 0 ? "Agotado" : "Añadir"}
-              </button>
+              <BotonAgregar producto={producto} onAgregar={onAgregar} />
             </div>
           </>
         )}

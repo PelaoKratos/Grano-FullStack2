@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { useState } from "react";
 
 // Muestra el formulario de contacto y usa los datos de la sesión cuando están
@@ -51,7 +52,7 @@ function Contacto({ usuario, onEnviar }) {
           required
         />
         <p className="ayuda-formulario">Máximo 500 caracteres.</p>
-        <button type="submit">Enviar mensaje</button>
+        <Boton type="submit">Enviar mensaje</Boton>
         <p className="mensaje-formulario" role="status">
           {mensaje}
         </p>

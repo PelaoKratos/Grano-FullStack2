@@ -1,3 +1,4 @@
+import Boton from "../components/Boton.jsx";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
@@ -46,7 +47,7 @@ export default function CambiarContrasena({ onCambiarContrasena }) {
             minLength="6"
             required
           />
-          <button type="submit">Actualizar contraseña</button>
+          <Boton type="submit">Actualizar contraseña</Boton>
         </form>
         <p className="mensaje-formulario" role="status">
           {mensajeClave}

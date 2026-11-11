@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { useState } from "react";
 import { usuariosDemostracion } from "../datos/usuarios.js";
 
@@ -21,9 +22,10 @@ export default function CuentasDemostracion() {
               Contraseña: <code>{usuarioRegistrado.contrasena}</code>
             </p>
           </div>
-          <button
+          <Boton
+            variante="secundario"
             type="button"
-            className="boton-secundario"
+
             aria-label={`Copiar datos de ${usuarioRegistrado.nombre}`}
             onClick={async () => {
               try {
@@ -39,7 +41,7 @@ export default function CuentasDemostracion() {
             }}
           >
             Copiar datos
-          </button>
+          </Boton>
         </div>
       ))}
       <p role="status">{copiado}</p>

@@ -1,3 +1,4 @@
+import Boton from "../Boton.jsx";
 import { useState } from "react";
 
 // Lista las categorías y ofrece controles para crearlas, renombrarlas o
@@ -35,19 +36,21 @@ export default function AdminCategorias({
                 .length
             }
             <div className="acciones-admin">
-              <button
+              <Boton
+                variante="secundario"
                 type="button"
-                className="boton-secundario"
+
                 onClick={() => {
                   setEditada(categoria);
                   setNombre(categoria);
                 }}
               >
                 Editar
-              </button>
-              <button
+              </Boton>
+              <Boton
+                variante="secundario"
                 type="button"
-                className="boton-secundario"
+
                 disabled={productos.some(
                   (producto) => producto.categoria === categoria,
                 )}
@@ -66,7 +69,7 @@ export default function AdminCategorias({
                 }}
               >
                 Eliminar
-              </button>
+              </Boton>
             </div>
           </li>
         ))}
@@ -81,18 +84,19 @@ export default function AdminCategorias({
           onChange={(evento) => setNombre(evento.target.value)}
           required
         />
-        <button type="submit">Guardar categoría</button>
+        <Boton type="submit">Guardar categoría</Boton>
         {editada && (
-          <button
+          <Boton
+            variante="secundario"
             type="button"
-            className="boton-secundario mt-2"
+            className="mt-2"
             onClick={() => {
               setEditada("");
               setNombre("");
             }}
           >
             Cancelar
-          </button>
+          </Boton>
         )}
       </form>
       <p className="mensaje-formulario" role="status">

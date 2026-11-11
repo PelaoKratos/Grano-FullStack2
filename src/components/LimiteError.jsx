@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { Component } from "react";
 
 // Un error de pantalla muestra una recuperación sin borrar los datos guardados.
@@ -17,9 +18,7 @@ export default class LimiteError extends Component {
           Recarga la página para volver a intentarlo. Los datos guardados
           permanecen en tu navegador.
         </p>
-        <button className="btn btn-success" onClick={() => location.reload()}>
-          Volver a intentar
-        </button>
+        <Boton onClick={() => location.reload()}>Volver a intentar</Boton>
       </main>
     ) : (
       this.props.children

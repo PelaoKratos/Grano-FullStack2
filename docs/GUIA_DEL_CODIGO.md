@@ -56,6 +56,25 @@ Por eso un formulario no necesita escribir directamente en localStorage. Las ope
 5. `operar` revisa el stock y aumenta la cantidad o crea una nueva línea.
 6. Si el resultado es válido y se puede guardar, React actualiza el carrito y muestra el aviso.
 
+## Cómo reutilizamos los botones
+
+`components/Boton.jsx` contiene el botón que usan los formularios y las otras pantallas. Recibe su contenido mediante `children`, la función `onClick` y atributos como `disabled` o `aria-label`. Por defecto tiene `type="button"`, así un botón de cancelar no envía el formulario por accidente. Para guardar o enviar indicamos `type="submit"`.
+
+```jsx
+<Boton type="submit">Guardar datos</Boton>
+<Boton variante="secundario" onClick={cancelar}>Cancelar</Boton>
+```
+
+La variante `principal` es la predeterminada. La variante `secundario` muestra el botón con borde, y `control` permite mantener el estilo propio de los filtros, el menú y el carrusel. Los estilos comunes se eligen en el componente, en vez de repetir las clases de Bootstrap en cada botón.
+
+`BotonAgregar.jsx` usa ese botón y reúne lo que se repetía en inicio, catálogo y detalle: recibe el producto, llama `onAgregar(producto)` y queda deshabilitado si está agotado. La validación final del stock sigue en las operaciones de la tienda.
+
+```jsx
+<BotonAgregar producto={producto} onAgregar={onAgregar} />
+```
+
+Los enlaces que abren otra página siguen usando `Link`: por ejemplo, Ver detalle o Volver al catálogo.
+
 ## Qué ocurre al comprar
 
 La acción `COMPRAR`, dentro de `operaciones.js`, comprueba que exista una sesión de comprador y que el carrito tenga productos. Después valida todas las cantidades contra el stock actual.

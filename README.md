@@ -36,7 +36,7 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`pnpm test` ejecuta 41 pruebas de lógica, persistencia y rutas y 21 pruebas de componentes con Jasmine y Karma. Requiere Chrome instalado para ejecutarlo sin ventanas. En Windows también se detecta Edge como alternativa; puedes indicar el navegador con `CHROME_BIN`. Para ejecutar cada grupo por separado usa `pnpm test:logica` o `pnpm test:componentes`. La configuración está en `karma.conf.cjs` y `vite.pruebas.config.js`.
+`pnpm test` ejecuta 41 pruebas de lógica, persistencia y rutas y 23 pruebas de componentes con Jasmine y Karma. Requiere Chrome instalado para ejecutarlo sin ventanas. En Windows también se detecta Edge como alternativa; puedes indicar el navegador con `CHROME_BIN`. Para ejecutar cada grupo por separado usa `pnpm test:logica` o `pnpm test:componentes`. La configuración está en `karma.conf.cjs` y `vite.pruebas.config.js`.
 
 ## Leer y explicar el código
 
@@ -93,6 +93,8 @@ Es una demostración local: no incluye servidor, pagos reales ni autenticación 
 - `src/routes/`: rutas con `Routes` y `Route`, accesos por rol y compatibilidad con enlaces antiguos.
 - `src/pages/`: páginas independientes de login, registro y cambio de contraseña, detalle por ID y página no encontrada.
 - `src/components/`: navegación, portada, catálogo, formularios y administración.
+- `src/components/Boton.jsx`: botón común con variantes principal, secundaria y de control; recibe eventos y atributos como `type`, `disabled` y `aria-label`.
+- `src/components/BotonAgregar.jsx`: reutiliza el botón común para añadir productos y mostrar su estado de agotado en inicio, catálogo y detalle.
 - `src/main.jsx`: `HashRouter` de React Router DOM; conserva enlaces por hash en alojamiento estático.
 - `src/components/Administracion.jsx`: subrutas de administración y navegación activa con `NavLink`.
 - `src/hooks/useTienda.js`: operaciones de la tienda y guardado.

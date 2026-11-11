@@ -1,3 +1,4 @@
+import Boton from "../Boton.jsx";
 import { useEffect, useRef, useState } from "react";
 import { precioCLP } from "../../datos/formato.js";
 
@@ -178,17 +179,18 @@ function AdminProductos({
           JPG, PNG o WebP de hasta 500 KB. Al editar, deja el campo vacío para
           conservar la imagen.
         </p>
-        <button type="submit">
+        <Boton type="submit">
           {editado ? "Guardar cambios" : "Agregar producto"}
-        </button>
+        </Boton>
         {editado && (
-          <button
-            className="boton-secundario"
+          <Boton
+            variante="secundario"
+
             type="button"
             onClick={() => setEditado(null)}
           >
             Cancelar edición
-          </button>
+          </Boton>
         )}
       </form>
       <p className="mensaje-formulario" role="status">
@@ -206,8 +208,9 @@ function AdminProductos({
               )}
             </span>
             <span className="acciones-admin">
-              <button
-                className="boton-secundario"
+              <Boton
+                variante="secundario"
+
                 type="button"
                 aria-label={`Editar ${producto.nombre}`}
                 onClick={() => {
@@ -216,15 +219,16 @@ function AdminProductos({
                 }}
               >
                 Editar
-              </button>
-              <button
-                className="boton-secundario"
+              </Boton>
+              <Boton
+                variante="secundario"
+
                 type="button"
                 aria-label={`Quitar ${producto.nombre}`}
                 onClick={() => eliminar(producto)}
               >
                 Quitar
-              </button>
+              </Boton>
             </span>
           </li>
         ))}

@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { useState } from "react";
 import TarjetaProducto from "./TarjetaProducto.jsx";
 import { Link, useSearchParams } from "react-router-dom";
@@ -54,7 +55,8 @@ export default function Catalogo({
           aria-label="Filtrar colección"
         >
           {filtros.map(([id, label]) => (
-            <button
+            <Boton
+              variante="control"
               type="button"
               key={id}
               aria-pressed={actual === id}
@@ -69,7 +71,7 @@ export default function Catalogo({
               }}
             >
               {label}
-            </button>
+            </Boton>
           ))}
         </div>
         <p role="status" data-resultados>

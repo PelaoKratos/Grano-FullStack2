@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { Link } from "react-router-dom";
 import imagenRitual from "../assets/ritual-grano.png";
 import imagenTaza from "../assets/fotografia/taza.webp";
@@ -46,7 +47,8 @@ function Nosotros() {
             height={imagen.height}
             decoding="async"
           />
-          <button
+          <Boton
+            variante="control"
             className="control-carrusel control-anterior"
             type="button"
             aria-label="Imagen anterior"
@@ -59,15 +61,16 @@ function Nosotros() {
             >
               <Icono />
             </span>
-          </button>
-          <button
+          </Boton>
+          <Boton
+            variante="control"
             className="control-carrusel control-siguiente"
             type="button"
             aria-label="Imagen siguiente"
             onClick={() => setActual((actual + 1) % imagenes.length)}
           >
             <Icono />
-          </button>
+          </Boton>
           <span className="visually-hidden" role="status">
             Imagen {actual + 1} de {imagenes.length}
           </span>

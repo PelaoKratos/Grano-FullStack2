@@ -1,3 +1,4 @@
+import Boton from "../Boton.jsx";
 // Muestra los mensajes de contacto y permite marcar como leídos los que siguen
 // pendientes.
 function AdminMensajes({ mensajes, onMarcar }) {
@@ -14,13 +15,14 @@ function AdminMensajes({ mensajes, onMarcar }) {
               {mensaje.fecha} · {mensaje.estado}
               <p>{mensaje.texto}</p>
               {mensaje.estado !== "Leído" && (
-                <button
-                  className="boton-secundario"
+                <Boton
+                  variante="secundario"
+
                   type="button"
                   onClick={() => onMarcar(indice)}
                 >
                   Marcar como leído
-                </button>
+                </Boton>
               )}
             </li>
           ))}

@@ -1,3 +1,4 @@
+import Boton from "./Boton.jsx";
 import { Link } from "react-router-dom";
 import { totalCarrito } from "../datos/almacenamiento.js";
 // Muestra cantidades y total del carrito y controla si se puede avanzar según
@@ -38,7 +39,8 @@ export default function Carrito({
                   role="group"
                   aria-label={`Cantidad de ${productoCatalogo.nombre}`}
                 >
-                  <button
+                  <Boton
+                    variante="control"
                     type="button"
                     aria-label={`Disminuir ${productoCatalogo.nombre}`}
                     disabled={
@@ -50,9 +52,10 @@ export default function Carrito({
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M5 12h14" />
                     </svg>
-                  </button>
+                  </Boton>
                   <span aria-live="polite">{productoCatalogo.cantidad}</span>
-                  <button
+                  <Boton
+                    variante="control"
                     type="button"
                     aria-label={`Aumentar ${productoCatalogo.nombre}`}
                     disabled={
@@ -63,7 +66,7 @@ export default function Carrito({
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M5 12h14M12 5v14" />
                     </svg>
-                  </button>
+                  </Boton>
                 </div>
                 {productoCatalogo.cantidad > productoCatalogo.stock && (
                   <p className="aviso-stock" role="alert">
@@ -71,13 +74,14 @@ export default function Carrito({
                   </p>
                 )}
               </div>
-              <button
-                className="btn btn-outline-success btn-sm"
+              <Boton
+                variante="secundario"
+                className="btn-sm"
                 onClick={() => onQuitar(productoCatalogo.id)}
                 aria-label={`Quitar ${productoCatalogo.nombre}`}
               >
                 Quitar
-              </button>
+              </Boton>
             </article>
           ))
         ) : (

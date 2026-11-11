@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import TarjetaProducto from "../src/components/TarjetaProducto.jsx";
 import Catalogo from "../src/components/Catalogo.jsx";
+import Boton from "../src/components/Boton.jsx";
+import DetalleProducto from "../src/components/DetalleProducto.jsx";
 import Checkout from "../src/components/Checkout.jsx";
 import Contacto from "../src/components/Contacto.jsx";
 import Ofertas from "../src/components/Ofertas.jsx";
@@ -69,6 +71,55 @@ const comprador = {
   region: "Metropolitana",
 };
 const carrito = [{ ...productos[0], cantidad: 2 }];
+
+describe("Botones reutilizables", () => {
+  it("una acción no envía el formulario y el botón submit sí lo hace", async () => {
+    const cancelar = jasmine.createSpy("cancelar");
+    const guardar = jasmine.createSpy("guardar");
+    await mostrar(
+      <form
+        onSubmit={(evento) => {
+          evento.preventDefault();
+          guardar();
+        }}
+      >
+        <Boton
+          variante="secundario"
+          onClick={cancelar}
+          aria-label="Cancelar edición"
+        >
+          Cancelar
+        </Boton>
+        <Boton type="submit">Guardar</Boton>
+      </form>,
+    );
+    await clic(contenedor.querySelector('[aria-label="Cancelar edición"]'));
+    expect(cancelar).toHaveBeenCalledTimes(1);
+    expect(guardar).not.toHaveBeenCalled();
+    await clic(contenedor.querySelector('[type="submit"]'));
+    expect(guardar).toHaveBeenCalledTimes(1);
+  });
+
+  it("el detalle añade el producto y bloquea la acción cuando se agota", async () => {
+    const agregar = jasmine.createSpy("agregar");
+    await mostrar(
+      <DetalleProducto producto={productos[0]} onAgregar={agregar} />,
+    );
+    await clic(contenedor.querySelector("button"));
+    expect(agregar).toHaveBeenCalledOnceWith(productos[0]);
+    await mostrar(
+      <DetalleProducto
+        producto={{ ...productos[0], stock: 0 }}
+        onAgregar={agregar}
+      />,
+    );
+    const boton = contenedor.querySelector("button");
+    expect(boton.disabled).toBeTrue();
+    expect(boton.textContent).toContain("Agotado");
+    await clic(boton);
+    expect(agregar).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe("Páginas de acceso separadas", () => {
   beforeEach(() => {
