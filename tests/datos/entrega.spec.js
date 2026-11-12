@@ -38,6 +38,8 @@ describe("Reglas de entrega", () => {
     const estado = preparar();
     for (const accion of [
       { entrega: { ...entrega, direccion: "" } },
+      { entrega: { ...entrega, telefono: "abc" } },
+      { entrega: { ...entrega, telefono: "" } },
       { entrega, resultadoPago: "rechazado" },
       { entrega, resultadoPago: "desconocido" },
     ]) {

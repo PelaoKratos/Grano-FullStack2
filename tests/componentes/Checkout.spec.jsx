@@ -4,6 +4,24 @@ import { comprador, carrito } from "../ayudas/datos.js";
 
 describe("Formulario de compra", () => {
   const vista = crearVista();
+  it("bloquea un teléfono inválido y permite corregirlo antes de comprar", async () => {
+    const comprar = jasmine.createSpy("comprar");
+    await vista.mostrar(
+      <Checkout usuario={comprador} carrito={carrito} onComprar={comprar} />,
+    );
+    await vista.escribir("#entrega-telefono", "abc");
+    await vista.enviar();
+    expect(comprar).not.toHaveBeenCalled();
+    expect(
+      vista.contenedor.querySelector('[role="alert"]').textContent,
+    ).toContain("9 dígitos");
+    await vista.escribir("#entrega-telefono", "+56 9 1234 5678");
+    await vista.enviar();
+    expect(comprar).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({ telefono: "+56 9 1234 5678" }),
+      "aprobado",
+    );
+  });
   it("precarga los datos del comprador y confirma los datos editados", async () => {
     const comprar = jasmine.createSpy("comprar");
     await vista.mostrar(

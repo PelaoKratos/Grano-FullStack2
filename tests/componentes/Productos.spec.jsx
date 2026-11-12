@@ -2,6 +2,7 @@ import { crearVista } from "../ayudas/renderizar.jsx";
 import TarjetaProducto from "../../src/components/TarjetaProducto.jsx";
 import Catalogo from "../../src/components/Catalogo.jsx";
 import { productos } from "../../src/datos/productos.js";
+import { precioCLP } from "../../src/datos/formato.js";
 
 describe("Renderizado y props de productos", () => {
   const vista = crearVista();
@@ -11,6 +12,12 @@ describe("Renderizado y props de productos", () => {
       <TarjetaProducto producto={productos[0]} onAgregar={() => {}} />,
     );
     expect(vista.contenedor.textContent).toContain(productos[0].nombre);
+    expect(vista.contenedor.textContent).toContain(
+      precioCLP(productos[0].precio),
+    );
+    expect(vista.contenedor.querySelector("img").getAttribute("src")).toBe(
+      productos[0].imagen,
+    );
     expect(vista.contenedor.querySelector("img").alt).toBe(productos[0].nombre);
     expect(vista.contenedor.querySelector("a").getAttribute("href")).toBe(
       `/producto/${productos[0].id}`,

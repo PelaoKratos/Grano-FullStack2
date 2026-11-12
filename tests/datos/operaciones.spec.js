@@ -316,7 +316,7 @@ describe("Reglas de operaciones", () => {
         comuna: "Ñuñoa",
         region: "Metropolitana",
         direccion: "Calle 1",
-        telefono: "123",
+        telefono: "912345678",
       },
     });
     const u = e.usuarios.find((u) => u.correo === buyer.correo);

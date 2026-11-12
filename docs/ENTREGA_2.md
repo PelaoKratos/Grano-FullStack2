@@ -14,7 +14,7 @@ Frontend de demostración con React, Vite, React Router DOM, Bootstrap local y p
 | Ofertas, página 8                                       | `/ofertas` y precio anterior configurable desde administración                                        | Persistencia, validación y filtrado de ofertas                       |
 | Administración, páginas 9 y 10                          | Productos, stock, categorías, usuarios, historial, pedidos, comprobantes, mensajes, reportes y perfil | Rutas protegidas, operaciones y revisión del panel                   |
 | Historias o blog del diagrama, páginas 3 y 4            | `/blog` y `/blog/:slug`                                                                               | Rutas del listado, artículo y artículo ausente                       |
-| Jasmine y Karma, páginas 2 y 11                         | `karma.conf.cjs`, `vite.pruebas.config.js` y las suites organizadas en `tests/`                       | 69 casos Jasmine de reglas, renderizado, formularios, hooks y flujos |
+| Jasmine y Karma, páginas 2 y 11                         | `karma.conf.cjs`, `vite.pruebas.config.js` y las suites organizadas en `tests/`                       | 77 casos Jasmine de reglas, renderizado, formularios, hooks y flujos |
 | ERS y documento de testing, página 12                   | Documentos V2 en `docs/`                                                                              | ERS, planilla actualizada e informe de cobertura funcional           |
 
 ## Verificación
@@ -29,7 +29,7 @@ pnpm dev
 
 Resultado del 30 de octubre de 2026: 40 pruebas de lógica y rutas y 17 pruebas de componentes aprobadas. Chrome Headless ejecuta Jasmine mediante Karma. La suite conserva las 29 pruebas anteriores y añade los escenarios de esta entrega. El informe describe cobertura funcional y no afirma un porcentaje de líneas o ramas instrumentadas.
 
-Actualización del 11 de noviembre de 2026: la ejecución actual reúne 69 casos Jasmine y 11 de rutas con Node. Se añadió medición real de cobertura con `npm run test:cobertura`, organizada y explicada en [PRUEBAS.md](PRUEBAS.md). Los documentos V2 conservan el resultado histórico de la entrega anterior.
+Actualización del 12 de noviembre de 2026: la ejecución actual reúne 77 casos Jasmine y 11 de rutas con Node. Se añadió medición real de cobertura con `npm run test:cobertura`, organizada y explicada en [PRUEBAS.md](PRUEBAS.md). Los documentos Word están actualizados con los 88 casos aprobados, las validaciones de teléfono y la cobertura instrumentada del 12 de noviembre.
 
 Para usar un navegador instalado en otra ruta, define `CHROME_BIN` antes de ejecutar las pruebas. Karma se limita a `127.0.0.1`; el navegador de pruebas se cierra al terminar.
 

@@ -1,6 +1,7 @@
 import Boton from "../Boton.jsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { esTelefonoValido, AYUDA_TELEFONO } from "../../datos/telefono.js";
 
 // Permite gestionar cuentas, roles y activación, y consultar el historial de
 // pedidos por usuario.
@@ -28,8 +29,14 @@ function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
   // Combina los cambios del formulario con la cuenta existente y solicita
   // guardarla.
   function cambiar(usuario, cambio) {
+    if (cambio.telefono && !esTelefonoValido(cambio.telefono)) {
+      setMensaje(AYUDA_TELEFONO);
+      return;
+    }
     if (!onGuardar({ ...usuario, ...cambio })) {
-      setMensaje("No puedes desactivar tu propia cuenta de administrador.");
+      setMensaje(
+        "No se pudo guardar. Revisa los datos y los permisos de la cuenta.",
+      );
       return;
     }
     setMensaje("Usuario actualizado.");
@@ -106,6 +113,10 @@ function AdminUsuarios({ usuarios, pedidos = [], sesion, onCrear, onGuardar }) {
                       <input
                         id={`usuario-${usuario.correo}-${campo}`}
                         name={campo}
+                        type={campo === "telefono" ? "tel" : "text"}
+                        placeholder={
+                          campo === "telefono" ? "+56 9 1234 5678" : undefined
+                        }
                         defaultValue={usuario[campo] || ""}
                         required={campo === "nombre"}
                       />

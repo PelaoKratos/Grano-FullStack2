@@ -75,11 +75,22 @@ export default function Checkout({ usuario, carrito, onComprar }) {
                   name={campo}
                   type={tipo}
                   autoComplete={autocomplete}
+                  placeholder={
+                    campo === "telefono" ? "+56 9 1234 5678" : undefined
+                  }
+                  aria-describedby={
+                    campo === "telefono" ? "entrega-telefono-ayuda" : undefined
+                  }
                   value={entrega[campo]}
                   maxLength={250}
                   onChange={cambiar}
                   required
                 />
+                {campo === "telefono" && (
+                  <p id="entrega-telefono-ayuda" className="ayuda-formulario">
+                    Usa 9 dígitos, con o sin el prefijo +56.
+                  </p>
+                )}
               </div>
             ))}
             <label htmlFor="entrega-metodo">Opción de entrega</label>

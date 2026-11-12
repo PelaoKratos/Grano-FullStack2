@@ -1,3 +1,5 @@
+import { esTelefonoValido, AYUDA_TELEFONO } from "./telefono.js";
+
 // Devuelve el primer problema de contacto o entrega, o una cadena vacía si los
 // datos son válidos.
 export function validarEntrega(entrega) {
@@ -12,6 +14,9 @@ export function validarEntrega(entrega) {
   }
   if (!String(entrega.telefono || "").trim()) {
     return "Ingresa un teléfono de contacto.";
+  }
+  if (!esTelefonoValido(entrega.telefono)) {
+    return AYUDA_TELEFONO;
   }
   if (
     entrega.metodo === "domicilio" &&

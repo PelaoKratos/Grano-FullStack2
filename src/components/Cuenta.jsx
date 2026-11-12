@@ -1,6 +1,7 @@
 import Boton from "./Boton.jsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { esTelefonoValido, AYUDA_TELEFONO } from "../datos/telefono.js";
 
 // Presenta los datos editables del perfil y, cuando corresponde, los pedidos
 // del usuario.
@@ -11,10 +12,15 @@ function Cuenta({ usuario, pedidos = [], onGuardar, mostrarHistorial = true }) {
   function guardarDatos(evento) {
     evento.preventDefault();
     const datos = new FormData(evento.target);
+    const telefono = datos.get("telefono").trim();
+    if (telefono && !esTelefonoValido(telefono)) {
+      setMensaje(AYUDA_TELEFONO);
+      return;
+    }
     const guardado = onGuardar({
       ...usuario,
       nombre: datos.get("nombre").trim(),
-      telefono: datos.get("telefono").trim(),
+      telefono,
       direccion: datos.get("direccion").trim(),
       comuna: datos.get("comuna").trim(),
       region: datos.get("region").trim(),
@@ -48,10 +54,15 @@ function Cuenta({ usuario, pedidos = [], onGuardar, mostrarHistorial = true }) {
           <input
             id="cuenta-telefono"
             name="telefono"
+            type="tel"
+            autoComplete="tel"
+            aria-describedby="cuenta-telefono-ayuda"
             defaultValue={usuario.telefono || ""}
             placeholder="+56 9 1234 5678"
           />
-
+          <p id="cuenta-telefono-ayuda" className="ayuda-formulario">
+            Opcional. Usa 9 dígitos, con o sin el prefijo +56.
+          </p>
           <label htmlFor="cuenta-direccion">Dirección</label>
           <input
             id="cuenta-direccion"

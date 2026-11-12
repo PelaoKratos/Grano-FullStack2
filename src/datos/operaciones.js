@@ -1,6 +1,7 @@
 import { esRutValido, formatearRut } from "./rut.js";
 import { obtenerCategorias, claveCategoria } from "./categorias.js";
 import { normalizarEntrega, validarEntrega } from "./compra.js";
+import { esTelefonoValido, AYUDA_TELEFONO } from "./telefono.js";
 
 const roles = ["comprador", "vendedor", "admin"];
 export const estadosPedido = ["Recibido", "En preparación", "Entregado"];
@@ -133,6 +134,12 @@ export function operar(estado, accion) {
         return respuestaConError("Ingresa tu nombre.");
       }
       const actualizado = { ...usuario, nombre };
+      if (
+        String(accion.usuario.telefono || "").trim() &&
+        !esTelefonoValido(accion.usuario.telefono)
+      ) {
+        return respuestaConError(AYUDA_TELEFONO);
+      }
       for (const campo of ["telefono", "direccion", "comuna", "region"]) {
         actualizado[campo] = String(accion.usuario[campo] || "").trim();
       }
@@ -460,6 +467,13 @@ export function operar(estado, accion) {
       }
       if (!roles.includes(datos.rol) || typeof datos.activo !== "boolean") {
         return respuestaConError("Revisa el rol y estado de la cuenta.");
+      }
+      if (
+        datos.telefono !== undefined &&
+        String(datos.telefono).trim() &&
+        !esTelefonoValido(datos.telefono)
+      ) {
+        return respuestaConError(AYUDA_TELEFONO);
       }
       if (datos.nombre !== undefined && !String(datos.nombre).trim()) {
         return respuestaConError("Ingresa el nombre del usuario.");

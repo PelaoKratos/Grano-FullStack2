@@ -37,7 +37,7 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`npm test` ejecuta 69 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks y flujos de compra. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
+`npm test` ejecuta 77 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks y flujos de compra. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
 
 `npm run test:cobertura` genera el informe real de líneas, sentencias, funciones y ramas en `coverage/index.html`. La configuración de cobertura solo se aplica a las pruebas. La [guía de pruebas](docs/PRUEBAS.md) explica cómo ejecutar los casos, leer el reporte y presentar los resultados.
 

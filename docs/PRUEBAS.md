@@ -15,7 +15,7 @@ La instalación se necesita al descargar el proyecto o cambiar sus dependencias.
 
 | Comando                  | Qué ejecuta                                                                             |
 | ------------------------ | --------------------------------------------------------------------------------------- |
-| `npm test`               | Las 69 pruebas de Jasmine y las 11 pruebas de rutas                                     |
+| `npm test`               | Las 77 pruebas de Jasmine y las 11 pruebas de rutas                                     |
 | `npm run test:jasmine`   | Las suites de reglas, componentes, formularios, hooks y flujos en Chrome mediante Karma |
 | `npm run test:rutas`     | Las rutas de React usando Node y MemoryRouter                                           |
 | `npm run test:cobertura` | Las suites de Jasmine instrumentadas y el informe de cobertura                          |
@@ -41,7 +41,7 @@ tests/
 
 Un archivo nuevo con extensión `.spec.jsx` dentro de componentes, páginas, hooks o integración se incluye automáticamente. Las pruebas de reglas en datos usan `.spec.js`. Los archivos `.test.js` de integración se ejecutan con Node y no se cargan como Jasmine.
 
-El reparto actual es de 30 casos de datos, 17 de componentes, 2 de formularios, 13 de hooks y 7 de flujos con Jasmine. Las otras 11 pruebas verifican rutas con Node. Hay pruebas unitarias y de integración: no llamamos unitarias a todas por igual.
+El reparto actual es de 35 casos de datos, 20 de componentes, 2 de formularios, 13 de hooks y 7 de flujos con Jasmine. Las otras 11 pruebas verifican rutas con Node. Hay pruebas unitarias y de integración: no llamamos unitarias a todas por igual.
 
 ## Ejemplo sencillo de Jasmine
 
@@ -79,18 +79,18 @@ npm run test:cobertura
 
 Después se abre `coverage/index.html`. La consola también muestra un resumen y se generan archivos JSON y LCOV para consultar los resultados. Esta carpeta se genera localmente y está excluida de Git.
 
-El informe incluye los 52 archivos JavaScript y JSX de `src`, con sus nombres y líneas originales. Se excluye `main.jsx` porque monta la aplicación real; tampoco se cuentan bibliotecas, estilos, imágenes, archivos de pruebas ni el paquete generado por Vite. Los módulos sin pruebas también aparecen para mostrar lo que falta.
+El informe incluye los 53 archivos JavaScript y JSX de `src`, con sus nombres y líneas originales. Se excluye `main.jsx` porque monta la aplicación real; tampoco se cuentan bibliotecas, estilos, imágenes, archivos de pruebas ni el paquete generado por Vite. Los módulos sin pruebas también aparecen para mostrar lo que falta.
 
-La medición corresponde a las 69 pruebas ejecutadas por Karma. Las 11 pruebas de rutas con Node se comprueban aparte y no suman porcentajes a este informe.
+La medición corresponde a las 77 pruebas ejecutadas por Karma. Las 11 pruebas de rutas con Node se comprueban aparte y no suman porcentajes a este informe.
 
-Resultado de referencia del 11 de noviembre de 2026:
+Resultado de referencia del 12 de noviembre de 2026:
 
 | Métrica    | Resultado           |
 | ---------- | ------------------- |
-| Líneas     | 68,55 %: 508 de 741 |
-| Sentencias | 68,22 %: 524 de 768 |
-| Funciones  | 58,33 %: 168 de 288 |
-| Ramas      | 66,43 %: 473 de 712 |
+| Líneas     | 69,69 %: 529 de 759 |
+| Sentencias | 69,37 %: 546 de 787 |
+| Funciones  | 59,16 %: 171 de 289 |
+| Ramas      | 68,42 %: 507 de 741 |
 
 Los colores del informe permiten abrir un archivo y ubicar los casos pendientes. El resultado sirve como punto de partida, no como una nota mínima ni como garantía de que todo funciona. Varias pantallas administrativas y públicas todavía necesitan pruebas directas de sus interacciones, aunque parte de su navegación ya se revisa con Node.
 
@@ -107,3 +107,7 @@ La base de datos en AWS se implementará más adelante. Actualmente la aplicaci�
 3. Mostrar un espía y una prueba de un hook.
 4. Ejecutar `npm run test:cobertura` y abrir un archivo con líneas pendientes.
 5. Explicar qué escenario nuevo se escribiría para cubrir una de esas líneas.
+
+## Validación de teléfonos
+
+Checkout exige un teléfono chileno de nueve dígitos, con prefijo 56 o +56 opcional. Perfil y edición administrativa permiten omitirlo; si se informa debe ser válido. Se admiten espacios, guiones y paréntesis. Los nuevos casos están en `datos/telefono.spec.js`, `componentes/Cuenta.spec.jsx` y `componentes/Checkout.spec.jsx`. La comprobación valida formato, no existencia del número.
