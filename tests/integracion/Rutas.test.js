@@ -4,8 +4,8 @@ import { createElement } from "react";
 import { renderToReadableStream } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { createServer } from "vite";
-import { CLAVE_TIENDA } from "../src/datos/almacenamiento.js";
-import { usuariosDemostracion } from "../src/datos/usuarios.js";
+import { CLAVE_TIENDA } from "../../src/datos/almacenamiento.js";
+import { usuariosDemostracion } from "../../src/datos/usuarios.js";
 
 let servidor, App, productos;
 before(async () => {

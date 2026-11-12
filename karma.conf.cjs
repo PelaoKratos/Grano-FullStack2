@@ -26,7 +26,7 @@ if (!process.env.CHROME_BIN && process.platform === "win32") {
 module.exports = (config) =>
   config.set({
     frameworks: ["jasmine"],
-    files: [{ pattern: "tmp/pruebas/componentes.spec.js", watched: false }],
+    files: [{ pattern: "tmp/pruebas/pruebas.spec.js", watched: false }],
     plugins: ["karma-jasmine", "karma-chrome-launcher"],
     browsers: ["ChromeHeadless"],
     reporters: ["progress"],

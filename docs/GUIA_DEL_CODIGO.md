@@ -141,7 +141,9 @@ El recorrido de compra pasa por `Checkout.jsx`. El formulario precarga el perfil
 
 `ResumenPedido` se reutiliza en checkout, resultados y administración. Los pedidos anteriores sin dirección siguen siendo válidos. Las categorías se guardan como una lista adicional en el mismo esquema 2; al renombrarlas se actualizan los productos, y los reportes suman los precios históricos de cada pedido.
 
-Jasmine define los casos de componentes con `describe`, `it`, `expect` y espías de callbacks. Karma prepara un navegador Chrome sin ventanas y ejecuta esos casos; Vite convierte el JSX del archivo de pruebas. Los eventos se envían al DOM real y `act` permite comprobar la actualización de React antes de verificar el resultado.
+Jasmine define los casos con `describe`, `it`, `expect` y espías de callbacks. Karma prepara un navegador Chrome sin ventanas y ejecuta esos casos; Vite convierte el JSX de las suites que encuentra `tests/inicio-pruebas.js`. Los eventos se envían al DOM real y `act` permite comprobar la actualización de React antes de verificar el resultado.
+
+Las pruebas se separan en componentes, páginas, hooks, datos e integración. `npm test` ejecuta 69 casos con Jasmine y 11 de rutas con Node. `npm run test:cobertura` crea el informe de líneas y ramas en `coverage/index.html`. La [guía de pruebas](PRUEBAS.md) explica el reparto, los mocks y el resultado de referencia.
 
 1. Explicar que es una tienda React de demostración con persistencia local.
 2. Mostrar `main.jsx`, la composición de `App.jsx` y las rutas de `routes/RutasTienda.jsx`.

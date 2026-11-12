@@ -30,13 +30,16 @@ La dirección habitual es `http://127.0.0.1:5173`; usa la dirección que indique
 
 ```sh
 npm test
+npm run test:cobertura
 npm run build
 npm run preview
 ```
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`pnpm test` ejecuta 41 pruebas de lógica, persistencia y rutas y 23 pruebas de componentes con Jasmine y Karma. Requiere Chrome instalado para ejecutarlo sin ventanas. En Windows también se detecta Edge como alternativa; puedes indicar el navegador con `CHROME_BIN`. Para ejecutar cada grupo por separado usa `pnpm test:logica` o `pnpm test:componentes`. La configuración está en `karma.conf.cjs` y `vite.pruebas.config.js`.
+`npm test` ejecuta 69 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks y flujos de compra. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
+
+`npm run test:cobertura` genera el informe real de líneas, sentencias, funciones y ramas en `coverage/index.html`. La configuración de cobertura solo se aplica a las pruebas. La [guía de pruebas](docs/PRUEBAS.md) explica cómo ejecutar los casos, leer el reporte y presentar los resultados.
 
 ## Leer y explicar el código
 
@@ -104,8 +107,11 @@ Es una demostración local: no incluye servidor, pagos reales ni autenticación 
 - `src/styles/diseno.css`: sistema visual artesanal; `react.css` adapta las pantallas React.
 - `src/assets/`: imágenes, tipografías y licencias.
 - `src/datos/operaciones.js`: validaciones y cambios de estado de la tienda.
-- `tests/`: pruebas de migración, stock, compra, permisos, catálogo, persistencia, rutas y RUT. `enrutamiento.test.js` renderiza el árbol real con `MemoryRouter`, incluidas las pantallas diferidas, sin abrir un navegador.
-- `tests/componentes.spec.jsx`: pruebas Jasmine de renderizado, props, estado y eventos en Chrome mediante Karma, incluido el flujo completo de compra y el fallo de guardado.
+- `tests/componentes/`, `tests/paginas/`, `tests/hooks/` y `tests/datos/`: suites Jasmine organizadas por responsabilidad.
+- `tests/integracion/`: flujos de acceso y compra con Jasmine, y rutas con Node mediante `MemoryRouter`.
+- `tests/ayudas/`: montaje de componentes, datos de prueba y preparación de la cobertura.
+- `tests/inicio-pruebas.js`: encuentra automáticamente las suites de Jasmine para compilarlas con Vite.
+- `karma.cobertura.conf.cjs`: añade informes HTML, JSON y LCOV al mismo entorno de Karma.
 - `src/components/Checkout.jsx`, `ResultadoCompra.jsx` y `ResumenPedido.jsx`: datos de entrega y resultado de la compra simulada.
 - `src/datos/categorias.js` y `compra.js`: categorías, validación de entrega, ofertas y resumen de ventas.
 
