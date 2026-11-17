@@ -15,7 +15,7 @@ La instalación se necesita al descargar el proyecto o cambiar sus dependencias.
 
 | Comando                  | Qué ejecuta                                                                             |
 | ------------------------ | --------------------------------------------------------------------------------------- |
-| `npm test`               | Las 77 pruebas de Jasmine y las 11 pruebas de rutas                                     |
+| `npm test`               | Las 116 pruebas de Jasmine y las 11 pruebas de rutas                                    |
 | `npm run test:jasmine`   | Las suites de reglas, componentes, formularios, hooks y flujos en Chrome mediante Karma |
 | `npm run test:rutas`     | Las rutas de React usando Node y MemoryRouter                                           |
 | `npm run test:cobertura` | Las suites de Jasmine instrumentadas y el informe de cobertura                          |
@@ -41,7 +41,7 @@ tests/
 
 Un archivo nuevo con extensión `.spec.jsx` dentro de componentes, páginas, hooks o integración se incluye automáticamente. Las pruebas de reglas en datos usan `.spec.js`. Los archivos `.test.js` de integración se ejecutan con Node y no se cargan como Jasmine.
 
-El reparto actual es de 35 casos de datos, 20 de componentes, 2 de formularios, 13 de hooks y 7 de flujos con Jasmine. Las otras 11 pruebas verifican rutas con Node. Hay pruebas unitarias y de integración: no llamamos unitarias a todas por igual.
+El reparto actual es de 35 casos de datos, 55 de componentes, 6 de formularios y perfil, 13 de hooks y 7 de flujos con Jasmine. Las otras 11 pruebas verifican rutas con Node. Hay pruebas unitarias y de integración: no llamamos unitarias a todas por igual.
 
 ## Ejemplo sencillo de Jasmine
 
@@ -81,22 +81,24 @@ Después se abre `coverage/index.html`. La consola también muestra un resumen y
 
 El informe incluye los 53 archivos JavaScript y JSX de `src`, con sus nombres y líneas originales. Se excluye `main.jsx` porque monta la aplicación real; tampoco se cuentan bibliotecas, estilos, imágenes, archivos de pruebas ni el paquete generado por Vite. Los módulos sin pruebas también aparecen para mostrar lo que falta.
 
-La medición corresponde a las 77 pruebas ejecutadas por Karma. Las 11 pruebas de rutas con Node se comprueban aparte y no suman porcentajes a este informe.
+La medición corresponde a las 116 pruebas ejecutadas por Karma. Las 11 pruebas de rutas con Node se comprueban aparte y no suman porcentajes a este informe.
 
-Resultado de referencia del 12 de noviembre de 2026:
+Resultado del 16 de noviembre de 2026, después de añadir 39 casos de administración, imágenes, carrito, perfiles y páginas públicas:
 
 | Métrica    | Resultado           |
 | ---------- | ------------------- |
-| Líneas     | 69,69 %: 529 de 759 |
-| Sentencias | 69,37 %: 546 de 787 |
-| Funciones  | 59,16 %: 171 de 289 |
-| Ramas      | 68,42 %: 507 de 741 |
+| Líneas     | 90,25 %: 685 de 759 |
+| Sentencias | 89,70 %: 706 de 787 |
+| Funciones  | 88,23 %: 255 de 289 |
+| Ramas      | 87,04 %: 645 de 741 |
 
-Los colores del informe permiten abrir un archivo y ubicar los casos pendientes. El resultado sirve como punto de partida, no como una nota mínima ni como garantía de que todo funciona. Varias pantallas administrativas y públicas todavía necesitan pruebas directas de sus interacciones, aunque parte de su navegación ya se revisa con Node.
+El mínimo acordado para este proyecto es del 80 % global en las cuatro métricas. Se configura en `karma.cobertura.conf.cjs`: `npm run test:cobertura` termina con error si alguna baja de ese límite. El reporte mantiene los mismos 53 archivos; no se excluyeron pantallas para subir los porcentajes. La cobertura de líneas anterior era del 68,55 %.
+
+Los colores del informe permiten abrir un archivo y ubicar los casos pendientes. Superar el mínimo no garantiza que todos los escenarios estén comprobados. Las nuevas pruebas ejercitan creación y edición, cancelaciones, errores de lectura de imágenes y guardado, protección de cuentas, límites de stock y navegación con teclado.
 
 ## Qué sigue después
 
-El siguiente trabajo es revisar las líneas y ramas pendientes y sumar casos útiles, empezando por edición de productos, perfiles, categorías y cambio de contraseña. Quedan para otra etapa la revisión automática de accesibilidad y las mediciones de rendimiento.
+El siguiente trabajo es revisar las ramas pendientes y sumar casos útiles cuando cambie la aplicación. Quedan para otra etapa la revisión automática de accesibilidad y las mediciones de rendimiento.
 
 La base de datos en AWS se implementará más adelante. Actualmente la aplicación usa `localStorage`, y los datos de las pruebas son locales o simulados. Cuando exista una API se añadirán pruebas de respuestas correctas, rechazos y errores de red, manteniendo las pruebas de las reglas de negocio.
 

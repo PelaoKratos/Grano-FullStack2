@@ -4,18 +4,18 @@ Frontend de demostración con React, Vite, React Router DOM, Bootstrap local y p
 
 ## Relación con la pauta
 
-| Pauta                                                   | Implementación                                                                                        | Evidencia                                                            |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Migración, datos JS, CRUD y persistencia, páginas 1 y 2 | Componentes, `useTienda`, `operar`, `cargarEstado` y `guardarEstado`                                  | Pruebas de almacenamiento y operaciones                              |
-| Bootstrap y adaptación, página 2                        | Estilos locales existentes y grilla responsiva                                                        | Revisión visual de catálogo y compra en móvil, tableta y escritorio  |
-| Categorías, páginas 4 y 5                               | `/categorias`, filtros por URL y `/admin/categorias`                                                  | Pruebas de categorías, persistencia y rutas                          |
-| Checkout y datos precargados, páginas 5 y 6             | `/checkout`, entrega a domicilio o retiro, validación de datos                                        | Jasmine y pruebas de reglas de compra                                |
-| Resultado exitoso o fallido, páginas 7 y 8              | `/compra/confirmada/:id` y `/compra/error` con resumen y reintento                                    | Compra aprobada, pago rechazado y guardado fallido en Chrome         |
-| Ofertas, página 8                                       | `/ofertas` y precio anterior configurable desde administración                                        | Persistencia, validación y filtrado de ofertas                       |
-| Administración, páginas 9 y 10                          | Productos, stock, categorías, usuarios, historial, pedidos, comprobantes, mensajes, reportes y perfil | Rutas protegidas, operaciones y revisión del panel                   |
-| Historias o blog del diagrama, páginas 3 y 4            | `/blog` y `/blog/:slug`                                                                               | Rutas del listado, artículo y artículo ausente                       |
-| Jasmine y Karma, páginas 2 y 11                         | `karma.conf.cjs`, `vite.pruebas.config.js` y las suites organizadas en `tests/`                       | 77 casos Jasmine de reglas, renderizado, formularios, hooks y flujos |
-| ERS y documento de testing, página 12                   | Documentos V2 en `docs/`                                                                              | ERS, planilla actualizada e informe de cobertura funcional           |
+| Pauta                                                   | Implementación                                                                                        | Evidencia                                                             |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Migración, datos JS, CRUD y persistencia, páginas 1 y 2 | Componentes, `useTienda`, `operar`, `cargarEstado` y `guardarEstado`                                  | Pruebas de almacenamiento y operaciones                               |
+| Bootstrap y adaptación, página 2                        | Estilos locales existentes y grilla responsiva                                                        | Revisión visual de catálogo y compra en móvil, tableta y escritorio   |
+| Categorías, páginas 4 y 5                               | `/categorias`, filtros por URL y `/admin/categorias`                                                  | Pruebas de categorías, persistencia y rutas                           |
+| Checkout y datos precargados, páginas 5 y 6             | `/checkout`, entrega a domicilio o retiro, validación de datos                                        | Jasmine y pruebas de reglas de compra                                 |
+| Resultado exitoso o fallido, páginas 7 y 8              | `/compra/confirmada/:id` y `/compra/error` con resumen y reintento                                    | Compra aprobada, pago rechazado y guardado fallido en Chrome          |
+| Ofertas, página 8                                       | `/ofertas` y precio anterior configurable desde administración                                        | Persistencia, validación y filtrado de ofertas                        |
+| Administración, páginas 9 y 10                          | Productos, stock, categorías, usuarios, historial, pedidos, comprobantes, mensajes, reportes y perfil | Rutas protegidas, operaciones y revisión del panel                    |
+| Historias o blog del diagrama, páginas 3 y 4            | `/blog` y `/blog/:slug`                                                                               | Rutas del listado, artículo y artículo ausente                        |
+| Jasmine y Karma, páginas 2 y 11                         | `karma.conf.cjs`, `vite.pruebas.config.js` y las suites organizadas en `tests/`                       | 116 casos Jasmine de reglas, renderizado, formularios, hooks y flujos |
+| ERS y documento de testing, página 12                   | Documentos V2 en `docs/`                                                                              | ERS, planilla actualizada e informe de cobertura funcional            |
 
 ## Verificación
 
@@ -30,6 +30,8 @@ pnpm dev
 Resultado del 30 de octubre de 2026: 40 pruebas de lógica y rutas y 17 pruebas de componentes aprobadas. Chrome Headless ejecuta Jasmine mediante Karma. La suite conserva las 29 pruebas anteriores y añade los escenarios de esta entrega. El informe describe cobertura funcional y no afirma un porcentaje de líneas o ramas instrumentadas.
 
 Actualización del 12 de noviembre de 2026: la ejecución actual reúne 77 casos Jasmine y 11 de rutas con Node. Se añadió medición real de cobertura con `npm run test:cobertura`, organizada y explicada en [PRUEBAS.md](PRUEBAS.md). Los documentos Word están actualizados con los 88 casos aprobados, las validaciones de teléfono y la cobertura instrumentada del 12 de noviembre.
+
+Actualización del 16 de noviembre de 2026: se alcanzaron 116 casos Jasmine y 11 de rutas. El reporte mide 90,25 % de líneas, 89,70 % de sentencias, 88,23 % de funciones y 87,04 % de ramas. El comando de cobertura exige un mínimo global del 80 % en cada métrica.
 
 Para usar un navegador instalado en otra ruta, define `CHROME_BIN` antes de ejecutar las pruebas. Karma se limita a `127.0.0.1`; el navegador de pruebas se cierra al terminar.
 
