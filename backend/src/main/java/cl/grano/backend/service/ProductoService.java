@@ -2,6 +2,7 @@ package cl.grano.backend.service;
 
 import cl.grano.backend.model.Producto;
 import cl.grano.backend.repository.ProductoRepository;
+import cl.grano.backend.repository.CategoriaRepository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Transactional
 public class ProductoService {
   private final ProductoRepository repositorio;
+  private final CategoriaRepository categorias;
 
-  public ProductoService(ProductoRepository repositorio) {
+  public ProductoService(ProductoRepository repositorio, CategoriaRepository categorias) {
     this.repositorio = repositorio;
+    this.categorias = categorias;
   }
 
   @Transactional(readOnly = true)
@@ -34,6 +37,7 @@ public class ProductoService {
 
   public Producto crear(Producto datos) {
     validar(datos, null);
+    comprobarCategoria(datos.getCategoria());
     Producto producto = new Producto();
     // La ID nueva la decide el servidor, aunque el cliente envíe otra.
     producto.setId("nuevo-" + UUID.randomUUID());
@@ -42,10 +46,17 @@ public class ProductoService {
   }
 
   public Producto actualizar(String id, Producto datos) {
+    comprobarCategoria(datos.getCategoria());
     Producto producto = bloquear(id);
     validar(datos, id);
     copiarDatos(datos, producto);
     return repositorio.save(producto);
+  }
+
+  private void comprobarCategoria(String nombre) {
+    // Tomamos primero la categoría, igual que al renombrar, para no cruzar bloqueos.
+    categorias.bloquearPorNombre(nombre.trim()).orElseThrow(() ->
+        new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selecciona una categoría existente y actualiza el catálogo si cambió."));
   }
 
   public void eliminar(String id) {

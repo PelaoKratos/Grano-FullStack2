@@ -40,6 +40,9 @@ public class SeguridadConfig {
         .requestCache(cache -> cache.disable())
         .authorizeHttpRequests(reglas -> reglas
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/categorias", "/api/categorias/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/mensajes").permitAll()
+            .requestMatchers("/api/categorias", "/api/categorias/**", "/api/mensajes", "/api/mensajes/**").hasRole("admin")
             .requestMatchers(HttpMethod.POST, "/api/pedidos").hasRole("comprador")
             .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/estado").hasAnyRole("admin", "vendedor")
             .requestMatchers(HttpMethod.GET, "/api/pedidos", "/api/pedidos/**").hasAnyRole("admin", "vendedor", "comprador")

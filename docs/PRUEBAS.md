@@ -15,7 +15,7 @@ La instalación se necesita al descargar el proyecto o cambiar sus dependencias.
 
 | Comando                  | Qué ejecuta                                                                             |
 | ------------------------ | --------------------------------------------------------------------------------------- |
-| `npm test`               | Las 150 pruebas de Jasmine y las 11 pruebas de rutas                                    |
+| `npm test`               | Las 161 pruebas de Jasmine y las 11 pruebas de rutas                                    |
 | `npm run test:jasmine`   | Las suites de reglas, componentes, formularios, hooks y flujos en Chrome mediante Karma |
 | `npm run test:rutas`     | Las rutas de React usando Node y MemoryRouter                                           |
 | `npm run test:cobertura` | Las suites de Jasmine instrumentadas y el informe de cobertura                          |
@@ -41,7 +41,7 @@ tests/
 
 Un archivo nuevo con extensión `.spec.jsx` dentro de componentes, páginas, hooks o integración se incluye automáticamente. Las pruebas de reglas en datos usan `.spec.js`. Los archivos `.test.js` de integración se ejecutan con Node y no se cargan como Jasmine.
 
-El reparto actual es de 43 casos de datos, 59 de componentes, 6 de formularios y perfil, 35 de hooks y 7 de flujos con Jasmine. Las otras 11 pruebas verifican rutas con Node. Hay pruebas unitarias y de integración: no llamamos unitarias a todas por igual.
+El reparto actual es de 43 casos de datos, 62 de componentes, 6 de formularios y perfil, 43 de hooks y 7 de flujos con Jasmine. Las otras 11 pruebas verifican rutas con Node. Hay pruebas unitarias y de integración: no llamamos unitarias a todas por igual.
 
 Las pruebas de la API de productos sustituyen `fetch` con espías de Jasmine. Comprueban los métodos HTTP, errores de conexión, validaciones del backend, ID generado por Java, edición sin perder la imagen y reintentos. También verifican que los cambios de precio y stock lleguen al carrito, que iniciar sesión con el backend apagado no borre el carrito guardado y que no se creen pedidos locales para productos del servidor. El formulario debe esperar la respuesta antes de limpiar sus campos y conservarlos si falla una petición. Estas pruebas se ejecutan sin encender Spring Boot ni tocar H2.
 
@@ -83,18 +83,18 @@ npm run test:cobertura
 
 Después se abre `coverage/index.html`. La consola también muestra un resumen y se generan archivos JSON y LCOV para consultar los resultados. Esta carpeta se genera localmente y está excluida de Git.
 
-El informe incluye los 60 archivos JavaScript y JSX de `src`, con sus nombres y líneas originales. Se excluye `main.jsx` porque monta la aplicación real; tampoco se cuentan bibliotecas, estilos, imágenes, archivos de pruebas ni el paquete generado por Vite. Los módulos sin pruebas también aparecen para mostrar lo que falta.
+El informe incluye los 64 archivos JavaScript y JSX de `src`, con sus nombres y líneas originales. Se excluye `main.jsx` porque monta la aplicación real; tampoco se cuentan bibliotecas, estilos, imágenes, archivos de pruebas ni el paquete generado por Vite. Los módulos sin pruebas también aparecen para mostrar lo que falta.
 
-La medición corresponde a las 150 pruebas ejecutadas por Karma. Las 11 pruebas de rutas con Node se comprueban aparte y no suman porcentajes a este informe.
+La medición corresponde a las 161 pruebas ejecutadas por Karma. Las 11 pruebas de rutas con Node se comprueban aparte y no suman porcentajes a este informe.
 
 Resultado del 17 de noviembre de 2026, después de conectar catálogo, cuentas y pedidos con la API:
 
 | Métrica    | Resultado             |
 | ---------- | --------------------- |
-| Líneas     | 92,71 %: 1044 de 1126 |
-| Sentencias | 91,32 %: 1095 de 1199 |
-| Funciones  | 91,70 %: 354 de 386   |
-| Ramas      | 85,56 %: 812 de 949   |
+| Líneas     | 93,50 %: 1194 de 1277 |
+| Sentencias | 92,07 %: 1267 de 1376 |
+| Funciones  | 93,18 %: 410 de 440   |
+| Ramas      | 85,12 %: 881 de 1035  |
 
 El mínimo acordado para este proyecto es del 80 % global en las cuatro métricas. Se configura en `karma.cobertura.conf.cjs`: `npm run test:cobertura` termina con error si alguna baja de ese límite. Los nuevos servicios y hooks de conexión forman parte del reporte; no se excluyeron pantallas para subir los porcentajes. La cobertura de líneas antes de ampliar las pruebas era del 68,55 %.
 
@@ -108,7 +108,11 @@ La base de datos en AWS se implementará más adelante. El modo conectado usa H2
 
 ## Pruebas del backend
 
-Además del frontend, el backend tiene 46 casos de Java: 19 de productos, 15 de cuentas y seguridad y 12 de pedidos. Se ejecutan con `mvn verify` desde `backend/`, usando Java 17. JUnit, Mockito y MockMvc comprueban las reglas, permisos y transacciones con H2 temporal. El reporte de Karma sigue midiendo solo JavaScript y JSX. La [guía del backend](../backend/README.md) explica las rutas y cada capa.
+Además del frontend, el backend tiene 57 casos de Java: 19 de productos, 15 de cuentas y seguridad, 12 de pedidos y 11 de categorías y contacto. Se ejecutan con `mvn verify` desde `backend/`, usando Java 17. JUnit, Mockito y MockMvc comprueban las reglas, permisos y transacciones con H2 temporal. El reporte de Karma sigue midiendo solo JavaScript y JSX. La [guía del backend](../backend/README.md) explica las rutas y cada capa.
+
+Los casos nuevos comprueban categorías equivalentes, creación y eliminación simultáneas sin productos huérfanos, actualización del catálogo y respeto de categorías eliminadas al reiniciar. En contacto se verifican validaciones, identidad de la sesión, bandeja privada y marcado por ID. Las pruebas de React comprueban esperas, reintentos, errores, cambios de sesión y la portada después de renombrar sus categorías principales.
+
+También se probó la API real mediante el proxy de React con H2 aislada en `tmp/`. Se crearon y renombraron categorías, se rechazó eliminar una con productos y se enviaron y marcaron mensajes. Después del reinicio se conservaron nombre, stock, eliminación y estado leído. Al terminar se volvió a la base habitual sin agregarle mensajes ficticios.
 
 Los casos de pedidos comprueban total y comprador decididos por el servidor, pago rechazado, validación de entrega y cantidades, comprobantes propios y ajenos, estados y conservación del historial al borrar un producto. Dos casos ejecutan peticiones simultáneas para comprobar la última unidad disponible y los reintentos duplicados. Otro caso verifica que se reviertan todos los descuentos si el segundo producto no tiene stock.
 

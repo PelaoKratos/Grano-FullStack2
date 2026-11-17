@@ -33,6 +33,7 @@ describe("Tienda conectada al backend", () => {
     pedidosServidor,
     respaldoPendiente;
   const clavePendiente = "grano-compra-pendiente-comprador@duocuc.cl";
+  let categoriasServidor, mensajesServidor;
   const entrega = {
     nombre: "Cliente",
     correo: "comprador@duocuc.cl",
@@ -50,10 +51,64 @@ describe("Tienda conectada al backend", () => {
     localStorage.removeItem(claveApi);
     catalogo = [{ ...base }];
     sesionServidor = null;
+    categoriasServidor = [
+      { id: "cafe", nombre: "Café en grano", clave: "cafe" },
+      { id: "metodos", nombre: "Métodos", clave: "metodos" },
+      { id: "accesorios", nombre: "Accesorios", clave: "accesorios" },
+    ];
+    mensajesServidor = [];
     pedidosServidor = [];
     respaldoPendiente = localStorage.getItem(clavePendiente);
     localStorage.removeItem(clavePendiente);
     atender = async (url, opciones = {}) => {
+      if (url.includes("/categorias")) {
+        if (!opciones.method)
+          return respuestaJSON(JSON.stringify(categoriasServidor));
+        const id = url.endsWith("/categorias")
+          ? "nueva"
+          : url.split("/").at(-1);
+        if (opciones.method === "DELETE") {
+          categoriasServidor = categoriasServidor.filter(
+            (item) => item.id !== id,
+          );
+          return respuestaJSON(null, { status: 204 });
+        }
+        const anterior = categoriasServidor.find((item) => item.id === id);
+        const guardada = { id, nombre: JSON.parse(opciones.body).nombre };
+        catalogo = catalogo.map((producto) =>
+          producto.categoria === anterior?.nombre
+            ? { ...producto, categoria: guardada.nombre }
+            : producto,
+        );
+        categoriasServidor = [
+          ...categoriasServidor.filter((item) => item.id !== id),
+          guardada,
+        ];
+        return respuestaJSON(JSON.stringify(guardada));
+      }
+      if (url.includes("/mensajes")) {
+        if (!opciones.method)
+          return respuestaJSON(JSON.stringify(mensajesServidor));
+        if (opciones.method === "POST") {
+          const mensaje = {
+            ...JSON.parse(opciones.body),
+            id: "mensaje-1",
+            estado: "Nuevo",
+            fecha: "17-11-2026",
+          };
+          mensajesServidor = [mensaje, ...mensajesServidor];
+          return respuestaJSON(JSON.stringify(mensaje), { status: 201 });
+        }
+        const id = url.split("/").at(-2);
+        const guardado = {
+          ...mensajesServidor.find((mensaje) => mensaje.id === id),
+          estado: "Leído",
+        };
+        mensajesServidor = mensajesServidor.map((mensaje) =>
+          mensaje.id === id ? guardado : mensaje,
+        );
+        return respuestaJSON(JSON.stringify(guardado));
+      }
       if (url.endsWith("/auth/csrf"))
         return respuestaJSON(
           JSON.stringify({ headerName: "X-CSRF-TOKEN", token: "csrf" }),
@@ -180,6 +235,43 @@ describe("Tienda conectada al backend", () => {
     expect(tienda.carrito).toEqual([]);
   });
 
+  it("conecta categorías, portada y contacto sin guardar la bandeja administrativa en el navegador", async () => {
+    await vista.mostrar(<Pantalla />);
+    await act(async () =>
+      expect(
+        await tienda.enviar({
+          nombre: "Visita",
+          correo: "visita@grano.cl",
+          texto: "Consulta de prueba",
+        }),
+      ).toBeTrue(),
+    );
+    expect(tienda.mensajes).toEqual([]);
+    await act(async () => tienda.iniciar("admin@duocuc.cl", "1234"));
+    expect(tienda.mensajes).toHaveSize(1);
+    await act(async () =>
+      expect(
+        await tienda.guardarCategoria("Café en grano", "Orígenes"),
+      ).toBeTrue(),
+    );
+    expect(tienda.productos[0].categoria).toBe("Orígenes");
+    expect(tienda.productos[0].stock).toBe(5);
+    expect(tienda.seccionesCatalogo.cafe).toBe("Orígenes");
+    await act(async () =>
+      expect(await tienda.guardarCategoria("", "Barista")).toBeTrue(),
+    );
+    await act(async () =>
+      expect(await tienda.quitarCategoria("Barista")).toBeTrue(),
+    );
+    await act(async () =>
+      expect(await tienda.marcarMensaje("mensaje-1")).toBeTrue(),
+    );
+    expect(tienda.mensajes[0].estado).toBe("Leído");
+    expect(localStorage.getItem(claveApi)).not.toContain("Consulta de prueba");
+    await act(async () => tienda.cerrar());
+    expect(tienda.mensajes).toEqual([]);
+  });
+
   it("no guarda contraseñas ni acepta un rol modificado en localStorage", async () => {
     await vista.mostrar(<Pantalla />);
     await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
@@ -303,9 +395,11 @@ describe("Tienda conectada al backend", () => {
     expect(tienda.carrito).toHaveSize(1);
     expect(tienda.productos[0].stock).toBe(5);
     await act(async () =>
-      expect(tienda.guardarCategoria("Café en grano", "Otro")).toBeFalse(),
+      expect(
+        await tienda.guardarCategoria("Café en grano", "Otro"),
+      ).toBeFalse(),
     );
-    expect(tienda.error).toContain("siguiente etapa");
+    expect(tienda.error).toContain("administrador");
   });
 
   it("compra en el servidor, vacía el carrito y recupera el historial al recargar", async () => {

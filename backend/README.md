@@ -147,6 +147,27 @@ La solicitud se identifica por comprador y `solicitudId`. Repetir el mismo cuerp
 
 Cada pedido guarda una copia del nombre, categoría, precio, cantidad e imagen de sus productos, junto con la entrega, la fecha y el estado. El comprobante se conserva aunque se elimine el producto del catálogo.
 
+## Categorías y contacto
+
+| Método       | Dirección                                  | Acceso                        |
+| ------------ | ------------------------------------------ | ----------------------------- |
+| GET          | `/api/categorias` y `/api/categorias/{id}` | Público                       |
+| POST         | `/api/categorias`                          | Administrador                 |
+| PUT / DELETE | `/api/categorias/{id}`                     | Administrador                 |
+| POST         | `/api/mensajes`                            | Visitante o cuenta con sesión |
+| GET          | `/api/mensajes` y `/api/mensajes/{id}`     | Administrador                 |
+| PUT          | `/api/mensajes/{id}/leido`                 | Administrador                 |
+
+Crear o renombrar una categoría recibe `{"nombre":"Cafeteras"}`. La respuesta incluye su ID, nombre y clave para filtros. Los nombres admiten 60 caracteres y se comparan sin distinguir mayúsculas ni acentos; nombres vacíos, sin una clave válida o reservados como `todos` se rechazan. Un producto debe usar una categoría existente. No se puede eliminar una categoría con productos: se devuelve 409.
+
+`CategoriaService` guarda el cambio de nombre y los productos afectados en la misma transacción. Los productos se leen después de tomar su bloqueo para conservar el stock confirmado por compras recientes. Los comprobantes mantienen la categoría histórica. La primera ejecución crea Café en grano, Métodos y Accesorios y recupera categorías de productos anteriores. Una marca persistente evita recrear categorías eliminadas en los siguientes reinicios.
+
+El contacto recibe, por ejemplo, `{"nombre":"Visita","correo":"visita@grano.cl","texto":"Quisiera consultar por un café."}`. Se validan nombre de hasta 80 caracteres, correo de hasta 120 y texto de hasta 500. Con sesión iniciada se usa el nombre y correo de la cuenta, aunque el cuerpo indique otra identidad. Java genera la fecha y el estado inicial **Nuevo**; el cliente no puede declararlo leído.
+
+El administrador consulta la bandeja y marca por ID, sin depender de la posición de un mensaje en la lista. Marcar otra vez un mensaje leído es válido. No se envían correos ni se integran servicios de mensajería externos. Los nuevos mensajes viven en H2; los antiguos del navegador no se importan automáticamente y quedan como respaldo local.
+
+En React, `useCategoriasApi` y `useMensajesApi` gestionan carga, errores y operaciones pendientes. Los formularios esperan la respuesta antes de limpiar sus campos, y la bandeja se oculta cuando cambia o termina la sesión administrativa.
+
 ## Dónde se guardan los datos
 
 Al ejecutar desde `backend/`, H2 crea `data/grano.mv.db`. Ese archivo conserva los productos cuando se reinicia el servidor. La carpeta de datos queda excluida de Git; el repositorio guarda el código, no los registros creados al probarlo.
@@ -200,7 +221,7 @@ Si el servidor se abrió con `java -jar`, detenlo antes con `Ctrl+C` para que Wi
 mvn verify
 ```
 
-Hay 46 casos: 4 de `ProductoServiceTest`, 15 de `ProductoApiTest`, 15 de `CuentaApiTest` y 12 de `PedidoApiTest`. JUnit, Mockito y MockMvc comprueban el CRUD, cuentas, permisos, stock, compras simultáneas, reintentos y comprobantes con una base H2 temporal. Estas pruebas no modifican `backend/data`.
+Hay 57 casos: 4 de `ProductoServiceTest`, 15 de `ProductoApiTest`, 15 de `CuentaApiTest`, 12 de `PedidoApiTest` y 11 de `ContenidoApiTest`. Comprueban productos, cuentas, pedidos, categorías, mensajes, permisos y transacciones con H2 temporal. Estas pruebas no modifican `backend/data`.
 
 Maven deja sus resultados y el JAR en `target/`, que tampoco se sube a Git. Las pruebas de React siguen ejecutándose desde la raíz con `npm test` y `npm run test:cobertura`; la cobertura de Java se medirá por separado si se incorpora esa etapa.
 
@@ -212,4 +233,4 @@ El catálogo empieza vacío; agrega productos desde administración. Las cuentas
 
 Vite usa `VITE_API_URL=/api` y un proxy hacia `http://127.0.0.1:8080`. Así el navegador mantiene las cookies en el mismo origen al abrir con localhost o 127.0.0.1. Para publicar habrá que configurar también el proxy `/api` del alojamiento.
 
-Los próximos pasos son categorías y mensajes de contacto en el backend. Después se preparará una base externa y el despliegue en AWS. Los productos, las cuentas y los pedidos ya usan H2 persistente en el modo conectado.
+El próximo paso será PostgreSQL con Docker. Después se preparará el despliegue en AWS. Productos, categorías, cuentas, pedidos y mensajes nuevos ya usan H2 persistente en el modo conectado.

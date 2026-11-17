@@ -120,8 +120,18 @@ function AdminProductos({
           <select
             id="producto-categoria"
             name="categoria"
-            defaultValue={editado?.categoria || "Café en grano"}
+            required
+            defaultValue={
+              editado?.categoria ||
+              (categorias.includes("Café en grano")
+                ? "Café en grano"
+                : categorias[0]) ||
+              ""
+            }
           >
+            {!categorias.length && (
+              <option value="">Agrega una categoría primero</option>
+            )}
             {categorias.map((categoria) => (
               <option key={categoria}>{categoria}</option>
             ))}

@@ -2,6 +2,8 @@ package cl.grano.backend;
 
 import cl.grano.backend.model.Producto;
 import cl.grano.backend.repository.ProductoRepository;
+import cl.grano.backend.repository.CategoriaRepository;
+import cl.grano.backend.model.Categoria;
 import cl.grano.backend.service.ProductoService;
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProductoServiceTest {
   @Mock ProductoRepository repositorio;
+  @Mock CategoriaRepository categorias;
   @InjectMocks ProductoService servicio;
 
   private Producto producto() {
@@ -34,6 +37,7 @@ class ProductoServiceTest {
 
   @Test
   void generaIdNormalizaCamposYGuardaSinModificarLaSolicitud() {
+    when(categorias.bloquearPorNombre("Café en grano")).thenReturn(Optional.of(new Categoria()));
     Producto datos = producto();
     datos.setId("id-del-cliente");
     datos.setPrecioAnterior(BigDecimal.ZERO);

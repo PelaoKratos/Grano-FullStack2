@@ -11,6 +11,8 @@ import imagenDeRespaldo from "../assets/ritual-grano.png";
 import { useCatalogoApi } from "./useCatalogoApi.js";
 import { useSesionApi } from "./useSesionApi.js";
 import { usePedidosApi } from "./usePedidosApi.js";
+import { useCategoriasApi } from "./useCategoriasApi.js";
+import { useMensajesApi } from "./useMensajesApi.js";
 import { obtenerCategorias } from "../datos/categorias.js";
 
 // Este adaptador permite reutilizar las funciones de almacenamiento en las pruebas.
@@ -26,6 +28,8 @@ export function useTienda({
   const catalogo = useCatalogoApi(apiUrl);
   const cuentas = useSesionApi(apiUrl);
   const pedidosApi = usePedidosApi(apiUrl, cuentas.usuario);
+  const categoriasApi = useCategoriasApi(apiUrl);
+  const mensajesApi = useMensajesApi(apiUrl, cuentas.usuario);
   const cuentaActualRef = useRef(null);
   cuentaActualRef.current = cuentas.usuario?.correo;
   // El modo API tiene su propia copia de sesión y carrito. La demostración local queda intacta.
@@ -69,6 +73,9 @@ export function useTienda({
     if (apiUrl) {
       guardado.usuarios = cuentas.usuarios;
       guardado.sesion = cuentas.usuario;
+      guardado.categorias = categoriasApi.categorias.map(
+        (categoria) => categoria.nombre,
+      );
     }
     return guardado;
   }
@@ -92,15 +99,6 @@ export function useTienda({
     ) {
       setError(
         "Espera a que el catálogo se conecte antes de realizar cambios.",
-      );
-      return false;
-    }
-    if (
-      apiUrl &&
-      ["CATEGORIA_GUARDAR", "CATEGORIA_ELIMINAR"].includes(accion.tipo)
-    ) {
-      setError(
-        "La gestión de categorías del servidor se conectará en la siguiente etapa.",
       );
       return false;
     }
@@ -277,9 +275,29 @@ export function useTienda({
     return pedido;
   }
 
-  function usarCuenta(accion, ...datos) {
+  function ejecutarApi(accion, ...datos) {
     setError("");
     return accion(...datos);
+  }
+
+  async function guardarCategoriaServidor(anterior, nombre) {
+    setError("");
+    if (cuentas.usuario?.rol !== "admin") {
+      setError("Inicia sesión como administrador para gestionar categorías.");
+      return false;
+    }
+    const guardada = await categoriasApi.guardar(anterior, nombre);
+    if (guardada) catalogo.recargar();
+    return guardada;
+  }
+
+  async function quitarCategoriaServidor(nombre) {
+    setError("");
+    if (cuentas.usuario?.rol !== "admin") {
+      setError("Inicia sesión como administrador para gestionar categorías.");
+      return false;
+    }
+    return categoriasApi.eliminar(nombre);
   }
 
   // Las pantallas reciben datos y funciones; no necesitan escribir localStorage.
@@ -288,9 +306,18 @@ export function useTienda({
     sesion: apiUrl ? cuentas.usuario : estado.sesion,
     usuarios: apiUrl ? cuentas.usuarios : estado.usuarios,
     pedidos: apiUrl ? pedidosApi.pedidos : estado.pedidos,
+    mensajes: apiUrl ? mensajesApi.mensajes : estado.mensajes,
     productos,
     carrito,
-    error: error || cuentas.error || pedidosApi.error,
+    error:
+      error ||
+      cuentas.error ||
+      pedidosApi.error ||
+      categoriasApi.error ||
+      mensajesApi.error,
+    cargandoCategorias: categoriasApi.cargando,
+    cargandoMensajes: mensajesApi.cargando,
+    recargarMensajes: mensajesApi.recargar,
     cargandoPedidos: pedidosApi.cargando,
     errorPedidos: pedidosApi.error,
     recargarPedidos: pedidosApi.recargar,
@@ -299,12 +326,27 @@ export function useTienda({
     errorSesion: cuentas.error,
     recargarSesion: cuentas.recargar,
     categorias: apiUrl
-      ? obtenerCategorias({ ...estado, productos })
+      ? categoriasApi.categorias.map((categoria) => categoria.nombre)
       : estado.categorias,
+    seccionesCatalogo: apiUrl
+      ? {
+          cafe:
+            categoriasApi.categorias.find(
+              (categoria) => categoria.id === "cafe",
+            )?.nombre || "Café en grano",
+          metodos:
+            categoriasApi.categorias.find(
+              (categoria) => categoria.id === "metodos",
+            )?.nombre || "Métodos",
+        }
+      : undefined,
     usarApi: Boolean(apiUrl),
     cargandoProductos: catalogo.cargando,
     errorProductos: catalogo.error,
-    recargarProductos: catalogo.recargar,
+    recargarProductos: () => {
+      catalogo.recargar();
+      categoriasApi.recargar();
+    },
 
     // Acciones del carrito y la compra.
     agregar: (producto) => ejecutar({ tipo: "AGREGAR", id: producto.id }),
@@ -315,37 +357,47 @@ export function useTienda({
     // Acceso, registro y datos personales.
     iniciar: (correo, contrasena) =>
       apiUrl
-        ? usarCuenta(cuentas.iniciar, correo, contrasena)
+        ? ejecutarApi(cuentas.iniciar, correo, contrasena)
         : ejecutar({ tipo: "INICIAR", correo, contrasena }),
     cerrar: () =>
-      apiUrl ? usarCuenta(cuentas.cerrar) : ejecutar({ tipo: "CERRAR" }),
+      apiUrl ? ejecutarApi(cuentas.cerrar) : ejecutar({ tipo: "CERRAR" }),
     registrar: (usuario, entrar = false) =>
       apiUrl
-        ? usarCuenta(cuentas.registrar, usuario, entrar)
+        ? ejecutarApi(cuentas.registrar, usuario, entrar)
         : ejecutar({ tipo: "REGISTRAR", usuario, entrar }),
     cambiarClave: (correo, actual, nueva) =>
       apiUrl
-        ? usarCuenta(cuentas.clave, correo, actual, nueva)
+        ? ejecutarApi(cuentas.clave, correo, actual, nueva)
         : ejecutar({ tipo: "CLAVE", correo, actual, nueva }),
     guardarPerfil: (usuario) =>
       apiUrl
-        ? usarCuenta(cuentas.perfil, usuario)
+        ? ejecutarApi(cuentas.perfil, usuario)
         : ejecutar({ tipo: "PERFIL", usuario }),
 
     // Contacto y operaciones de administración.
-    enviar: (mensaje) => ejecutar({ tipo: "MENSAJE_ENVIAR", mensaje }),
+    enviar: (mensaje) =>
+      apiUrl
+        ? ejecutarApi(mensajesApi.enviar, mensaje)
+        : ejecutar({ tipo: "MENSAJE_ENVIAR", mensaje }),
     guardarProducto,
     crearProducto: guardarProducto,
     quitarProducto,
     guardarUsuario: (usuario) =>
       apiUrl
-        ? usarCuenta(cuentas.editar, usuario)
+        ? ejecutarApi(cuentas.editar, usuario)
         : ejecutar({ tipo: "USUARIO_GUARDAR", usuario }),
     guardarCategoria: (anterior, nombre) =>
-      ejecutar({ tipo: "CATEGORIA_GUARDAR", anterior, nombre }),
+      apiUrl
+        ? guardarCategoriaServidor(anterior, nombre)
+        : ejecutar({ tipo: "CATEGORIA_GUARDAR", anterior, nombre }),
     quitarCategoria: (nombre) =>
-      ejecutar({ tipo: "CATEGORIA_ELIMINAR", nombre }),
-    marcarMensaje: (indice) => ejecutar({ tipo: "MENSAJE_LEIDO", indice }),
+      apiUrl
+        ? quitarCategoriaServidor(nombre)
+        : ejecutar({ tipo: "CATEGORIA_ELIMINAR", nombre }),
+    marcarMensaje: (indice) =>
+      apiUrl
+        ? ejecutarApi(mensajesApi.marcar, indice)
+        : ejecutar({ tipo: "MENSAJE_LEIDO", indice }),
     cambiarEstadoPedido: (id, estado) =>
       apiUrl
         ? pedidosApi.cambiarEstado(id, estado)

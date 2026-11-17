@@ -42,7 +42,7 @@ La base del servidor empieza vacía: los productos antiguos del navegador no se 
 
 El modo conectado usa `.env.backend`, con `VITE_API_URL=/api`. Vite redirige esa ruta hacia `http://127.0.0.1:8080` para que el navegador trabaje con las cookies en el mismo origen. Es una dirección pública, sin credenciales. Usa `npm run build:backend` para compilar ese modo; al publicarlo necesitarás un proxy `/api` en el alojamiento. `npm run dev` y `npm run build` conservan la demostración local anterior.
 
-Los **productos y cuentas** ya están en el backend. El carrito y los mensajes siguen en la clave separada del navegador `grano-tienda-api-v1`. Ese almacenamiento no guarda contraseñas ni la lista de usuarios del servidor. La sesión se comprueba mediante una cookie HttpOnly y `/api/auth/me`, y Java decide los permisos. Cambiar un rol en el navegador no concede acceso administrativo. El modo local anterior conserva sus datos.
+Los **productos, categorías, cuentas, pedidos y mensajes nuevos** ya están en el backend. El carrito sigue en la clave separada del navegador `grano-tienda-api-v1`. Ese almacenamiento no guarda contraseñas ni la bandeja del servidor. Los mensajes anteriores que estaban en el navegador se conservan como respaldo, sin importarlos automáticamente. La sesión se comprueba mediante una cookie HttpOnly y `/api/auth/me`, y Java decide los permisos. Cambiar un rol en el navegador no concede acceso administrativo. El modo local anterior conserva sus datos.
 
 El catálogo es público; solo el administrador puede modificar productos y gestionar usuarios. El vendedor y el comprador entran a sus propias pantallas. Al registrarse se crea un comprador y se inicia sesión automáticamente. El perfil y los cambios de contraseña se guardan en el servidor. Las claves se almacenan con hash BCrypt, y el RUT se valida también en Java. Se conservan las tres cuentas de práctica que aparecen debajo del login.
 
@@ -52,7 +52,11 @@ Los pedidos ya se guardan en el servidor. El comprador puede confirmar una compr
 
 Para probarlo, crea un producto con stock desde administración, entra como comprador, agrega unidades y confirma en **Finalizar compra**. Revisa **Mi cuenta** y vuelve a iniciar sesión como vendedor: desde **Pedidos recibidos** puedes consultar la entrega y cambiar el estado a **En preparación** o **Entregado**. El administrador también puede hacerlo desde su panel. Usa **Actualizar pedidos** para consultar cambios realizados en otro navegador.
 
-El comprador recibe únicamente sus pedidos; vendedor y administrador pueden consultar todos. Cada comprobante conserva nombre, precio e imagen del momento de compra aunque el producto cambie o se elimine. Las solicitudes repetidas usan el mismo identificador para evitar descuentos duplicados. El carrito se vacía cuando la API confirma el pedido; un error de red conserva el intento para reintentar. No se realizan cobros reales. Categorías y mensajes siguen pendientes de conexión al backend; AWS queda para después.
+El comprador recibe únicamente sus pedidos; vendedor y administrador pueden consultar todos. Cada comprobante conserva nombre, precio e imagen del momento de compra aunque el producto cambie o se elimine. Las solicitudes repetidas usan el mismo identificador para evitar descuentos duplicados. El carrito se vacía cuando la API confirma el pedido; un error de red conserva el intento para reintentar. No se realizan cobros reales.
+
+Desde **Administración → Categorías** puedes crear, renombrar o eliminar categorías vacías. El cambio de nombre se aplica a los productos sin modificar su stock ni las categorías históricas de los comprobantes. La portada conserva los cafés y métodos de preparación al renombrar sus categorías principales. Java exige una categoría existente al guardar productos y rechaza nombres equivalentes con distintas mayúsculas o acentos. Las tres categorías iniciales se crean una sola vez: las que elimines no reaparecen al reiniciar.
+
+En **Contacto** puedes enviar mensajes como visitante o con sesión iniciada. Los nuevos mensajes se guardan en H2; si hay sesión, el servidor usa la identidad de esa cuenta. Solo el administrador puede verlos desde **Administración → Mensajes** y marcarlos como leídos. Usa **Actualizar mensajes** para consultar nuevos envíos. Esta bandeja no manda correos externos. La siguiente etapa será PostgreSQL con Docker; AWS queda para después.
 
 ## Comprobar y compilar
 
@@ -65,7 +69,7 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`npm test` ejecuta 150 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks, flujos de compra, sesiones y comunicación con la API mediante respuestas simuladas. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
+`npm test` ejecuta 161 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks, flujos de compra, sesiones, categorías y contacto con respuestas simuladas de la API. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
 
 `npm run test:cobertura` genera el informe real de líneas, sentencias, funciones y ramas en `coverage/index.html`, y falla si alguna de esas cuatro métricas globales queda por debajo del 80 %. La configuración de cobertura solo se aplica a las pruebas. La [guía de pruebas](docs/PRUEBAS.md) explica cómo ejecutar los casos, leer el reporte y presentar los resultados.
 
@@ -129,6 +133,8 @@ El modo local conserva las cuentas de demostración del navegador. En el modo co
 - `src/main.jsx`: `HashRouter` de React Router DOM; conserva enlaces por hash en alojamiento estático.
 - `src/components/Administracion.jsx`: subrutas de administración y navegación activa con `NavLink`.
 - `src/hooks/useTienda.js`: operaciones de la tienda y guardado.
+- `src/hooks/useCategoriasApi.js` y `useMensajesApi.js`: categorías públicas, gestión administrativa y bandeja privada de contacto.
+- `src/servicios/categoriasApi.js` y `mensajesApi.js`: peticiones de categorías y mensajes con cookies y CSRF.
 - `src/hooks/useSesionApi.js`: recupera la sesión y conecta registro, perfil, contraseña y administración de cuentas con el servidor.
 - `src/hooks/usePedidosApi.js` y `src/servicios/pedidosApi.js`: consultan pedidos, confirman compras, conservan el identificador del intento y actualizan estados.
 - `src/servicios/clienteApi.js`: cookies, token CSRF y errores HTTP compartidos.

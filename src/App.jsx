@@ -56,8 +56,8 @@ function Tienda() {
             Actualizar catálogo
           </Boton>
           <p className="mb-0 mt-2">
-            Productos, cuentas y pedidos conectados al servidor. Los pagos
-            siguen siendo de demostración.
+            Catálogo, cuentas, pedidos y contacto conectados al servidor. Los
+            pagos siguen siendo de demostración.
           </p>
         </div>
       )}
@@ -69,6 +69,17 @@ function Tienda() {
             onClick={tienda.recargarPedidos}
           >
             Actualizar pedidos
+          </Boton>
+        </div>
+      )}
+      {tienda.usarApi && tienda.sesion?.rol === "admin" && (
+        <div className="container mt-3">
+          <Boton
+            variante="secundario"
+            disabled={tienda.cargandoMensajes}
+            onClick={tienda.recargarMensajes}
+          >
+            Actualizar mensajes
           </Boton>
         </div>
       )}
@@ -98,7 +109,9 @@ function Tienda() {
           {tienda.usarApi &&
           (tienda.cargandoProductos ||
             tienda.cargandoSesion ||
-            tienda.cargandoPedidos) ? (
+            tienda.cargandoPedidos ||
+            tienda.cargandoCategorias ||
+            tienda.cargandoMensajes) ? (
             <p role="status">Cargando los datos de la tienda…</p>
           ) : (
             <RutasTienda tienda={tienda} acciones={acciones} />

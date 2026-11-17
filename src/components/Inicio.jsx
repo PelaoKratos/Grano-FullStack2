@@ -5,11 +5,17 @@ import { useState } from "react";
 import Icono from "./Icono.jsx";
 import TarjetaProducto from "./TarjetaProducto.jsx";
 import fotografia from "../assets/ritual-grano.png";
+import { claveCategoria } from "../datos/categorias.js";
 // Muestra la portada y permite elegir un café del catálogo para añadirlo.
-export default function Inicio({ productos, onAgregar }) {
+export default function Inicio({
+  productos,
+  onAgregar,
+  categoriaCafe = "Café en grano",
+  categoriaMetodos = "Métodos",
+}) {
   const [sabor, setSabor] = useState("colombia");
   const cafes = productos.filter(
-    (productoCatalogo) => productoCatalogo.categoria === "Café en grano",
+    (productoCatalogo) => productoCatalogo.categoria === categoriaCafe,
   );
   const cafe =
     cafes.find((productoCatalogo) => productoCatalogo.id === sabor) || cafes[0];
@@ -142,14 +148,18 @@ export default function Inicio({ productos, onAgregar }) {
               Una pausa, una taza. Encuentra los métodos y accesorios para
               preparar tu café como más te gusta.
             </p>
-            <Link className="btn btn-crema" to="/productos?categoria=metodos">
+            <Link
+              className="btn btn-crema"
+              to={`/productos?categoria=${claveCategoria(categoriaMetodos)}`}
+            >
               Encuentra tu método <Icono />
             </Link>
           </div>
           <div className="metodos-enlaces">
             {productos
               .filter(
-                (productoCatalogo) => productoCatalogo.categoria === "Métodos",
+                (productoCatalogo) =>
+                  productoCatalogo.categoria === categoriaMetodos,
               )
               .slice(0, 2)
               .map((productoCatalogo) => (

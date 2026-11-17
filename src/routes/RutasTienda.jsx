@@ -38,7 +38,12 @@ export default function RutasTienda({ tienda, acciones }) {
       <Route
         path="/"
         element={
-          <Inicio productos={tienda.productos} onAgregar={agregarProducto} />
+          <Inicio
+            productos={tienda.productos}
+            onAgregar={agregarProducto}
+            categoriaCafe={tienda.seccionesCatalogo?.cafe}
+            categoriaMetodos={tienda.seccionesCatalogo?.metodos}
+          />
         }
       />
       <Route
