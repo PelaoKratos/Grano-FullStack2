@@ -17,8 +17,8 @@ export function useAccionesTienda(tienda) {
     }
   }
   // Inicia sesión y elige la pantalla de destino según el rol del usuario.
-  function iniciarSesion(correo, clave) {
-    const usuario = tienda.iniciar(correo, clave);
+  async function iniciarSesion(correo, clave) {
+    const usuario = await tienda.iniciar(correo, clave);
     if (!usuario) {
       return usuario;
     }
@@ -38,8 +38,8 @@ export function useAccionesTienda(tienda) {
   }
 
   // Abre la sesión nueva y conserva el destino solicitado antes del registro.
-  function registrarComprador(usuario) {
-    if (!tienda.registrar(usuario, true)) {
+  async function registrarComprador(usuario) {
+    if (!(await tienda.registrar(usuario, true))) {
       return false;
     }
     navegar(parametros.get("destino") === "carrito" ? "/carrito" : "/cuenta");
@@ -75,8 +75,8 @@ export function useAccionesTienda(tienda) {
 
   // Pide cerrar la sesión y limpia los avisos de compra cuando la operación se
   // guarda.
-  function cerrarSesion() {
-    const cerrado = tienda.cerrar();
+  async function cerrarSesion() {
+    const cerrado = await tienda.cerrar();
     if (cerrado) {
       setAviso("");
       setMensajeCompra("");

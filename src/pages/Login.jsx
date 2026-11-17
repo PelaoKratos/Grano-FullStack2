@@ -9,12 +9,19 @@ export default function Login({ onIniciar }) {
   const destino =
     parametros.get("destino") === "carrito" ? "?destino=carrito" : "";
   const [mensajeLogin, setMensajeLogin] = useState("");
+  const [enviando, setEnviando] = useState(false);
   // Lee el correo y la contraseña del formulario y muestra un mensaje si se
   // rechaza el acceso.
-  function iniciarSesion(evento) {
+  async function iniciarSesion(evento) {
     evento.preventDefault();
+    if (enviando) return;
     const datos = new FormData(evento.target);
-    const usuario = onIniciar(datos.get("correo"), datos.get("contrasena"));
+    setEnviando(true);
+    const usuario = await onIniciar(
+      datos.get("correo"),
+      datos.get("contrasena"),
+    );
+    setEnviando(false);
 
     if (!usuario) {
       setMensajeLogin("Correo o contraseña incorrectos, o cuenta desactivada.");
@@ -49,7 +56,9 @@ export default function Login({ onIniciar }) {
             required
           />
 
-          <Boton type="submit">Iniciar sesión</Boton>
+          <Boton type="submit" disabled={enviando}>
+            {enviando ? "Ingresando…" : "Iniciar sesión"}
+          </Boton>
         </form>
         <p className="mensaje-formulario" role="status">
           {mensajeLogin}

@@ -58,7 +58,7 @@ describe("Hook useAccionesTienda", () => {
     await vista.mostrar(<PantallaDePrueba />, "/registro?destino=carrito");
     let resultado;
     await act(async () => {
-      resultado = acciones.registrarComprador(usuario);
+      resultado = await acciones.registrarComprador(usuario);
     });
     expect(resultado).toBeFalse();
     expect(tienda.registrar).toHaveBeenCalledOnceWith(usuario, true);

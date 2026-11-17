@@ -8,23 +8,28 @@ export default function CambiarContrasena({ onCambiarContrasena }) {
   const destino =
     parametros.get("destino") === "carrito" ? "?destino=carrito" : "";
   const [mensajeClave, setMensajeClave] = useState("");
+  const [enviando, setEnviando] = useState(false);
   // Envía las credenciales y la nueva contraseña, y limpia el formulario si se
   // guardó el cambio.
-  function cambiarContrasena(evento) {
+  async function cambiarContrasena(evento) {
     evento.preventDefault();
-    const datos = new FormData(evento.target);
-    const cambioCorrecto = onCambiarContrasena(
+    if (enviando) return;
+    const formulario = evento.currentTarget;
+    const datos = new FormData(formulario);
+    setEnviando(true);
+    const cambioCorrecto = await onCambiarContrasena(
       datos.get("correo").trim().toLowerCase(),
       datos.get("actual"),
       datos.get("nueva"),
     );
+    setEnviando(false);
 
     if (!cambioCorrecto) {
       setMensajeClave("No pudimos validar el correo y la contraseña actual.");
       return;
     }
 
-    evento.target.reset();
+    formulario.reset();
     setMensajeClave("Contraseña actualizada.");
   }
 
@@ -47,7 +52,9 @@ export default function CambiarContrasena({ onCambiarContrasena }) {
             minLength="6"
             required
           />
-          <Boton type="submit">Actualizar contraseña</Boton>
+          <Boton type="submit" disabled={enviando}>
+            Actualizar contraseña
+          </Boton>
         </form>
         <p className="mensaje-formulario" role="status">
           {mensajeClave}

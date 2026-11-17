@@ -2,7 +2,7 @@
 
 Tienda de café de especialidad, métodos de preparación y accesorios. **La aplicación principal ahora está en React y Vite, desde la raíz del repositorio.** Conserva el diseño cálido y artesanal y las funciones de la tienda.
 
-La carpeta `backend/` incorpora la API de productos con Spring Boot, Java 17 y una base H2 persistente local. React ya puede consultar y administrar ese catálogo mediante el modo conectado. La [guía del backend](backend/README.md) explica cómo iniciarlo y entender cada capa.
+La carpeta `backend/` incorpora la API de productos y cuentas con Spring Boot, Java 17 y una base H2 persistente local. React consulta y administra el catálogo y usa registro, inicio de sesión, perfiles y permisos del servidor. La [guía del backend](backend/README.md) explica cómo iniciarlo y entender cada capa.
 
 ## Abrir en Windows
 
@@ -40,9 +40,15 @@ La base del servidor empieza vacía: los productos antiguos del navegador no se 
 
 `src/servicios/productosApi.js` reúne las peticiones GET, POST, PUT y DELETE y los mensajes de error. `src/hooks/useCatalogoApi.js` controla carga, reintento y actualización de la pantalla. Los formularios esperan al servidor antes de mostrar éxito y bloquean sus controles mientras guardan.
 
-El modo conectado usa `.env.backend`, con `VITE_API_URL=http://127.0.0.1:8080/api`. Es una dirección pública, sin credenciales. Usa `npm run build:backend` para compilar ese modo. `npm run dev` y `npm run build` conservan la demostración local anterior.
+El modo conectado usa `.env.backend`, con `VITE_API_URL=/api`. Vite redirige esa ruta hacia `http://127.0.0.1:8080` para que el navegador trabaje con las cookies en el mismo origen. Es una dirección pública, sin credenciales. Usa `npm run build:backend` para compilar ese modo; al publicarlo necesitarás un proxy `/api` en el alojamiento. `npm run dev` y `npm run build` conservan la demostración local anterior.
 
-En esta etapa solo los **productos** están en el backend. Las cuentas, mensajes y carrito siguen siendo de demostración y se guardan en otra clave del navegador, `grano-tienda-api-v1`, para conservar intactos los datos del modo local. El carrito muestra el precio y stock del catálogo consultado. En el modo conectado todavía no se confirman compras ni se administran categorías: eso necesita endpoints propios para guardar pedidos y descontar stock en una transacción. La siguiente etapa será autenticación y autorización en el servidor; después conectaremos los pedidos. La API de esta práctica está limitada al equipo local y aún no comprueba roles: el acceso administrativo de React no reemplaza la seguridad del backend. AWS queda para después.
+Los **productos y cuentas** ya están en el backend. El carrito y los mensajes siguen en la clave separada del navegador `grano-tienda-api-v1`. Ese almacenamiento no guarda contraseñas ni la lista de usuarios del servidor. La sesión se comprueba mediante una cookie HttpOnly y `/api/auth/me`, y Java decide los permisos. Cambiar un rol en el navegador no concede acceso administrativo. El modo local anterior conserva sus datos.
+
+El catálogo es público; solo el administrador puede modificar productos y gestionar usuarios. El vendedor y el comprador entran a sus propias pantallas. Al registrarse se crea un comprador y se inicia sesión automáticamente. El perfil y los cambios de contraseña se guardan en el servidor. Las claves se almacenan con hash BCrypt, y el RUT se valida también en Java. Se conservan las tres cuentas de práctica que aparecen debajo del login.
+
+Para comprobarlo, registra un comprador con un RUT válido, recarga la página y verifica su sesión. Cierra sesión e inicia como administrador para consultar la cuenta nueva en **Administración → Usuarios**. Prueba crear un vendedor, cambiar el rol de una cuenta ordinaria y desactivarla. El servidor rechaza el acceso de una cuenta desactivada y los cambios administrativos realizados como comprador o vendedor. Cambiar la contraseña de una cuenta ordinaria termina sus sesiones anteriores. Las cuentas y el catálogo anteriores del navegador no se importan automáticamente.
+
+En el modo conectado todavía no se confirman compras ni se administran categorías: eso necesita endpoints propios para guardar pedidos y descontar stock en una transacción. La siguiente etapa será conectar los pedidos; AWS queda para después.
 
 ## Comprobar y compilar
 
@@ -55,7 +61,7 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`npm test` ejecuta 136 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks, flujos de compra y comunicación con la API mediante respuestas simuladas. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
+`npm test` ejecuta 145 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks, flujos de compra, sesiones y comunicación con la API mediante respuestas simuladas. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
 
 `npm run test:cobertura` genera el informe real de líneas, sentencias, funciones y ramas en `coverage/index.html`, y falla si alguna de esas cuatro métricas globales queda por debajo del 80 %. La configuración de cobertura solo se aplica a las pruebas. La [guía de pruebas](docs/PRUEBAS.md) explica cómo ejecutar los casos, leer el reporte y presentar los resultados.
 
@@ -106,7 +112,7 @@ La aplicación guarda su estado en `localStorage`, bajo `grano-tienda-react-v1`.
 
 La importación requiere el **mismo navegador y origen**. Los datos abiertos antes mediante `file://`, otro dominio o un puerto distinto no son accesibles desde la nueva dirección; el navegador los conserva en su origen anterior. Esta migración no elimina esos datos.
 
-El frontend conserva el modo local y añade un modo conectado para productos. Todavía no hay pagos reales ni autenticación de producción. Las cuentas y contraseñas de prueba permanecen en el navegador.
+El modo local conserva las cuentas de demostración del navegador. En el modo conectado, los productos y las cuentas viven en H2 y las contraseñas se guardan con hash; la sesión se verifica en Java. El carrito se mantiene en el navegador y se vacía al cerrar o perder la sesión de su dueño. Todavía no hay pagos reales y AWS se implementará después.
 
 ## Estructura
 
@@ -119,6 +125,9 @@ El frontend conserva el modo local y añade un modo conectado para productos. To
 - `src/main.jsx`: `HashRouter` de React Router DOM; conserva enlaces por hash en alojamiento estático.
 - `src/components/Administracion.jsx`: subrutas de administración y navegación activa con `NavLink`.
 - `src/hooks/useTienda.js`: operaciones de la tienda y guardado.
+- `src/hooks/useSesionApi.js`: recupera la sesión y conecta registro, perfil, contraseña y administración de cuentas con el servidor.
+- `src/servicios/clienteApi.js`: cookies, token CSRF y errores HTTP compartidos.
+- `src/servicios/cuentasApi.js` y `productosApi.js`: peticiones de cada parte de la API.
 - `src/hooks/useAccionesTienda.js`: acciones de acceso, carrito y compra que muestran avisos o cambian de pantalla.
 - `src/hooks/useNavegacionPagina.js`: título de la página, desplazamiento y foco del teclado al navegar.
 - `src/datos/`: catálogo, validación de RUT y migración de almacenamiento.

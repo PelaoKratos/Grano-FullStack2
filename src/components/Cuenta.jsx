@@ -7,17 +7,20 @@ import { esTelefonoValido, AYUDA_TELEFONO } from "../datos/telefono.js";
 // del usuario.
 function Cuenta({ usuario, pedidos = [], onGuardar, mostrarHistorial = true }) {
   const [mensaje, setMensaje] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   // Lee los campos del formulario y solicita guardar los cambios del perfil.
-  function guardarDatos(evento) {
+  async function guardarDatos(evento) {
     evento.preventDefault();
+    if (enviando) return;
     const datos = new FormData(evento.target);
     const telefono = datos.get("telefono").trim();
     if (telefono && !esTelefonoValido(telefono)) {
       setMensaje(AYUDA_TELEFONO);
       return;
     }
-    const guardado = onGuardar({
+    setEnviando(true);
+    const guardado = await onGuardar({
       ...usuario,
       nombre: datos.get("nombre").trim(),
       telefono,
@@ -25,6 +28,7 @@ function Cuenta({ usuario, pedidos = [], onGuardar, mostrarHistorial = true }) {
       comuna: datos.get("comuna").trim(),
       region: datos.get("region").trim(),
     });
+    setEnviando(false);
     setMensaje(
       guardado
         ? "Tus datos se actualizaron."
@@ -39,51 +43,53 @@ function Cuenta({ usuario, pedidos = [], onGuardar, mostrarHistorial = true }) {
       <section className="panel-formulario">
         <h2>Mis datos</h2>
         <form onSubmit={guardarDatos}>
-          <label htmlFor="cuenta-nombre">Nombre completo</label>
-          <input
-            id="cuenta-nombre"
-            name="nombre"
-            defaultValue={usuario.nombre}
-            required
-          />
+          <fieldset disabled={enviando} className="border-0 p-0 m-0">
+            <label htmlFor="cuenta-nombre">Nombre completo</label>
+            <input
+              id="cuenta-nombre"
+              name="nombre"
+              defaultValue={usuario.nombre}
+              required
+            />
 
-          <label htmlFor="cuenta-correo">Correo electrónico</label>
-          <input id="cuenta-correo" value={usuario.correo} readOnly />
+            <label htmlFor="cuenta-correo">Correo electrónico</label>
+            <input id="cuenta-correo" value={usuario.correo} readOnly />
 
-          <label htmlFor="cuenta-telefono">Teléfono</label>
-          <input
-            id="cuenta-telefono"
-            name="telefono"
-            type="tel"
-            autoComplete="tel"
-            aria-describedby="cuenta-telefono-ayuda"
-            defaultValue={usuario.telefono || ""}
-            placeholder="+56 9 1234 5678"
-          />
-          <p id="cuenta-telefono-ayuda" className="ayuda-formulario">
-            Opcional. Usa 9 dígitos, con o sin el prefijo +56.
-          </p>
-          <label htmlFor="cuenta-direccion">Dirección</label>
-          <input
-            id="cuenta-direccion"
-            name="direccion"
-            defaultValue={usuario.direccion || ""}
-            placeholder="Calle y número"
-          />
+            <label htmlFor="cuenta-telefono">Teléfono</label>
+            <input
+              id="cuenta-telefono"
+              name="telefono"
+              type="tel"
+              autoComplete="tel"
+              aria-describedby="cuenta-telefono-ayuda"
+              defaultValue={usuario.telefono || ""}
+              placeholder="+56 9 1234 5678"
+            />
+            <p id="cuenta-telefono-ayuda" className="ayuda-formulario">
+              Opcional. Usa 9 dígitos, con o sin el prefijo +56.
+            </p>
+            <label htmlFor="cuenta-direccion">Dirección</label>
+            <input
+              id="cuenta-direccion"
+              name="direccion"
+              defaultValue={usuario.direccion || ""}
+              placeholder="Calle y número"
+            />
 
-          <label htmlFor="cuenta-comuna">Comuna</label>
-          <input
-            id="cuenta-comuna"
-            name="comuna"
-            defaultValue={usuario.comuna || ""}
-          />
-          <label htmlFor="cuenta-region">Región</label>
-          <input
-            id="cuenta-region"
-            name="region"
-            defaultValue={usuario.region || ""}
-          />
-          <Boton type="submit">Guardar datos</Boton>
+            <label htmlFor="cuenta-comuna">Comuna</label>
+            <input
+              id="cuenta-comuna"
+              name="comuna"
+              defaultValue={usuario.comuna || ""}
+            />
+            <label htmlFor="cuenta-region">Región</label>
+            <input
+              id="cuenta-region"
+              name="region"
+              defaultValue={usuario.region || ""}
+            />
+            <Boton type="submit">Guardar datos</Boton>
+          </fieldset>
         </form>
         <p className="mensaje-formulario" role="status">
           {mensaje}

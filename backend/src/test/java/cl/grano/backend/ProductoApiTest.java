@@ -1,6 +1,12 @@
 package cl.grano.backend;
 
 import cl.grano.backend.repository.ProductoRepository;
+import cl.grano.backend.repository.UsuarioRepository;
+import cl.grano.backend.model.Usuario;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,10 +34,20 @@ class ProductoApiTest {
   @Autowired MockMvc api;
   @Autowired ObjectMapper json;
   @Autowired ProductoRepository repositorio;
+  @Autowired UsuarioRepository usuarios;
+  @Autowired WebApplicationContext contexto;
 
   @BeforeEach
   void limpiarBaseDePruebas() {
     repositorio.deleteAll();
+    Usuario admin = usuarios.findByCorreo("prueba@grano.cl").orElseGet(Usuario::new);
+    admin.nombre = "Administrador de prueba";
+    admin.correo = "prueba@grano.cl";
+    admin.contrasenaHash = "password";
+    admin.rol = "admin";
+    usuarios.save(admin);
+    api = MockMvcBuilders.webAppContextSetup(contexto).apply(springSecurity())
+        .defaultRequest(get("/").with(user("prueba@grano.cl").roles("admin")).with(csrf())).build();
   }
 
   private ObjectNode producto(String nombre) {

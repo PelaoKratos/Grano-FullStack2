@@ -1,6 +1,6 @@
-# Backend de Grano: primer CRUD
+# Backend de Grano: productos y cuentas
 
-Esta es la primera parte del backend. Permite administrar productos con una API Spring Boot y guardarlos en una base H2 local. El siguiente paso será conectar el catálogo y el formulario de administración de React con esta API.
+La API usa Spring Boot, Java 17 y H2 para guardar productos y cuentas. React se conecta al catálogo, registro, inicio de sesión, perfil y administración de usuarios. Spring Security comprueba los permisos en el servidor.
 
 ## Iniciar en Windows
 
@@ -21,11 +21,58 @@ Deja la terminal abierta mientras lo usas. Para detenerlo, pulsa `Ctrl+C`.
 - Swagger: <http://127.0.0.1:8080/swagger-ui/index.html>
 - Descripción OpenAPI: <http://127.0.0.1:8080/v3/api-docs>
 
-Al comenzar, la lista está vacía: un `GET` devuelve `[]`. Los productos creados en React todavía pertenecen al almacenamiento del navegador y no se importan automáticamente.
+El catálogo empieza vacío. Los productos del modo local anterior no se importan automáticamente. Las tres cuentas de prueba se crean al iniciar si todavía no existen; las nuevas cuentas y los productos del modo conectado se guardan en H2.
+
+## Cuentas, sesiones y permisos
+
+En la práctica local se conservan estas cuentas, visibles también debajo del login:
+
+| Rol           | Correo              | Contraseña |
+| ------------- | ------------------- | ---------- |
+| Administrador | admin@duocuc.cl     | 1234       |
+| Vendedor      | vendedor@duocuc.cl  | Venta123   |
+| Comprador     | comprador@duocuc.cl | Cliente123 |
+
+El registro público crea compradores aunque alguien cambie el campo `rol` en la petición. El administrador puede crear cuentas con los tres roles y cambiar la activación de las cuentas ordinarias. No puede desactivarse a sí mismo ni cambiar los roles o contraseñas de las cuentas de prueba.
+
+Las contraseñas se guardan con BCrypt y no se devuelven en el JSON. El correo se normaliza a minúsculas; el RUT se valida con módulo 11 y no puede repetirse usando otro formato. El perfil se actualiza a partir del usuario de la sesión, sin aceptar que el formulario elija otra cuenta o cambie su rol.
+
+Al entrar, Spring guarda la sesión en el servidor y entrega una cookie `JSESSIONID` HttpOnly. React consulta `/api/auth/me` al recargar. La sesión vence tras 30 minutos sin actividad o al cerrar sesión. Reiniciar el backend termina las sesiones en memoria; las cuentas siguen en H2. Al cambiar la contraseña, un número de versión invalida las sesiones anteriores. La activación y los roles se consultan en la base en cada petición autenticada.
+
+| Acción                                  | Acceso                          |
+| --------------------------------------- | ------------------------------- |
+| Consultar catálogo y detalle            | Público                         |
+| Crear, editar o eliminar productos      | Administrador                   |
+| Listar, crear o editar usuarios         | Administrador                   |
+| Consultar o actualizar el perfil propio | Cualquier cuenta con sesión     |
+| Registrarse                             | Público, siempre como comprador |
+
+React envía las cookies con `credentials: "include"`. Antes de cada petición que modifica datos obtiene un token en `GET /api/auth/csrf` y lo manda como `X-CSRF-TOKEN`. Se pide uno nuevo porque Spring lo renueva al entrar y salir. No desactivamos CSRF. La configuración sigue el funcionamiento de [form login](https://docs.spring.io/spring-security/reference/6.5/servlet/authentication/passwords/form.html) y [protección CSRF](https://docs.spring.io/spring-security/reference/6.5/servlet/exploits/csrf.html) de Spring Security.
+
+Para probar con Postman, conserva las cookies entre peticiones:
+
+1. Haz `GET /api/auth/csrf` y copia `token`.
+2. Haz `POST /api/auth/login`, con el encabezado `X-CSRF-TOKEN` y cuerpo **x-www-form-urlencoded** con `correo` y `contrasena`.
+3. Vuelve a pedir el token después del login y úsalo en las peticiones POST, PUT o DELETE.
+4. Haz `GET /api/auth/me` para verificar la cuenta y `POST /api/auth/logout` con token para salir.
+
+Login y logout los atienden los filtros de Spring Security; no aparecen como métodos del controlador en Swagger. Las consultas públicas se pueden probar directamente en Swagger. Las escrituras se prueban desde React o Postman con sesión y token.
+
+| Método     | Dirección            | Uso                                                  |
+| ---------- | -------------------- | ---------------------------------------------------- |
+| GET        | `/api/auth/csrf`     | Obtener token de seguridad                           |
+| POST       | `/api/auth/login`    | Entrar con correo y contraseña en formato formulario |
+| POST       | `/api/auth/logout`   | Cerrar la sesión                                     |
+| GET        | `/api/auth/me`       | Recuperar el perfil de la sesión                     |
+| POST       | `/api/auth/registro` | Crear comprador con nombre, correo, RUT y contraseña |
+| PUT        | `/api/auth/perfil`   | Guardar nombre, teléfono y dirección propios         |
+| POST       | `/api/auth/clave`    | Cambiar clave con `correo`, `actual` y `nueva`       |
+| GET / POST | `/api/usuarios`      | Listar o crear cuentas desde administración          |
+| PUT        | `/api/usuarios/{id}` | Editar una cuenta desde administración               |
 
 ## Probar el primer producto
 
-En Swagger abre `POST /api/productos`, pulsa **Try it out**, reemplaza el cuerpo con este JSON y pulsa **Execute**. En Postman se usa la misma URL, método POST y un cuerpo raw de tipo JSON.
+Desde React entra como administrador y abre **Administración → Productos**. En Postman puedes usar `POST /api/productos` con sesión de administrador, el token CSRF actual y este cuerpo JSON:
 
 ```json
 {
@@ -56,6 +103,8 @@ PUT recibe todos los campos obligatorios, igual que POST. Para probarlo copia el
 Los errores devuelven un objeto con `mensaje`. Una validación de campos añade también `campos`, para que React pueda explicar qué corregir:
 
 - **400:** datos incompletos, JSON inválido, stock negativo o fraccionario, precios que no corresponden.
+- **401:** necesitas iniciar sesión o la sesión terminó.
+- **403:** el rol no tiene permiso o falta el token CSRF correcto.
 - **404:** no existe el producto solicitado.
 - **409:** otro producto tiene el mismo nombre, sin distinguir mayúsculas y después de quitar espacios de los extremos.
 
@@ -78,19 +127,25 @@ Se pueden configurar estas variables al iniciar:
 | `GRANO_DB_PASSWORD`      | Vacío, para esta base local                   |
 | `GRANO_FRONTEND_ORIGINS` | `http://127.0.0.1:5173,http://localhost:5173` |
 
-El backend se inicia accesible solo desde el equipo local. Esta etapa todavía no implementa autenticación ni permisos de cuentas en el servidor. Antes del despliegue se incorporarán esos controles y la conexión con la base de datos de AWS. CORS permite las peticiones del navegador desde Vite; no sustituye la autenticación.
+El backend se inicia accesible solo desde el equipo local. Ya comprueba sesiones y permisos; AWS queda para una etapa posterior. CORS acepta cookies y el encabezado CSRF desde los orígenes indicados. Las cuentas públicas de práctica se crean con `GRANO_CUENTAS_DEMO=true`; ponerlo en `false` evita nuevas creaciones, pero no elimina cuentas existentes.
 
 ## Cómo se reparte el código
 
-| Archivo                         | Qué hace                                                      |
-| ------------------------------- | ------------------------------------------------------------- |
-| `GranoBackendApplication`       | Inicia Spring Boot                                            |
-| `model/Producto`                | Define los campos de la tabla y sus validaciones              |
-| `repository/ProductoRepository` | Consulta y guarda productos mediante JPA                      |
-| `service/ProductoService`       | Revisa duplicados y ofertas; prepara los datos que se guardan |
-| `controller/ProductoController` | Relaciona las direcciones HTTP con las acciones del servicio  |
-| `exception/ManejadorErrores`    | Devuelve mensajes de error en JSON                            |
-| `config/CorsConfig`             | Configura los orígenes locales permitidos para React          |
+| Archivo                                                  | Qué hace                                                                           |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `GranoBackendApplication`                                | Inicia Spring Boot                                                                 |
+| `model/Producto`                                         | Define los campos de la tabla y sus validaciones                                   |
+| `repository/ProductoRepository`                          | Consulta y guarda productos mediante JPA                                           |
+| `service/ProductoService`                                | Revisa duplicados y ofertas; prepara los datos que se guardan                      |
+| `controller/ProductoController`                          | Relaciona las direcciones HTTP con las acciones del servicio                       |
+| `exception/ManejadorErrores`                             | Devuelve mensajes de error en JSON                                                 |
+| `config/CorsConfig`                                      | Configura los orígenes locales permitidos para React                               |
+| `model/Usuario` y `repository/UsuarioRepository`         | Guardan cuentas y consultan por correo o RUT                                       |
+| `dto/DatosCuenta`                                        | Define los campos que recibe cada formulario y la respuesta pública sin contraseña |
+| `service/UsuarioService` y `controller/CuentaController` | Registro, perfil, cambio de contraseña y gestión de cuentas                        |
+| `config/SeguridadConfig`                                 | Login, logout, hash de contraseñas y permisos por ruta                             |
+| `config/FiltroCuentaActiva` y `CuentaAutenticada`        | Comprueban el rol actual, activación y versión de la sesión                        |
+| `config/CuentasDemostracionConfig`                       | Crea las tres cuentas de práctica si todavía no existen                            |
 
 Para seguir una petición empieza por `ProductoController.listar()`. Llama a `ProductoService.listar()` y este pide los datos al repositorio. JPA consulta H2 y Spring convierte la lista en JSON al responder.
 
@@ -100,11 +155,13 @@ Para crear un producto, el controlador valida el cuerpo con `@Valid`. El servici
 
 Desde esta carpeta y con Java 17 configurado:
 
+Si el servidor se abrió con `java -jar`, detenlo antes con `Ctrl+C` para que Windows permita reemplazar el JAR al compilar.
+
 ```powershell
 mvn verify
 ```
 
-Hay 19 casos: `ProductoServiceTest` usa JUnit y Mockito para probar las reglas del servicio con un repositorio simulado. `ProductoApiTest` usa Spring Boot, MockMvc y una base H2 temporal para comprobar los endpoints, las validaciones, CORS y la documentación OpenAPI. Estas pruebas no modifican `backend/data`.
+Hay 34 casos: 4 de `ProductoServiceTest`, 15 de `ProductoApiTest` y 15 de `CuentaApiTest`. JUnit, Mockito y MockMvc comprueban el CRUD, registro, sesión, contraseñas, roles, perfil, CSRF real y CORS con una base H2 temporal. Estas pruebas no modifican `backend/data`.
 
 Maven deja sus resultados y el JAR en `target/`, que tampoco se sube a Git. Las pruebas de React siguen ejecutándose desde la raíz con `npm test` y `npm run test:cobertura`; la cobertura de Java se medirá por separado si se incorpora esa etapa.
 
@@ -112,6 +169,8 @@ Maven deja sus resultados y el JAR en `target/`, que tampoco se sube a Git. Las 
 
 Desde la raíz ejecuta `npm run dev:backend` mientras este servidor está encendido. La configuración pública está en `.env.backend`. El servicio `src/servicios/productosApi.js` envía las peticiones y `src/hooks/useCatalogoApi.js` maneja carga, errores, reintentos y cambios del catálogo. Consulta el recorrido de prueba en el README principal.
 
-La base empieza vacía; agrega productos desde administración. El modo local anterior sigue disponible con `npm run dev`. El modo conectado conserva sus datos de demostración en una clave separada del navegador. Los productos y sus imágenes se guardan en H2. No importamos automáticamente el catálogo anterior.
+El catálogo empieza vacío; agrega productos desde administración. Las cuentas se guardan en H2 junto con los productos. El modo local anterior sigue disponible con `npm run dev`. El modo conectado conserva el carrito en una clave separada del navegador, sin guardar contraseñas ni la lista de usuarios. No importamos automáticamente las cuentas o el catálogo anteriores.
 
-Los próximos pasos son autenticación y autorización en el backend, cuentas persistentes, categorías y pedidos con descuento de stock dentro de una transacción. Las compras del modo conectado quedan pendientes hasta contar con esos endpoints. Después se preparará una base externa y el despliegue en AWS.
+Vite usa `VITE_API_URL=/api` y un proxy hacia `http://127.0.0.1:8080`. Así el navegador mantiene las cookies en el mismo origen al abrir con localhost o 127.0.0.1. Para publicar habrá que configurar también el proxy `/api` del alojamiento.
+
+Los próximos pasos son categorías y pedidos con descuento de stock dentro de una transacción. Las compras del modo conectado quedan pendientes hasta contar con esos endpoints. Después se preparará una base externa y el despliegue en AWS.

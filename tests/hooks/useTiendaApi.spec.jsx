@@ -3,6 +3,7 @@ import { useTienda } from "../../src/hooks/useTienda.js";
 import { useCatalogoApi } from "../../src/hooks/useCatalogoApi.js";
 import { CLAVE_TIENDA } from "../../src/datos/almacenamiento.js";
 import { crearVista } from "../ayudas/renderizar.jsx";
+import { usuariosDemostracion } from "../../src/datos/usuarios.js";
 
 // La respuesta simulada evita depender de los tiempos de lectura de un stream real.
 function respuestaJSON(texto, { status = 200 } = {}) {
@@ -23,7 +24,7 @@ describe("Tienda conectada al backend", () => {
     critico: 2,
     imagen: "data:image/png;base64,YQ==",
   };
-  let tienda, peticion, respaldo, catalogo;
+  let tienda, peticion, respaldo, catalogo, atender, sesionServidor;
 
   function Pantalla() {
     tienda = useTienda({ apiUrl: "http://localhost:8080/api" });
@@ -34,28 +35,52 @@ describe("Tienda conectada al backend", () => {
     respaldo = localStorage.getItem(claveApi);
     localStorage.removeItem(claveApi);
     catalogo = [{ ...base }];
-    peticion = spyOn(window, "fetch").and.callFake(
-      async (url, opciones = {}) => {
-        if (opciones.method === "DELETE") {
-          catalogo = [];
-          return respuestaJSON(null, { status: 204 });
-        }
-        if (opciones.method) {
-          const producto = {
-            ...JSON.parse(opciones.body),
-            id: opciones.method === "POST" ? "nuevo-java" : base.id,
-          };
-          catalogo = [
-            ...catalogo.filter((item) => item.id !== producto.id),
-            producto,
-          ];
-          return respuestaJSON(JSON.stringify(producto), {
-            status: opciones.method === "POST" ? 201 : 200,
-          });
-        }
-        return respuestaJSON(JSON.stringify(catalogo));
-      },
-    );
+    sesionServidor = null;
+    atender = async (url, opciones = {}) => {
+      if (url.endsWith("/auth/csrf"))
+        return respuestaJSON(
+          JSON.stringify({ headerName: "X-CSRF-TOKEN", token: "csrf" }),
+        );
+      if (url.endsWith("/auth/me"))
+        return respuestaJSON(
+          JSON.stringify(sesionServidor || { mensaje: "Inicia sesión" }),
+          { status: sesionServidor ? 200 : 401 },
+        );
+      if (url.endsWith("/auth/login")) {
+        const datos = new URLSearchParams(opciones.body);
+        const cuenta = usuariosDemostracion.find(
+          (usuario) => usuario.correo === datos.get("correo"),
+        );
+        const { contrasena, ...publico } = cuenta;
+        sesionServidor = { ...publico, id: cuenta.correo };
+        return respuestaJSON(JSON.stringify(sesionServidor));
+      }
+      if (url.endsWith("/auth/logout")) {
+        sesionServidor = null;
+        return respuestaJSON(null, { status: 204 });
+      }
+      if (url.endsWith("/usuarios"))
+        return respuestaJSON(JSON.stringify([sesionServidor]));
+      if (opciones.method === "DELETE") {
+        catalogo = [];
+        return respuestaJSON(null, { status: 204 });
+      }
+      if (opciones.method) {
+        const producto = {
+          ...JSON.parse(opciones.body),
+          id: opciones.method === "POST" ? "nuevo-java" : base.id,
+        };
+        catalogo = [
+          ...catalogo.filter((item) => item.id !== producto.id),
+          producto,
+        ];
+        return respuestaJSON(JSON.stringify(producto), {
+          status: opciones.method === "POST" ? 201 : 200,
+        });
+      }
+      return respuestaJSON(JSON.stringify(catalogo));
+    };
+    peticion = spyOn(window, "fetch").and.callFake(atender);
   });
 
   afterEach(() => {
@@ -80,6 +105,36 @@ describe("Tienda conectada al backend", () => {
     expect(tienda.carrito).toEqual([]);
   });
 
+  it("no guarda contraseñas ni acepta un rol modificado en localStorage", async () => {
+    await vista.mostrar(<Pantalla />);
+    await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
+    await act(async () => tienda.agregar(base));
+    const texto = localStorage.getItem(claveApi);
+    expect(texto).not.toContain("Cliente123");
+    const guardado = JSON.parse(texto);
+    expect(guardado.usuarios).toEqual([]);
+    guardado.sesion.rol = "admin";
+    localStorage.setItem(claveApi, JSON.stringify(guardado));
+    await act(async () =>
+      window.dispatchEvent(new StorageEvent("storage", { key: claveApi })),
+    );
+    expect(tienda.sesion.rol).toBe("comprador");
+    await act(async () =>
+      expect(await tienda.guardarProducto(base)).toBeFalse(),
+    );
+  });
+
+  it("vacía el carrito de la cuenta anterior cuando el servidor informa una sesión vencida", async () => {
+    await vista.mostrar(<Pantalla />);
+    await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
+    await act(async () => tienda.agregar(base));
+    sesionServidor = null;
+    await act(async () => tienda.recargarSesion());
+    expect(tienda.sesion).toBeNull();
+    expect(tienda.carrito).toEqual([]);
+    expect(JSON.parse(localStorage.getItem(claveApi)).carrito).toEqual([]);
+  });
+
   it("valida permisos y datos antes de pedir cambios al servidor", async () => {
     await vista.mostrar(<Pantalla />);
     await act(async () => {
@@ -87,12 +142,24 @@ describe("Tienda conectada al backend", () => {
       expect(await tienda.quitarProducto(base.id)).toBeFalse();
     });
     expect(tienda.error).toContain("administrador");
-    expect(peticion.calls.count()).toBe(1);
+    expect(
+      peticion.calls
+        .allArgs()
+        .filter(
+          ([url, opciones]) => url.includes("/productos") && opciones.method,
+        ),
+    ).toHaveSize(0);
     await act(async () => tienda.iniciar("admin@duocuc.cl", "1234"));
     await act(async () =>
       expect(await tienda.guardarProducto({ ...base, precio: -1 })).toBeFalse(),
     );
-    expect(peticion.calls.count()).toBe(1);
+    expect(
+      peticion.calls
+        .allArgs()
+        .filter(
+          ([url, opciones]) => url.includes("/productos") && opciones.method,
+        ),
+    ).toHaveSize(0);
   });
 
   it("crea con el ID del servidor, conserva la imagen al editar y elimina", async () => {
@@ -131,17 +198,22 @@ describe("Tienda conectada al backend", () => {
   it("conserva los productos cuando el servidor rechaza una edición y permite reintentar", async () => {
     await vista.mostrar(<Pantalla />);
     await act(async () => tienda.iniciar("admin@duocuc.cl", "1234"));
-    peticion.and.resolveTo(
-      respuestaJSON(JSON.stringify({ mensaje: "Nombre repetido" }), {
-        status: 409,
-      }),
+    peticion.and.callFake((url, opciones) =>
+      url.includes("/productos")
+        ? Promise.resolve(
+            respuestaJSON(JSON.stringify({ mensaje: "Nombre repetido" }), {
+              status: 409,
+            }),
+          )
+        : atender(url, opciones),
     );
     await act(async () =>
       expect(await tienda.guardarProducto(base)).toBeFalse(),
     );
     expect(tienda.errorProductos).toBe("Nombre repetido");
     expect(tienda.productos[0].precio).toBe(base.precio);
-    peticion.and.resolveTo(respuestaJSON("[]"));
+    catalogo = [];
+    peticion.and.callFake(atender);
     await act(async () => tienda.recargarProductos());
     expect(tienda.errorProductos).toBe("");
     expect(tienda.productos).toEqual([]);
@@ -179,7 +251,7 @@ describe("Tienda conectada al backend", () => {
     await vista.mostrar(<Pantalla />);
     expect(tienda.errorProductos).toContain("No pudimos conectar");
     await act(async () => expect(tienda.agregar(base)).toBeFalse());
-    peticion.and.resolveTo(respuestaJSON(JSON.stringify([base])));
+    peticion.and.callFake(atender);
     await act(async () => tienda.recargarProductos());
     expect(tienda.productos).toHaveSize(1);
     expect(tienda.errorProductos).toBe("");
@@ -193,8 +265,11 @@ describe("Tienda conectada al backend", () => {
     await vista.mostrar(<Pantalla />);
     await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
     expect(JSON.parse(localStorage.getItem(claveApi)).carrito).toHaveSize(1);
-    peticion.and.resolveTo(respuestaJSON(JSON.stringify([base])));
-    await act(async () => tienda.recargarProductos());
+    peticion.and.callFake(atender);
+    await act(async () => {
+      tienda.recargarProductos();
+      tienda.recargarSesion();
+    });
     expect(tienda.carrito[0].cantidad).toBe(1);
   });
 

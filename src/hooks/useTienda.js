@@ -9,6 +9,7 @@ import { operar } from "../datos/operaciones.js";
 import { productos as productosIniciales } from "../datos/productos.js";
 import imagenDeRespaldo from "../assets/ritual-grano.png";
 import { useCatalogoApi } from "./useCatalogoApi.js";
+import { useSesionApi } from "./useSesionApi.js";
 import { obtenerCategorias } from "../datos/categorias.js";
 
 // Este adaptador permite reutilizar las funciones de almacenamiento en las pruebas.
@@ -22,6 +23,7 @@ export function useTienda({
   apiUrl = import.meta.env.VITE_API_URL || "",
 } = {}) {
   const catalogo = useCatalogoApi(apiUrl);
+  const cuentas = useSesionApi(apiUrl);
   // El modo API tiene su propia copia de sesión y carrito. La demostración local queda intacta.
   const clave = apiUrl ? "grano-tienda-api-v1" : CLAVE_TIENDA;
   const storage = useMemo(
@@ -30,7 +32,14 @@ export function useTienda({
         ? {
             getItem: (nombre) =>
               nombre === CLAVE_TIENDA ? almacenamiento.getItem(clave) : null,
-            setItem: (_, valor) => almacenamiento.setItem(clave, valor),
+            setItem: (_, valor) => {
+              // Los usuarios y sus contraseñas pertenecen al servidor.
+              const datos = JSON.parse(valor);
+              almacenamiento.setItem(
+                clave,
+                JSON.stringify({ ...datos, usuarios: [] }),
+              );
+            },
           }
         : almacenamiento,
     [apiUrl, clave],
@@ -53,12 +62,24 @@ export function useTienda({
       );
       guardado.categorias = obtenerCategorias(guardado);
     }
+    if (apiUrl) {
+      guardado.usuarios = cuentas.usuarios;
+      guardado.sesion = cuentas.usuario;
+    }
     return guardado;
   }
 
   // Aplica las reglas de la tienda y actualiza la pantalla cuando se confirma
   // el guardado.
   function ejecutar(accion) {
+    if (
+      apiUrl &&
+      !cuentas.verificada &&
+      ["AGREGAR", "CANTIDAD", "QUITAR"].includes(accion.tipo)
+    ) {
+      setError("Primero comprueba la conexión y la sesión con el servidor.");
+      return false;
+    }
     // Se vuelve a leer el navegador por si otra pestaña cambió el stock o la sesión.
     if (
       apiUrl &&
@@ -111,7 +132,11 @@ export function useTienda({
   useEffect(() => {
     // En el primer montaje se conserva también cualquier dato recién migrado.
     try {
-      guardarEstado(storage, estadoActualRef.current);
+      if (!apiUrl) guardarEstado(storage, estadoActualRef.current);
+      else {
+        const anterior = almacenamiento.getItem(clave);
+        if (anterior) storage.setItem(CLAVE_TIENDA, anterior);
+      }
     } catch {
       setError("El almacenamiento del navegador no está disponible.");
     }
@@ -134,6 +159,32 @@ export function useTienda({
     return () => window.removeEventListener("storage", sincronizar);
   }, [storage, clave, apiUrl]);
 
+  useEffect(() => {
+    if (!apiUrl || !cuentas.verificada) return;
+    // Conservamos el carrito del dueño de la sesión y lo vaciamos al salir o cambiar de cuenta.
+    let anterior;
+    try {
+      anterior = JSON.parse(almacenamiento.getItem(clave));
+    } catch {
+      anterior = null;
+    }
+    const guardado = cargarEstado(storage, []);
+    if (
+      anterior?.sesion?.correo &&
+      anterior.sesion.correo !== cuentas.usuario?.correo
+    )
+      guardado.carrito = [];
+    guardado.sesion = cuentas.usuario;
+    guardado.usuarios = cuentas.usuarios;
+    try {
+      guardarEstado(storage, guardado);
+    } catch {
+      setError("No pudimos guardar el carrito en este navegador.");
+    }
+    estadoActualRef.current = guardado;
+    setEstado(guardado);
+  }, [apiUrl, cuentas.usuario, cuentas.verificada, clave, storage]);
+
   const productos = (apiUrl ? catalogo.productos : estado.productos).map(
     (producto) => ({
       ...producto,
@@ -141,7 +192,7 @@ export function useTienda({
     }),
   );
 
-  const carrito = estado.carrito
+  const carrito = (apiUrl && !cuentas.verificada ? [] : estado.carrito)
     .filter((linea) => productos.some((producto) => producto.id === linea.id))
     .map((lineaCarrito) => ({
       ...lineaCarrito,
@@ -200,12 +251,22 @@ export function useTienda({
     });
   }
 
+  function usarCuenta(accion, ...datos) {
+    setError("");
+    return accion(...datos);
+  }
+
   // Las pantallas reciben datos y funciones; no necesitan escribir localStorage.
   return {
     ...estado,
+    sesion: apiUrl ? cuentas.usuario : estado.sesion,
+    usuarios: apiUrl ? cuentas.usuarios : estado.usuarios,
     productos,
     carrito,
-    error,
+    error: error || cuentas.error,
+    cargandoSesion: cuentas.cargando,
+    errorSesion: cuentas.error,
+    recargarSesion: cuentas.recargar,
     categorias: apiUrl
       ? obtenerCategorias({ ...estado, productos })
       : estado.categorias,
@@ -222,20 +283,33 @@ export function useTienda({
 
     // Acceso, registro y datos personales.
     iniciar: (correo, contrasena) =>
-      ejecutar({ tipo: "INICIAR", correo, contrasena }),
-    cerrar: () => ejecutar({ tipo: "CERRAR" }),
+      apiUrl
+        ? usarCuenta(cuentas.iniciar, correo, contrasena)
+        : ejecutar({ tipo: "INICIAR", correo, contrasena }),
+    cerrar: () =>
+      apiUrl ? usarCuenta(cuentas.cerrar) : ejecutar({ tipo: "CERRAR" }),
     registrar: (usuario, entrar = false) =>
-      ejecutar({ tipo: "REGISTRAR", usuario, entrar }),
+      apiUrl
+        ? usarCuenta(cuentas.registrar, usuario, entrar)
+        : ejecutar({ tipo: "REGISTRAR", usuario, entrar }),
     cambiarClave: (correo, actual, nueva) =>
-      ejecutar({ tipo: "CLAVE", correo, actual, nueva }),
-    guardarPerfil: (usuario) => ejecutar({ tipo: "PERFIL", usuario }),
+      apiUrl
+        ? usarCuenta(cuentas.clave, correo, actual, nueva)
+        : ejecutar({ tipo: "CLAVE", correo, actual, nueva }),
+    guardarPerfil: (usuario) =>
+      apiUrl
+        ? usarCuenta(cuentas.perfil, usuario)
+        : ejecutar({ tipo: "PERFIL", usuario }),
 
     // Contacto y operaciones de administración.
     enviar: (mensaje) => ejecutar({ tipo: "MENSAJE_ENVIAR", mensaje }),
     guardarProducto,
     crearProducto: guardarProducto,
     quitarProducto,
-    guardarUsuario: (usuario) => ejecutar({ tipo: "USUARIO_GUARDAR", usuario }),
+    guardarUsuario: (usuario) =>
+      apiUrl
+        ? usarCuenta(cuentas.editar, usuario)
+        : ejecutar({ tipo: "USUARIO_GUARDAR", usuario }),
     guardarCategoria: (anterior, nombre) =>
       ejecutar({ tipo: "CATEGORIA_GUARDAR", anterior, nombre }),
     quitarCategoria: (nombre) =>

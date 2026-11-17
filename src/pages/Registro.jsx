@@ -9,12 +9,14 @@ export default function Registro({ onRegistrar }) {
   const destino =
     parametros.get("destino") === "carrito" ? "?destino=carrito" : "";
   const [mensajeRegistro, setMensajeRegistro] = useState("");
+  const [enviando, setEnviando] = useState(false);
   const [rut, setRut] = useState("");
   const [mensajeRut, setMensajeRut] = useState("");
   // Valida el RUT y la confirmación de contraseña antes de solicitar una cuenta
   // de comprador.
-  function registrarCuenta(evento) {
+  async function registrarCuenta(evento) {
     evento.preventDefault();
+    if (enviando) return;
     const datos = new FormData(evento.target);
     setMensajeRut("");
     setMensajeRegistro("");
@@ -36,7 +38,10 @@ export default function Registro({ onRegistrar }) {
       rol: "comprador",
     };
 
-    if (!onRegistrar(usuario)) {
+    setEnviando(true);
+    const creado = await onRegistrar(usuario);
+    setEnviando(false);
+    if (!creado) {
       setMensajeRegistro("Ya existe una cuenta con ese RUT o correo.");
       return;
     }
@@ -115,7 +120,9 @@ export default function Registro({ onRegistrar }) {
             minLength="6"
             required
           />
-          <Boton type="submit">Crear cuenta</Boton>
+          <Boton type="submit" disabled={enviando}>
+            {enviando ? "Creando cuenta…" : "Crear cuenta"}
+          </Boton>
         </form>
         <p className="mensaje-formulario" role="status">
           {mensajeRegistro}

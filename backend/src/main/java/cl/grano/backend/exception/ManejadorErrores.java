@@ -24,16 +24,16 @@ public class ManejadorErrores {
     for (var campo : error.getBindingResult().getFieldErrors()) {
       campos.putIfAbsent(campo.getField(), campo.getDefaultMessage());
     }
-    return ResponseEntity.badRequest().body(Map.of("mensaje", "Revisa los datos del producto.", "campos", campos));
+    return ResponseEntity.badRequest().body(Map.of("mensaje", "Revisa los datos del formulario.", "campos", campos));
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<?> manejarJson(HttpMessageNotReadableException error) {
-    return ResponseEntity.badRequest().body(Map.of("mensaje", "Envía un JSON válido. Stock y stock crítico deben ser enteros."));
+    return ResponseEntity.badRequest().body(Map.of("mensaje", "Envía un JSON válido y usa el tipo de dato correcto en cada campo."));
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ResponseEntity<?> manejarBaseDeDatos(DataIntegrityViolationException error) {
-    return ResponseEntity.status(409).body(Map.of("mensaje", "No se pudo guardar el producto por un conflicto de datos."));
+    return ResponseEntity.status(409).body(Map.of("mensaje", "No se pudieron guardar los datos porque ya existe un registro con esos valores."));
   }
 }

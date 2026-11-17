@@ -18,6 +18,7 @@ public class CorsConfig implements WebMvcConfigurer {
     registro.addMapping("/api/**")
         .allowedOrigins(origenes)
         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-        .allowedHeaders("Content-Type", "Accept");
+        .allowedHeaders("Content-Type", "Accept", "X-CSRF-TOKEN")
+        .allowCredentials(true);
   }
 }
