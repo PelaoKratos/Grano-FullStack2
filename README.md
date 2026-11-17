@@ -2,7 +2,7 @@
 
 Tienda de café de especialidad, métodos de preparación y accesorios. **La aplicación principal ahora está en React y Vite, desde la raíz del repositorio.** Conserva el diseño cálido y artesanal y las funciones de la tienda.
 
-La carpeta `backend/` incorpora la API de productos, cuentas y pedidos con Spring Boot, Java 17 y una base H2 persistente local. React consulta y administra el catálogo y usa registro, inicio de sesión, perfiles, compras de demostración y permisos del servidor. La [guía del backend](backend/README.md) explica cómo iniciarlo y entender cada capa.
+La carpeta `backend/` incorpora la API de productos, cuentas y pedidos con Spring Boot, Java 17 y una base H2 persistente local. También se puede usar PostgreSQL en Docker con el perfil `postgres`. React consulta y administra el catálogo y usa registro, inicio de sesión, perfiles, compras de demostración y permisos del servidor. La [guía del backend](backend/README.md) explica cómo iniciarlo y entender cada capa.
 
 ## Abrir en Windows
 
@@ -10,7 +10,7 @@ Haz doble clic en **`Iniciar Grano.cmd`**. Abre el servidor local y la tienda en
 
 Ya no se abre `index.html` directamente: Vite prepara los componentes React.
 
-Para el modo conectado, abre primero `backend/Iniciar Backend.cmd` y luego `Iniciar React con Backend.cmd`. Este segundo acceso ejecuta React contra el backend y exige el puerto 5173. La [guía para trabajar sin Docker](docs/GUIA_SIN_DOCKER.md) reúne los pasos de inicio, recorridos manuales y pruebas con H2.
+Para el modo conectado con H2, abre primero `backend/Iniciar Backend.cmd`; para PostgreSQL, abre Docker Desktop y luego `backend/Iniciar Backend PostgreSQL.cmd`. En ambos casos, después inicia `Iniciar React con Backend.cmd`. Este acceso ejecuta React contra el backend y exige el puerto 5173. La [guía del backend](backend/README.md) explica PostgreSQL y H2; también está la [guía para trabajar sin Docker](docs/GUIA_SIN_DOCKER.md).
 
 ## Desarrollo
 

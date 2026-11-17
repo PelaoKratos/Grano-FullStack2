@@ -1,10 +1,26 @@
 # Backend de Grano: productos y cuentas
 
-La API usa Spring Boot, Java 17 y H2 para guardar productos, cuentas y pedidos. React se conecta al catálogo, registro, inicio de sesión, perfil, compras y administración. Spring Security comprueba los permisos en el servidor.
+La API usa Spring Boot y Java 17. Por defecto guarda los datos en H2; también se puede iniciar con PostgreSQL en Docker. React se conecta al catálogo, registro, inicio de sesión, perfil, compras y administración. Spring Security comprueba los permisos en el servidor.
 
 ## Iniciar en Windows
 
 Haz doble clic en `Iniciar Backend.cmd`, dentro de esta carpeta. Usa el JDK 17 de `C:\Program Files\Java\jdk-17` si está instalado allí; también respeta una configuración de `JAVA_HOME` en otros equipos. Requiere Maven en el PATH. La primera ejecución descarga las dependencias.
+
+## Usar PostgreSQL con Docker
+
+Abre Docker Desktop y espera a que indique que está iniciado. Si el backend H2 ya está abierto, detén esa ventana con `Ctrl+C` para liberar el puerto 8080. Después haz doble clic en `Iniciar Backend PostgreSQL.cmd`. El acceso levanta PostgreSQL, espera a que esté listo y arranca Spring Boot con el perfil `postgres`.
+
+También puedes hacerlo desde PowerShell, dentro de esta carpeta:
+
+```powershell
+docker compose up -d --wait
+$env:SPRING_PROFILES_ACTIVE = "postgres"
+mvn spring-boot:run
+```
+
+La API seguirá disponible en `http://127.0.0.1:8080`. El contenedor guarda los datos en el volumen `grano-postgres-data`, así que cerrar Docker Desktop o el backend no borra los registros. Para volver a H2, detén el backend y ejecuta `Iniciar Backend.cmd`.
+
+PostgreSQL parte con una base vacía. Las cuentas de demostración se crean al iniciar si todavía no existen, pero los productos, cuentas nuevas, pedidos y mensajes que quedaron en H2 no se copian. H2 y sus archivos siguen conservados. Las credenciales incluidas son solo para desarrollo local y el puerto de PostgreSQL queda accesible únicamente desde este equipo; cámbialas antes de usar la configuración fuera del PC.
 
 También se puede iniciar desde PowerShell, estando en la raíz del repositorio:
 
@@ -21,7 +37,7 @@ Deja la terminal abierta mientras lo usas. Para detenerlo, pulsa `Ctrl+C`.
 - Swagger: <http://127.0.0.1:8080/swagger-ui/index.html>
 - Descripción OpenAPI: <http://127.0.0.1:8080/v3/api-docs>
 
-El catálogo empieza vacío. Los productos del modo local anterior no se importan automáticamente. Las tres cuentas de prueba se crean al iniciar si todavía no existen; las nuevas cuentas y los productos del modo conectado se guardan en H2.
+El catálogo empieza vacío. Los productos del modo local anterior no se importan automáticamente. Las tres cuentas de prueba se crean al iniciar si todavía no existen; las cuentas y los productos se guardan en la base seleccionada: H2 por defecto o PostgreSQL al usar el perfil `postgres`.
 
 ## Cuentas, sesiones y permisos
 
@@ -235,4 +251,4 @@ El catálogo empieza vacío; agrega productos desde administración. Las cuentas
 
 Vite usa `VITE_API_URL=/api` y un proxy hacia `http://127.0.0.1:8080`. Así el navegador mantiene las cookies en el mismo origen al abrir con localhost o 127.0.0.1. Para publicar habrá que configurar también el proxy `/api` del alojamiento.
 
-El próximo paso será PostgreSQL con Docker. Después se preparará el despliegue en AWS. Productos, categorías, cuentas, pedidos y mensajes nuevos ya usan H2 persistente en el modo conectado.
+El perfil PostgreSQL usa el driver oficial de JDBC y la imagen oficial `postgres:17-alpine`. Las pruebas del backend continúan con H2 temporal; no es necesario iniciar Docker para ejecutarlas. Para despliegue en AWS habrá que definir credenciales seguras y migraciones versionadas.

@@ -1,11 +1,11 @@
 # Trabajar con Grano sin Docker
 
-Podemos seguir desarrollando y probando con H2. Los productos, categorías, cuentas, pedidos y mensajes del modo conectado quedan en `backend/data/grano.mv.db`. PostgreSQL y Docker siguen pendientes; estas mejoras no cambian la base actual.
+Podemos seguir desarrollando y probando con H2 sin iniciar Docker. Los productos, categorías, cuentas, pedidos y mensajes del modo conectado quedan en `backend/data/grano.mv.db`. Esta guía usa H2; PostgreSQL también está disponible si se inicia con el perfil indicado en la [guía del backend](../backend/README.md).
 
 ## Abrir el proyecto en Windows
 
 1. La primera vez, abre una terminal en la raíz y ejecuta `npm install`. No hace falta repetirlo cada vez que inicias.
-2. Abre `backend/Iniciar Backend.cmd` y deja esa ventana abierta. Necesita JDK 17 y Maven.
+2. Abre `backend/Iniciar Backend.cmd` y deja esa ventana abierta. Necesita JDK 17 y Maven. Este acceso inicia con H2.
 3. Abre `Iniciar React con Backend.cmd` desde la raíz. Ese acceso inicia React en modo conectado y abre el navegador; el backend se inicia con el archivo del paso anterior.
 4. Usa `http://127.0.0.1:5173/`. Mantén abiertas las dos terminales. Para detener cada servidor pulsa `Ctrl+C` en su ventana.
 
@@ -15,7 +15,7 @@ Antes de abrir otro frontend, detén el anterior. El modo conectado exige el pue
 
 ## Qué revisar a mano
 
-Las tres cuentas de práctica aparecen debajo del login. Las cuentas nuevas del modo conectado se registran en H2.
+Las tres cuentas de práctica aparecen debajo del login. Las cuentas nuevas se guardan en H2 mientras uses esta configuración.
 
 | Recorrido     | Qué comprobar                                                                       |
 | ------------- | ----------------------------------------------------------------------------------- |
