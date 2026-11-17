@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import Inicio from "../components/Inicio.jsx";
 import Catalogo from "../components/Catalogo.jsx";
 import Carrito from "../components/Carrito.jsx";
@@ -70,6 +70,7 @@ export default function RutasTienda({ tienda, acciones }) {
             onQuitar={tienda.quitar}
             onCantidad={tienda.cambiarCantidad}
             onComprar={realizarCompra}
+            compraDisponible={!tienda.usarApi}
           />
         }
       />
@@ -95,13 +96,24 @@ export default function RutasTienda({ tienda, acciones }) {
         path="/checkout"
         element={
           <RutaProtegida sesion={tienda.sesion} roles={["comprador"]}>
-            <Checkout
-              usuario={tienda.usuarios.find(
-                (usuario) => usuario.correo === tienda.sesion?.correo,
-              )}
-              carrito={tienda.carrito}
-              onComprar={realizarCompra}
-            />
+            {tienda.usarApi ? (
+              <section>
+                <h1>Pedidos del servidor</h1>
+                <p>
+                  La confirmación de compras se conectará en la siguiente etapa.
+                  Tu carrito se conserva.
+                </p>
+                <Link to="/carrito">Volver al carrito</Link>
+              </section>
+            ) : (
+              <Checkout
+                usuario={tienda.usuarios.find(
+                  (usuario) => usuario.correo === tienda.sesion?.correo,
+                )}
+                carrito={tienda.carrito}
+                onComprar={realizarCompra}
+              />
+            )}
           </RutaProtegida>
         }
       />

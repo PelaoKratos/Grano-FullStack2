@@ -91,6 +91,40 @@ describe("Administración de productos", () => {
     expect(vista.contenedor.textContent).toContain("Revisa los datos");
   });
 
+  it("espera al servidor antes de limpiar y evita enviar dos veces", async () => {
+    let terminar;
+    guardar.and.returnValue(
+      new Promise((resolver) => {
+        terminar = resolver;
+      }),
+    );
+    await completar();
+    await vista.enviar();
+    expect(vista.contenedor.querySelector("fieldset").disabled).toBeTrue();
+    expect(vista.contenedor.querySelector("#producto-nombre").value).toBe(
+      "Nuevo café",
+    );
+    expect(vista.contenedor.textContent).toContain("Guardando cambios");
+    await act(async () => terminar(true));
+    expect(vista.contenedor.querySelector("fieldset").disabled).toBeFalse();
+    expect(vista.contenedor.querySelector("#producto-nombre").value).toBe("");
+  });
+
+  it("conserva el formulario y habilita los controles si una petición se interrumpe", async () => {
+    guardar.and.rejectWith(new Error("Conexión interrumpida"));
+    await completar();
+    await vista.enviar();
+    expect(vista.contenedor.querySelector("#producto-nombre").value).toBe(
+      "Nuevo café",
+    );
+    expect(vista.contenedor.querySelector("fieldset").disabled).toBeFalse();
+    expect(vista.contenedor.textContent).toContain("No se pudo guardar");
+    spyOn(window, "confirm").and.returnValue(true);
+    eliminar.and.rejectWith(new Error("Conexión interrumpida"));
+    await vista.clic(vista.contenedor.querySelector('[aria-label^="Quitar"]'));
+    expect(vista.contenedor.textContent).toContain("No se pudo quitar");
+  });
+
   it("respeta la confirmación, informa un fallo al eliminar y cierra la edición al conseguirlo", async () => {
     const confirmar = spyOn(window, "confirm").and.returnValue(false);
     await vista.clic(vista.contenedor.querySelector('[aria-label^="Quitar"]'));

@@ -49,27 +49,21 @@ export default function Inicio({ productos, onAgregar }) {
                   role="group"
                   aria-label="Elige un perfil de sabor"
                 >
-                  {[
-                    ["colombia", "Cacao"],
-                    ["etiopia", "Flores"],
-                    ["blend", "Chocolate"],
-                  ]
-                    .filter(([id]) =>
-                      cafes.some(
-                        (productoCatalogo) => productoCatalogo.id === id,
-                      ),
-                    )
-                    .map(([id, label]) => (
-                      <Boton
-                        variante="control"
-                        key={id}
-                        type="button"
-                        aria-pressed={cafe.id === id}
-                        onClick={() => setSabor(id)}
-                      >
-                        {label}
-                      </Boton>
-                    ))}
+                  {cafes.slice(0, 3).map((producto) => (
+                    <Boton
+                      variante="control"
+                      key={producto.id}
+                      type="button"
+                      aria-pressed={cafe.id === producto.id}
+                      onClick={() => setSabor(producto.id)}
+                    >
+                      {{
+                        colombia: "Cacao",
+                        etiopia: "Flores",
+                        blend: "Chocolate",
+                      }[producto.id] || producto.nombre}
+                    </Boton>
+                  ))}
                 </div>
                 <div
                   className="mostrador-producto"
@@ -154,9 +148,10 @@ export default function Inicio({ productos, onAgregar }) {
           </div>
           <div className="metodos-enlaces">
             {productos
-              .filter((productoCatalogo) =>
-                ["dripper", "prensa"].includes(productoCatalogo.id),
+              .filter(
+                (productoCatalogo) => productoCatalogo.categoria === "Métodos",
               )
+              .slice(0, 2)
               .map((productoCatalogo) => (
                 <Link
                   key={productoCatalogo.id}

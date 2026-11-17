@@ -10,6 +10,7 @@ export default function Carrito({
   onQuitar,
   onCantidad,
   onComprar,
+  compraDisponible = true,
 }) {
   const stockInsuficiente = carrito.some(
     (productoCatalogo) => productoCatalogo.cantidad > productoCatalogo.stock,
@@ -101,7 +102,12 @@ export default function Carrito({
               ${totalCarrito(carrito).toLocaleString("es-CL")} CLP
             </strong>
           </div>
-          {sesion?.rol === "comprador" ? (
+          {!compraDisponible ? (
+            <p role="status">
+              Puedes armar tu carrito. La confirmación de pedidos estará
+              disponible cuando conectemos las compras al servidor.
+            </p>
+          ) : sesion?.rol === "comprador" ? (
             <Link
               className="btn btn-success"
               to={stockInsuficiente ? "/carrito" : "/checkout"}

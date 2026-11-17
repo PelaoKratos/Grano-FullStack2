@@ -2,7 +2,7 @@
 
 Tienda de café de especialidad, métodos de preparación y accesorios. **La aplicación principal ahora está en React y Vite, desde la raíz del repositorio.** Conserva el diseño cálido y artesanal y las funciones de la tienda.
 
-La carpeta `backend/` incorpora la primera API de productos con Spring Boot, Java 17 y una base H2 persistente local. La [guía del backend](backend/README.md) explica cómo iniciarlo, probar el CRUD con Swagger o Postman y entender cada capa. La conexión de las pantallas React con esta API es la siguiente etapa.
+La carpeta `backend/` incorpora la API de productos con Spring Boot, Java 17 y una base H2 persistente local. React ya puede consultar y administrar ese catálogo mediante el modo conectado. La [guía del backend](backend/README.md) explica cómo iniciarlo y entender cada capa.
 
 ## Abrir en Windows
 
@@ -28,6 +28,22 @@ pnpm dev
 
 La dirección habitual es `http://127.0.0.1:5173`; usa la dirección que indique la consola. La base `./` y las rutas con `#` permiten publicar en un alojamiento estático o una subcarpeta sin configurar redirecciones del servidor.
 
+## Probar React con el backend
+
+1. Abre `backend/Iniciar Backend.cmd` y mantén esa ventana abierta.
+2. Detén el frontend anterior con `Ctrl+C`. Desde la raíz ejecuta `npm run dev:backend` y abre la dirección que indique Vite.
+3. Entra como administrador: `admin@duocuc.cl` / `1234`. En **Administración → Productos**, crea un producto con su descripción, detalle, precio, stock e imagen opcional.
+4. Comprueba el catálogo y su detalle, agrega el producto al carrito y recarga la página. Edita su precio o stock desde administración y verifica el resultado. Puedes quitar el producto al terminar.
+5. Apaga el backend y pulsa **Actualizar catálogo** para comprobar el error. Enciéndelo de nuevo y vuelve a actualizar.
+
+La base del servidor empieza vacía: los productos antiguos del navegador no se importan automáticamente. El ID lo genera Java al crear cada producto. Las imágenes propias se envían en el mismo JSON y quedan en H2; una edición sin archivo conserva la imagen existente. Actualizar el catálogo permite consultar cambios realizados por otro navegador.
+
+`src/servicios/productosApi.js` reúne las peticiones GET, POST, PUT y DELETE y los mensajes de error. `src/hooks/useCatalogoApi.js` controla carga, reintento y actualización de la pantalla. Los formularios esperan al servidor antes de mostrar éxito y bloquean sus controles mientras guardan.
+
+El modo conectado usa `.env.backend`, con `VITE_API_URL=http://127.0.0.1:8080/api`. Es una dirección pública, sin credenciales. Usa `npm run build:backend` para compilar ese modo. `npm run dev` y `npm run build` conservan la demostración local anterior.
+
+En esta etapa solo los **productos** están en el backend. Las cuentas, mensajes y carrito siguen siendo de demostración y se guardan en otra clave del navegador, `grano-tienda-api-v1`, para conservar intactos los datos del modo local. El carrito muestra el precio y stock del catálogo consultado. En el modo conectado todavía no se confirman compras ni se administran categorías: eso necesita endpoints propios para guardar pedidos y descontar stock en una transacción. La siguiente etapa será autenticación y autorización en el servidor; después conectaremos los pedidos. La API de esta práctica está limitada al equipo local y aún no comprueba roles: el acceso administrativo de React no reemplaza la seguridad del backend. AWS queda para después.
+
 ## Comprobar y compilar
 
 ```sh
@@ -39,7 +55,7 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`npm test` ejecuta 116 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks y flujos de compra. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
+`npm test` ejecuta 136 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks, flujos de compra y comunicación con la API mediante respuestas simuladas. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
 
 `npm run test:cobertura` genera el informe real de líneas, sentencias, funciones y ramas en `coverage/index.html`, y falla si alguna de esas cuatro métricas globales queda por debajo del 80 %. La configuración de cobertura solo se aplica a las pruebas. La [guía de pruebas](docs/PRUEBAS.md) explica cómo ejecutar los casos, leer el reporte y presentar los resultados.
 
@@ -90,7 +106,7 @@ La aplicación guarda su estado en `localStorage`, bajo `grano-tienda-react-v1`.
 
 La importación requiere el **mismo navegador y origen**. Los datos abiertos antes mediante `file://`, otro dominio o un puerto distinto no son accesibles desde la nueva dirección; el navegador los conserva en su origen anterior. Esta migración no elimina esos datos.
 
-El frontend sigue usando almacenamiento local y cuentas de demostración. El backend de productos se ejecuta por separado en esta etapa; todavía no hay pagos reales ni autenticación de producción. Las cuentas y contraseñas de prueba permanecen en el navegador.
+El frontend conserva el modo local y añade un modo conectado para productos. Todavía no hay pagos reales ni autenticación de producción. Las cuentas y contraseñas de prueba permanecen en el navegador.
 
 ## Estructura
 

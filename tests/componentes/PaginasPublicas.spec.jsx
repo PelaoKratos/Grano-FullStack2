@@ -41,6 +41,28 @@ describe("Interacciones de las páginas públicas", () => {
     ).toBe("/productos");
   });
 
+  it("inicio permite elegir cafés y métodos con identificadores nuevos del servidor", async () => {
+    const nuevos = productos.map((producto, indice) => ({
+      ...producto,
+      id: `nuevo-java-${indice}`,
+    }));
+    const agregar = jasmine.createSpy("agregar");
+    await vista.mostrar(<Inicio productos={nuevos} onAgregar={agregar} />);
+    const opciones = vista.contenedor.querySelectorAll(".sabores button");
+    expect(opciones).toHaveSize(3);
+    await vista.clic(opciones[1]);
+    await vista.clic(
+      vista.contenedor.querySelector(".mostrador-compra button"),
+    );
+    expect(agregar).toHaveBeenCalledOnceWith(nuevos[1]);
+    expect(vista.contenedor.querySelectorAll(".metodos-enlaces a")).toHaveSize(
+      2,
+    );
+    expect(
+      vista.contenedor.querySelector(".metodos-enlaces a").getAttribute("href"),
+    ).toContain("nuevo-java-");
+  });
+
   it("el carrusel permite avanzar y retroceder entre la primera y última imagen", async () => {
     await vista.mostrar(<Nosotros />);
     const primera = vista.contenedor.querySelector("img").alt;

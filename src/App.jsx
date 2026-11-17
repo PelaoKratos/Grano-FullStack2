@@ -8,6 +8,7 @@ import RutasTienda from "./routes/RutasTienda.jsx";
 import { useTienda } from "./hooks/useTienda.js";
 import { useAccionesTienda } from "./hooks/useAccionesTienda.js";
 import { useNavegacionPagina } from "./hooks/useNavegacionPagina.js";
+import Boton from "./components/Boton.jsx";
 
 // Reunimos la tienda, sus acciones y las partes comunes de las pantallas.
 function Tienda() {
@@ -38,6 +39,29 @@ function Tienda() {
         cantidad={cantidad}
         onCerrar={acciones.cerrarSesion}
       />
+      {tienda.usarApi && (
+        <div className="container alert alert-info mt-3" role="status">
+          {tienda.cargandoProductos
+            ? "Cargando el catálogo del servidor…"
+            : tienda.errorProductos
+              ? "Revisa la conexión o los datos del producto."
+              : "Catálogo conectado al backend local."}
+          {tienda.errorProductos && <p role="alert">{tienda.errorProductos}</p>}
+          <Boton
+            variante="secundario"
+            className="ms-3"
+            disabled={tienda.cargandoProductos}
+            onClick={tienda.recargarProductos}
+          >
+            Actualizar catálogo
+          </Boton>
+          <p className="mb-0 mt-2">
+            En esta etapa los productos se guardan en el servidor. Las cuentas
+            siguen siendo de demostración y los pedidos del servidor todavía no
+            están disponibles.
+          </p>
+        </div>
+      )}
       {tienda.error && pathname !== "/compra/error" && (
         <div className="container alert alert-danger mt-3" role="alert">
           {tienda.error}
@@ -56,7 +80,11 @@ function Tienda() {
             </p>
           }
         >
-          <RutasTienda tienda={tienda} acciones={acciones} />
+          {tienda.usarApi && tienda.cargandoProductos ? (
+            <p role="status">Espera a que se cargue el catálogo.</p>
+          ) : (
+            <RutasTienda tienda={tienda} acciones={acciones} />
+          )}
         </Suspense>
       </main>
       <Footer />

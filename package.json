@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "dev:backend": "vite --host 127.0.0.1 --mode backend",
     "build": "vite build",
+    "build:backend": "vite build --mode backend",
     "preview": "vite preview --host 127.0.0.1",
     "test": "npm run test:jasmine && npm run test:rutas",
     "format": "prettier --write .",

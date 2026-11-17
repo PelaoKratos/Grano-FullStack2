@@ -108,6 +108,10 @@ Hay 19 casos: `ProductoServiceTest` usa JUnit y Mockito para probar las reglas d
 
 Maven deja sus resultados y el JAR en `target/`, que tampoco se sube a Git. Las pruebas de React siguen ejecutándose desde la raíz con `npm test` y `npm run test:cobertura`; la cobertura de Java se medirá por separado si se incorpora esa etapa.
 
-## Siguiente paso
+## Conexión con React
 
-Crear `src/services/productosService.js` en el frontend para consultar esta API. Después se adaptará el catálogo para cargar sus productos y se conectará la administración. Primero se comprobarán los estados de carga y error y el manejo de las ID y las imágenes existentes.
+Desde la raíz ejecuta `npm run dev:backend` mientras este servidor está encendido. La configuración pública está en `.env.backend`. El servicio `src/servicios/productosApi.js` envía las peticiones y `src/hooks/useCatalogoApi.js` maneja carga, errores, reintentos y cambios del catálogo. Consulta el recorrido de prueba en el README principal.
+
+La base empieza vacía; agrega productos desde administración. El modo local anterior sigue disponible con `npm run dev`. El modo conectado conserva sus datos de demostración en una clave separada del navegador. Los productos y sus imágenes se guardan en H2. No importamos automáticamente el catálogo anterior.
+
+Los próximos pasos son autenticación y autorización en el backend, cuentas persistentes, categorías y pedidos con descuento de stock dentro de una transacción. Las compras del modo conectado quedan pendientes hasta contar con esos endpoints. Después se preparará una base externa y el despliegue en AWS.
