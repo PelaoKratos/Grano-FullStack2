@@ -2,6 +2,8 @@
 
 Tienda de café de especialidad, métodos de preparación y accesorios. **La aplicación principal ahora está en React y Vite, desde la raíz del repositorio.** Conserva el diseño cálido y artesanal y las funciones de la tienda.
 
+La carpeta `backend/` incorpora la primera API de productos con Spring Boot, Java 17 y una base H2 persistente local. La [guía del backend](backend/README.md) explica cómo iniciarlo, probar el CRUD con Swagger o Postman y entender cada capa. La conexión de las pantallas React con esta API es la siguiente etapa.
+
 ## Abrir en Windows
 
 Haz doble clic en **`Iniciar Grano.cmd`**. Abre el servidor local y la tienda en tu navegador. Mantén esa ventana abierta mientras usas la aplicación; para detenerla, pulsa `Ctrl+C`.
@@ -88,7 +90,7 @@ La aplicación guarda su estado en `localStorage`, bajo `grano-tienda-react-v1`.
 
 La importación requiere el **mismo navegador y origen**. Los datos abiertos antes mediante `file://`, otro dominio o un puerto distinto no son accesibles desde la nueva dirección; el navegador los conserva en su origen anterior. Esta migración no elimina esos datos.
 
-Es una demostración local: no incluye servidor, pagos reales ni autenticación de producción. Las cuentas y contraseñas de prueba permanecen en el navegador.
+El frontend sigue usando almacenamiento local y cuentas de demostración. El backend de productos se ejecuta por separado en esta etapa; todavía no hay pagos reales ni autenticación de producción. Las cuentas y contraseñas de prueba permanecen en el navegador.
 
 ## Estructura
 

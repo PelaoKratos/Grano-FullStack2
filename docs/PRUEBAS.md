@@ -102,6 +102,10 @@ El siguiente trabajo es revisar las ramas pendientes y sumar casos útiles cuand
 
 La base de datos en AWS se implementará más adelante. Actualmente la aplicación usa `localStorage`, y los datos de las pruebas son locales o simulados. Cuando exista una API se añadirán pruebas de respuestas correctas, rechazos y errores de red, manteniendo las pruebas de las reglas de negocio.
 
+## Pruebas del backend
+
+Además del frontend, la API de productos tiene 19 casos de Java. Se ejecutan con `mvn verify` desde `backend/`, usando Java 17. JUnit y Mockito prueban las reglas del servicio; MockMvc comprueba el CRUD y sus errores con una base H2 temporal. El reporte de Karma sigue midiendo solo JavaScript y JSX. La [guía del backend](../backend/README.md) explica esta primera etapa de la API.
+
 ## Cómo mostrarlo en la presentación
 
 1. Abrir un caso sencillo de `tests/datos/` y explicar entrada y resultado esperado.

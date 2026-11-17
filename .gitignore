@@ -8,3 +8,5 @@ react/dist/
 .DS_Store
 entrega/
 coverage/
+backend/target/
+backend/data/

@@ -1,0 +1,39 @@
+package cl.grano.backend.exception;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
+
+// Las respuestas de error llevan un mensaje que puede mostrar React.
+@RestControllerAdvice
+public class ManejadorErrores {
+  @ExceptionHandler(ResponseStatusException.class)
+  public ResponseEntity<?> manejarEstado(ResponseStatusException error) {
+    return ResponseEntity.status(error.getStatusCode()).body(Map.of("mensaje", error.getReason()));
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<?> manejarValidacion(MethodArgumentNotValidException error) {
+    Map<String, String> campos = new LinkedHashMap<>();
+    for (var campo : error.getBindingResult().getFieldErrors()) {
+      campos.putIfAbsent(campo.getField(), campo.getDefaultMessage());
+    }
+    return ResponseEntity.badRequest().body(Map.of("mensaje", "Revisa los datos del producto.", "campos", campos));
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<?> manejarJson(HttpMessageNotReadableException error) {
+    return ResponseEntity.badRequest().body(Map.of("mensaje", "Envía un JSON válido. Stock y stock crítico deben ser enteros."));
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<?> manejarBaseDeDatos(DataIntegrityViolationException error) {
+    return ResponseEntity.status(409).body(Map.of("mensaje", "No se pudo guardar el producto por un conflicto de datos."));
+  }
+}
