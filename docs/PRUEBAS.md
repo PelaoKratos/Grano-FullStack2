@@ -15,7 +15,7 @@ La instalación se necesita al descargar el proyecto o cambiar sus dependencias.
 
 | Comando                  | Qué ejecuta                                                                             |
 | ------------------------ | --------------------------------------------------------------------------------------- |
-| `npm test`               | Las 161 pruebas de Jasmine y las 11 pruebas de rutas                                    |
+| `npm test`               | Las 177 pruebas de Jasmine y las 11 pruebas de rutas                                    |
 | `npm run test:jasmine`   | Las suites de reglas, componentes, formularios, hooks y flujos en Chrome mediante Karma |
 | `npm run test:rutas`     | Las rutas de React usando Node y MemoryRouter                                           |
 | `npm run test:cobertura` | Las suites de Jasmine instrumentadas y el informe de cobertura                          |
@@ -41,7 +41,7 @@ tests/
 
 Un archivo nuevo con extensión `.spec.jsx` dentro de componentes, páginas, hooks o integración se incluye automáticamente. Las pruebas de reglas en datos usan `.spec.js`. Los archivos `.test.js` de integración se ejecutan con Node y no se cargan como Jasmine.
 
-El reparto actual es de 43 casos de datos, 62 de componentes, 6 de formularios y perfil, 43 de hooks y 7 de flujos con Jasmine. Las otras 11 pruebas verifican rutas con Node. Hay pruebas unitarias y de integración: no llamamos unitarias a todas por igual.
+El reparto actual es de 54 casos de datos, 65 de componentes, 6 de formularios y perfil, 43 de hooks y 9 de flujos con Jasmine. Las otras 11 pruebas verifican rutas con Node. Hay pruebas unitarias y de integración: no llamamos unitarias a todas por igual.
 
 Las pruebas de la API de productos sustituyen `fetch` con espías de Jasmine. Comprueban los métodos HTTP, errores de conexión, validaciones del backend, ID generado por Java, edición sin perder la imagen y reintentos. También verifican que los cambios de precio y stock lleguen al carrito, que iniciar sesión con el backend apagado no borre el carrito guardado y que no se creen pedidos locales para productos del servidor. El formulario debe esperar la respuesta antes de limpiar sus campos y conservarlos si falla una petición. Estas pruebas se ejecutan sin encender Spring Boot ni tocar H2.
 
@@ -83,24 +83,28 @@ npm run test:cobertura
 
 Después se abre `coverage/index.html`. La consola también muestra un resumen y se generan archivos JSON y LCOV para consultar los resultados. Esta carpeta se genera localmente y está excluida de Git.
 
-El informe incluye los 64 archivos JavaScript y JSX de `src`, con sus nombres y líneas originales. Se excluye `main.jsx` porque monta la aplicación real; tampoco se cuentan bibliotecas, estilos, imágenes, archivos de pruebas ni el paquete generado por Vite. Los módulos sin pruebas también aparecen para mostrar lo que falta.
+El informe incluye los 66 archivos JavaScript y JSX de `src`, con sus nombres y líneas originales. Se excluye `main.jsx` porque monta la aplicación real; tampoco se cuentan bibliotecas, estilos, imágenes, archivos de pruebas ni el paquete generado por Vite. Los módulos sin pruebas también aparecen para mostrar lo que falta.
 
-La medición corresponde a las 161 pruebas ejecutadas por Karma. Las 11 pruebas de rutas con Node se comprueban aparte y no suman porcentajes a este informe.
+La medición corresponde a las 177 pruebas ejecutadas por Karma. Las 11 pruebas de rutas con Node se comprueban aparte y no suman porcentajes a este informe.
 
 Resultado del 17 de noviembre de 2026, después de conectar catálogo, cuentas y pedidos con la API:
 
 | Métrica    | Resultado             |
 | ---------- | --------------------- |
-| Líneas     | 93,50 %: 1194 de 1277 |
-| Sentencias | 92,07 %: 1267 de 1376 |
-| Funciones  | 93,18 %: 410 de 440   |
-| Ramas      | 85,12 %: 881 de 1035  |
+| Líneas     | 94,55 %: 1251 de 1323 |
+| Sentencias | 93,20 %: 1330 de 1427 |
+| Funciones  | 94,88 %: 427 de 450   |
+| Ramas      | 88,41 %: 946 de 1070  |
 
 El mínimo acordado para este proyecto es del 80 % global en las cuatro métricas. Se configura en `karma.cobertura.conf.cjs`: `npm run test:cobertura` termina con error si alguna baja de ese límite. Los nuevos servicios y hooks de conexión forman parte del reporte; no se excluyeron pantallas para subir los porcentajes. La cobertura de líneas antes de ampliar las pruebas era del 68,55 %.
 
 Los colores del informe permiten abrir un archivo y ubicar los casos pendientes. Superar el mínimo no garantiza que todos los escenarios estén comprobados. Las nuevas pruebas ejercitan creación y edición, cancelaciones, errores de lectura de imágenes y guardado, protección de cuentas, límites de stock y navegación con teclado.
 
 ## Qué sigue después
+
+`npm run check` ejecuta formato, cobertura, rutas y las dos compilaciones. `backend/Probar Backend.cmd` comprueba Java con H2 temporal, sin Docker. La [guía sin Docker](GUIA_SIN_DOCKER.md) explica cómo reproducir los recorridos manuales.
+
+Los casos nuevos de conexión usan el reloj simulado de Jasmine para comprobar el tiempo máximo y la cancelación, sin esperar diez segundos reales. La carga por página se comprueba con datos iniciales, errores y actualizaciones. Dos flujos montan `App` completo con la API simulada: conservan el mismo campo y su texto mientras se actualiza el catálogo, y permiten recuperar una ficha tras un fallo inicial sin confundirlo con un producto inexistente.
 
 El siguiente trabajo es revisar las ramas pendientes y sumar casos útiles cuando cambie la aplicación. Quedan para otra etapa la revisión automática de accesibilidad y las mediciones de rendimiento.
 

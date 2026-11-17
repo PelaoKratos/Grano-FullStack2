@@ -309,6 +309,14 @@ export function useTienda({
     mensajes: apiUrl ? mensajesApi.mensajes : estado.mensajes,
     productos,
     carrito,
+    errorOperacion: error,
+    errorCategorias: categoriasApi.error,
+    errorMensajes: mensajesApi.error,
+    catalogoDisponible: catalogo.disponible,
+    categoriasDisponibles: categoriasApi.disponible,
+    pedidosDisponibles: pedidosApi.disponible,
+    mensajesDisponibles: mensajesApi.disponible,
+    sesionVerificada: cuentas.verificada,
     error:
       error ||
       cuentas.error ||

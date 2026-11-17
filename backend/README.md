@@ -213,6 +213,8 @@ Para crear un producto, el controlador valida el cuerpo con `@Valid`. El servici
 
 ## Ejecutar las pruebas
 
+En Windows también puedes abrir `Probar Backend.cmd`. Configura Java 17 para esa terminal y ejecuta `mvn test` con H2 temporal. Puede usarse con el servidor abierto porque no reemplaza el JAR. Para automatizarlo desde PowerShell: `& '.\Probar Backend.cmd' --sin-pausa`.
+
 Desde esta carpeta y con Java 17 configurado:
 
 Si el servidor se abrió con `java -jar`, detenlo antes con `Ctrl+C` para que Windows permita reemplazar el JAR al compilar.

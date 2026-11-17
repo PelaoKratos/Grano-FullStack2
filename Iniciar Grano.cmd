@@ -28,5 +28,11 @@ if not exist "node_modules\vite\bin\vite.js" (
     exit /b 1
   )
 )
-"%granoNode%" "node_modules\vite\bin\vite.js" --host 127.0.0.1 --open
-if errorlevel 1 pause
+if /i "%~1"=="--backend" (
+  "%granoNode%" "node_modules\vite\bin\vite.js" --host 127.0.0.1 --mode backend --port 5173 --strictPort --open
+) else (
+  "%granoNode%" "node_modules\vite\bin\vite.js" --host 127.0.0.1 --open
+)
+set "granoResultado=%errorlevel%"
+if not "%granoResultado%"=="0" pause
+exit /b %granoResultado%

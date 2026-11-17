@@ -110,6 +110,7 @@ export function usePedidosApi(direccion, usuario) {
 
   return {
     pedidos: datos.propietario === propietario ? datos.pedidos : [],
+    disponible: Boolean(propietario) && datos.propietario === propietario,
     cargando,
     error,
     comprar,

@@ -13,6 +13,7 @@
     "build:backend": "vite build --mode backend",
     "preview": "vite preview --host 127.0.0.1",
     "test": "npm run test:jasmine && npm run test:rutas",
+    "check": "npm run format:check && npm run test:cobertura && npm run test:rutas && npm run build && npm run build:backend",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:logica": "npm test",

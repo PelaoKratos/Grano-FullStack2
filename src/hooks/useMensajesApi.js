@@ -60,6 +60,7 @@ export function useMensajesApi(direccion, usuario) {
 
   return {
     mensajes: datos.propietario === propietario ? datos.mensajes : [],
+    disponible: Boolean(propietario) && datos.propietario === propietario,
     cargando,
     error,
     recargar: () => {

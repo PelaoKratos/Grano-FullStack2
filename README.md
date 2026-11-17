@@ -10,6 +10,8 @@ Haz doble clic en **`Iniciar Grano.cmd`**. Abre el servidor local y la tienda en
 
 Ya no se abre `index.html` directamente: Vite prepara los componentes React.
 
+Para el modo conectado, abre primero `backend/Iniciar Backend.cmd` y luego `Iniciar React con Backend.cmd`. Este segundo acceso ejecuta React contra el backend y exige el puerto 5173. La [guía para trabajar sin Docker](docs/GUIA_SIN_DOCKER.md) reúne los pasos de inicio, recorridos manuales y pruebas con H2.
+
 ## Desarrollo
 
 Requiere Node.js 22.12 o superior. Con npm:
@@ -62,6 +64,7 @@ En **Contacto** puedes enviar mensajes como visitante o con sesión iniciada. Lo
 
 ```sh
 npm test
+npm run check
 npm run test:cobertura
 npm run build
 npm run preview
@@ -69,7 +72,9 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`npm test` ejecuta 161 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks, flujos de compra, sesiones, categorías y contacto con respuestas simuladas de la API. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
+`npm test` ejecuta 177 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas, formularios, sesiones, compras, categorías, contacto y recuperación de conexión. `npm run check` reúne formato, cobertura, rutas y compilación de ambos modos. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado.
+
+Al actualizar datos ya cargados se conserva la pantalla y sus formularios. Cada página espera solo los recursos que necesita para abrir por primera vez. Los avisos y reintentos están en `EstadoConexion.jsx` y las peticiones tienen un límite de diez segundos; el modo conectado sigue usando H2.
 
 `npm run test:cobertura` genera el informe real de líneas, sentencias, funciones y ramas en `coverage/index.html`, y falla si alguna de esas cuatro métricas globales queda por debajo del 80 %. La configuración de cobertura solo se aplica a las pruebas. La [guía de pruebas](docs/PRUEBAS.md) explica cómo ejecutar los casos, leer el reporte y presentar los resultados.
 

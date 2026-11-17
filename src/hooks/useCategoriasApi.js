@@ -8,6 +8,7 @@ export function useCategoriasApi(direccion) {
     [direccion],
   );
   const [categorias, setCategorias] = useState([]);
+  const [disponible, setDisponible] = useState(false);
   const [cargando, setCargando] = useState(Boolean(direccion));
   const [error, setError] = useState("");
   const [intento, setIntento] = useState(0);
@@ -25,7 +26,10 @@ export function useCategoriasApi(direccion) {
       .then((lista) => {
         if (!Array.isArray(lista))
           throw new Error("No pudimos leer las categorías.");
-        if (!controlador.signal.aborted) setCategorias(lista);
+        if (!controlador.signal.aborted) {
+          setCategorias(lista);
+          setDisponible(true);
+        }
       })
       .catch((fallo) => {
         if (!controlador.signal.aborted) setError(fallo.message);
@@ -54,6 +58,7 @@ export function useCategoriasApi(direccion) {
 
   return {
     categorias,
+    disponible,
     cargando,
     error,
     recargar: () => {

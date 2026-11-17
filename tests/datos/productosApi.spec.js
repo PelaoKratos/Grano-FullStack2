@@ -25,7 +25,7 @@ describe("Servicio de productos HTTP", () => {
     ]);
     expect(peticion).toHaveBeenCalledOnceWith(
       "http://localhost:8080/api/productos",
-      { signal: controlador.signal, credentials: "include" },
+      { signal: jasmine.any(AbortSignal), credentials: "include" },
     );
   });
 
