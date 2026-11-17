@@ -23,7 +23,7 @@ export default function Checkout({ usuario, carrito, onComprar }) {
   }
   // Valida los datos de entrega y solicita la compra con el resultado de pago
   // seleccionado.
-  function confirmar(evento) {
+  async function confirmar(evento) {
     evento.preventDefault();
     if (enviando) {
       return;
@@ -36,7 +36,11 @@ export default function Checkout({ usuario, carrito, onComprar }) {
     }
     setEnviando(true);
     try {
-      onComprar(datos, resultadoPago);
+      await onComprar(datos, resultadoPago);
+    } catch {
+      setError(
+        "No pudimos comprobar el pedido. Revisa tu historial antes de volver a intentar.",
+      );
     } finally {
       setEnviando(false);
     }
@@ -63,97 +67,101 @@ export default function Checkout({ usuario, carrito, onComprar }) {
         <section className="panel-formulario">
           <h2>Contacto y entrega</h2>
           <form onSubmit={confirmar}>
-            {[
-              ["nombre", "Nombre completo", "text", "name"],
-              ["correo", "Correo electrónico", "email", "email"],
-              ["telefono", "Teléfono", "tel", "tel"],
-            ].map(([campo, etiqueta, tipo, autocomplete]) => (
-              <div key={campo}>
-                <label htmlFor={`entrega-${campo}`}>{etiqueta}</label>
-                <input
-                  id={`entrega-${campo}`}
-                  name={campo}
-                  type={tipo}
-                  autoComplete={autocomplete}
-                  placeholder={
-                    campo === "telefono" ? "+56 9 1234 5678" : undefined
-                  }
-                  aria-describedby={
-                    campo === "telefono" ? "entrega-telefono-ayuda" : undefined
-                  }
-                  value={entrega[campo]}
-                  maxLength={250}
-                  onChange={cambiar}
-                  required
-                />
-                {campo === "telefono" && (
-                  <p id="entrega-telefono-ayuda" className="ayuda-formulario">
-                    Usa 9 dígitos, con o sin el prefijo +56.
-                  </p>
-                )}
-              </div>
-            ))}
-            <label htmlFor="entrega-metodo">Opción de entrega</label>
-            <select
-              id="entrega-metodo"
-              name="metodo"
-              value={entrega.metodo}
-              onChange={cambiar}
-            >
-              <option value="domicilio">Envío a domicilio</option>
-              <option value="retiro">Retiro en tienda</option>
-            </select>
-            {entrega.metodo === "domicilio" &&
-              [
-                ["direccion", "Dirección", "street-address"],
-                ["comuna", "Comuna", "address-level2"],
-                ["region", "Región", "address-level1"],
-              ].map(([campo, etiqueta, autocomplete]) => (
+            <fieldset disabled={enviando} className="border-0 p-0 m-0">
+              {[
+                ["nombre", "Nombre completo", "text", "name"],
+                ["correo", "Correo electrónico", "email", "email"],
+                ["telefono", "Teléfono", "tel", "tel"],
+              ].map(([campo, etiqueta, tipo, autocomplete]) => (
                 <div key={campo}>
                   <label htmlFor={`entrega-${campo}`}>{etiqueta}</label>
                   <input
                     id={`entrega-${campo}`}
                     name={campo}
+                    type={tipo}
                     autoComplete={autocomplete}
+                    placeholder={
+                      campo === "telefono" ? "+56 9 1234 5678" : undefined
+                    }
+                    aria-describedby={
+                      campo === "telefono"
+                        ? "entrega-telefono-ayuda"
+                        : undefined
+                    }
                     value={entrega[campo]}
                     maxLength={250}
                     onChange={cambiar}
                     required
                   />
+                  {campo === "telefono" && (
+                    <p id="entrega-telefono-ayuda" className="ayuda-formulario">
+                      Usa 9 dígitos, con o sin el prefijo +56.
+                    </p>
+                  )}
                 </div>
               ))}
-            <label htmlFor="entrega-indicaciones">
-              Indicaciones adicionales (opcional)
-            </label>
-            <textarea
-              id="entrega-indicaciones"
-              name="indicaciones"
-              rows="3"
-              value={entrega.indicaciones}
-              maxLength={250}
-              onChange={cambiar}
-            />
-            <label htmlFor="resultado-pago">Pago de demostración</label>
-            <select
-              id="resultado-pago"
-              value={resultadoPago}
-              onChange={(evento) => setResultadoPago(evento.target.value)}
-            >
-              <option value="aprobado">Simular pago aprobado</option>
-              <option value="rechazado">Simular pago rechazado</option>
-            </select>
-            <p className="ayuda-formulario">
-              No se solicitan datos bancarios ni se realizan cobros o despachos
-              reales.
-            </p>
-            {error && (
-              <p role="alert" className="mensaje-formulario mb-3">
-                {error}
+              <label htmlFor="entrega-metodo">Opción de entrega</label>
+              <select
+                id="entrega-metodo"
+                name="metodo"
+                value={entrega.metodo}
+                onChange={cambiar}
+              >
+                <option value="domicilio">Envío a domicilio</option>
+                <option value="retiro">Retiro en tienda</option>
+              </select>
+              {entrega.metodo === "domicilio" &&
+                [
+                  ["direccion", "Dirección", "street-address"],
+                  ["comuna", "Comuna", "address-level2"],
+                  ["region", "Región", "address-level1"],
+                ].map(([campo, etiqueta, autocomplete]) => (
+                  <div key={campo}>
+                    <label htmlFor={`entrega-${campo}`}>{etiqueta}</label>
+                    <input
+                      id={`entrega-${campo}`}
+                      name={campo}
+                      autoComplete={autocomplete}
+                      value={entrega[campo]}
+                      maxLength={250}
+                      onChange={cambiar}
+                      required
+                    />
+                  </div>
+                ))}
+              <label htmlFor="entrega-indicaciones">
+                Indicaciones adicionales (opcional)
+              </label>
+              <textarea
+                id="entrega-indicaciones"
+                name="indicaciones"
+                rows="3"
+                value={entrega.indicaciones}
+                maxLength={250}
+                onChange={cambiar}
+              />
+              <label htmlFor="resultado-pago">Pago de demostración</label>
+              <select
+                id="resultado-pago"
+                value={resultadoPago}
+                onChange={(evento) => setResultadoPago(evento.target.value)}
+              >
+                <option value="aprobado">Simular pago aprobado</option>
+                <option value="rechazado">Simular pago rechazado</option>
+              </select>
+              <p className="ayuda-formulario">
+                No se solicitan datos bancarios ni se realizan cobros o
+                despachos reales.
               </p>
-            )}
-            <Boton type="submit" disabled={enviando}>
-              {enviando ? "Registrando pedido…" : "Confirmar pedido"}
-            </Boton>
+              {error && (
+                <p role="alert" className="mensaje-formulario mb-3">
+                  {error}
+                </p>
+              )}
+              <Boton type="submit" disabled={enviando}>
+                {enviando ? "Registrando pedido…" : "Confirmar pedido"}
+              </Boton>
+            </fieldset>
           </form>
         </section>
         <ResumenPedido

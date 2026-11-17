@@ -24,7 +24,21 @@ describe("Tienda conectada al backend", () => {
     critico: 2,
     imagen: "data:image/png;base64,YQ==",
   };
-  let tienda, peticion, respaldo, catalogo, atender, sesionServidor;
+  let tienda,
+    peticion,
+    respaldo,
+    catalogo,
+    atender,
+    sesionServidor,
+    pedidosServidor,
+    respaldoPendiente;
+  const clavePendiente = "grano-compra-pendiente-comprador@duocuc.cl";
+  const entrega = {
+    nombre: "Cliente",
+    correo: "comprador@duocuc.cl",
+    telefono: "912345678",
+    metodo: "retiro",
+  };
 
   function Pantalla() {
     tienda = useTienda({ apiUrl: "http://localhost:8080/api" });
@@ -36,6 +50,9 @@ describe("Tienda conectada al backend", () => {
     localStorage.removeItem(claveApi);
     catalogo = [{ ...base }];
     sesionServidor = null;
+    pedidosServidor = [];
+    respaldoPendiente = localStorage.getItem(clavePendiente);
+    localStorage.removeItem(clavePendiente);
     atender = async (url, opciones = {}) => {
       if (url.endsWith("/auth/csrf"))
         return respuestaJSON(
@@ -61,6 +78,62 @@ describe("Tienda conectada al backend", () => {
       }
       if (url.endsWith("/usuarios"))
         return respuestaJSON(JSON.stringify([sesionServidor]));
+      if (url.endsWith("/pedidos") && opciones.method === "POST") {
+        const datos = JSON.parse(opciones.body);
+        const anterior = pedidosServidor.find(
+          (pedido) => pedido.solicitudId === datos.solicitudId,
+        );
+        if (anterior)
+          return respuestaJSON(JSON.stringify(anterior), { status: 201 });
+        if (datos.resultadoPago === "rechazado")
+          return respuestaJSON(
+            JSON.stringify({ mensaje: "Pago de demostración rechazado" }),
+            { status: 400 },
+          );
+        const lineas = datos.productos.map((linea) => ({
+          ...catalogo.find((producto) => producto.id === linea.id),
+          cantidad: linea.cantidad,
+        }));
+        const pedido = {
+          id: `GR-${pedidosServidor.length + 1}`,
+          solicitudId: datos.solicitudId,
+          comprador: sesionServidor.correo,
+          fecha: "17-11-2026",
+          estado: "Recibido",
+          entrega: datos.entrega,
+          productos: lineas,
+          total: lineas.reduce(
+            (total, producto) => total + producto.precio * producto.cantidad,
+            0,
+          ),
+        };
+        pedidosServidor.push(pedido);
+        catalogo = catalogo.map((producto) => ({
+          ...producto,
+          stock:
+            producto.stock -
+            (lineas.find((linea) => linea.id === producto.id)?.cantidad || 0),
+        }));
+        return respuestaJSON(JSON.stringify(pedido), { status: 201 });
+      }
+      if (url.endsWith("/pedidos"))
+        return respuestaJSON(
+          JSON.stringify(
+            sesionServidor?.rol === "comprador"
+              ? pedidosServidor.filter(
+                  (pedido) => pedido.comprador === sesionServidor.correo,
+                )
+              : pedidosServidor,
+          ),
+        );
+      if (url.includes("/pedidos/") && opciones.method === "PUT") {
+        const pedido = {
+          ...pedidosServidor[0],
+          estado: JSON.parse(opciones.body).estado,
+        };
+        pedidosServidor = [pedido];
+        return respuestaJSON(JSON.stringify(pedido));
+      }
       if (opciones.method === "DELETE") {
         catalogo = [];
         return respuestaJSON(null, { status: 204 });
@@ -86,6 +159,8 @@ describe("Tienda conectada al backend", () => {
   afterEach(() => {
     if (respaldo === null) localStorage.removeItem(claveApi);
     else localStorage.setItem(claveApi, respaldo);
+    if (respaldoPendiente === null) localStorage.removeItem(clavePendiente);
+    else localStorage.setItem(clavePendiente, respaldoPendiente);
   });
 
   it("usa el catálogo remoto sin sobrescribir la demostración local", async () => {
@@ -219,11 +294,11 @@ describe("Tienda conectada al backend", () => {
     expect(tienda.productos).toEqual([]);
   });
 
-  it("no crea pedidos locales ni renombra categorías del servidor", async () => {
+  it("valida la entrega antes de comprar y mantiene las categorías pendientes", async () => {
     await vista.mostrar(<Pantalla />);
     await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
     await act(async () => tienda.agregar(base));
-    await act(async () => expect(tienda.comprar()).toBeFalse());
+    await act(async () => expect(await tienda.comprar()).toBeFalse());
     expect(tienda.pedidos).toEqual([]);
     expect(tienda.carrito).toHaveSize(1);
     expect(tienda.productos[0].stock).toBe(5);
@@ -231,6 +306,123 @@ describe("Tienda conectada al backend", () => {
       expect(tienda.guardarCategoria("Café en grano", "Otro")).toBeFalse(),
     );
     expect(tienda.error).toContain("siguiente etapa");
+  });
+
+  it("compra en el servidor, vacía el carrito y recupera el historial al recargar", async () => {
+    await vista.mostrar(<Pantalla />);
+    await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
+    await act(async () => tienda.agregar(base));
+    await act(async () =>
+      expect((await tienda.comprar(entrega)).total).toBe(base.precio),
+    );
+    expect(tienda.carrito).toEqual([]);
+    expect(tienda.productos[0].stock).toBe(4);
+    expect(tienda.pedidos).toHaveSize(1);
+    expect(JSON.parse(localStorage.getItem(claveApi)).pedidos).toEqual([]);
+    expect(localStorage.getItem(clavePendiente)).toBeNull();
+    await vista.reiniciar();
+    await vista.mostrar(<Pantalla />);
+    expect(tienda.pedidos[0].id).toBe("GR-1");
+    expect(tienda.carrito).toEqual([]);
+  });
+
+  it("mantiene el carrito con pago rechazado y reintenta una respuesta perdida sin duplicar", async () => {
+    await vista.mostrar(<Pantalla />);
+    await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
+    await act(async () => tienda.agregar(base));
+    await act(async () =>
+      expect(await tienda.comprar(entrega, "rechazado")).toBeFalse(),
+    );
+    expect(tienda.carrito).toHaveSize(1);
+    expect(tienda.pedidos).toEqual([]);
+    let perderRespuesta = true;
+    peticion.and.callFake(async (url, opciones) => {
+      const respuesta = await atender(url, opciones);
+      if (
+        url.endsWith("/pedidos") &&
+        opciones.method === "POST" &&
+        perderRespuesta
+      ) {
+        perderRespuesta = false;
+        throw new TypeError("Respuesta perdida");
+      }
+      return respuesta;
+    });
+    await act(async () => expect(await tienda.comprar(entrega)).toBeFalse());
+    expect(tienda.carrito).toHaveSize(1);
+    await act(async () =>
+      expect((await tienda.comprar(entrega)).id).toBe("GR-1"),
+    );
+    expect(pedidosServidor).toHaveSize(1);
+    expect(tienda.productos[0].stock).toBe(4);
+    expect(tienda.carrito).toEqual([]);
+  });
+
+  it("permite al vendedor actualizar el estado y lo muestra de nuevo al comprador", async () => {
+    await vista.mostrar(<Pantalla />);
+    await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
+    await act(async () => tienda.agregar(base));
+    await act(async () => tienda.comprar(entrega));
+    await act(async () => tienda.iniciar("vendedor@duocuc.cl", "Venta123"));
+    let terminarEstado, actualizacion;
+    peticion.and.callFake((url, opciones) => {
+      if (url.includes("/pedidos/") && opciones.method === "PUT") {
+        return new Promise((resolver) => {
+          terminarEstado = async () => resolver(await atender(url, opciones));
+        });
+      }
+      return atender(url, opciones);
+    });
+    await act(async () => {
+      actualizacion = tienda.cambiarEstadoPedido("GR-1", "En preparación");
+    });
+    const lecturas = () =>
+      peticion.calls
+        .allArgs()
+        .filter(
+          ([url, opciones]) => url.endsWith("/pedidos") && !opciones.method,
+        ).length;
+    const antes = lecturas();
+    await act(async () => tienda.recargarPedidos());
+    expect(lecturas()).toBe(antes);
+    await act(async () => {
+      await terminarEstado();
+      expect(await actualizacion).toBeTrue();
+    });
+    expect(tienda.pedidos[0].estado).toBe("En preparación");
+    peticion.and.callFake(atender);
+    await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
+    expect(tienda.pedidos[0].estado).toBe("En preparación");
+  });
+
+  it("no anuncia una compra fallida si el pedido existe pero falla limpiar localStorage", async () => {
+    await vista.mostrar(<Pantalla />);
+    await act(async () => tienda.iniciar("comprador@duocuc.cl", "Cliente123"));
+    await act(async () => tienda.agregar(base));
+    const guardarOriginal = Storage.prototype.setItem;
+    const guardar = spyOn(Storage.prototype, "setItem").and.callFake(
+      function (clave, valor) {
+        if (clave === claveApi && JSON.parse(valor).carrito.length === 0)
+          throw new Error("Sin espacio");
+        return guardarOriginal.call(this, clave, valor);
+      },
+    );
+    try {
+      await act(async () =>
+        expect((await tienda.comprar(entrega)).id).toBe("GR-1"),
+      );
+      expect(tienda.error).toContain("El pedido quedó guardado");
+      expect(localStorage.getItem(clavePendiente)).not.toBeNull();
+    } finally {
+      guardar.and.callThrough();
+    }
+    await vista.reiniciar();
+    await vista.mostrar(<Pantalla />);
+    await act(async () =>
+      expect((await tienda.comprar(entrega)).id).toBe("GR-1"),
+    );
+    expect(pedidosServidor).toHaveSize(1);
+    expect(tienda.productos[0].stock).toBe(4);
   });
 
   it("actualiza precio y stock del carrito y deja de mostrar productos eliminados", async () => {

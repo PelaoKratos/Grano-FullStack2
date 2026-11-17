@@ -2,7 +2,7 @@
 
 Tienda de café de especialidad, métodos de preparación y accesorios. **La aplicación principal ahora está en React y Vite, desde la raíz del repositorio.** Conserva el diseño cálido y artesanal y las funciones de la tienda.
 
-La carpeta `backend/` incorpora la API de productos y cuentas con Spring Boot, Java 17 y una base H2 persistente local. React consulta y administra el catálogo y usa registro, inicio de sesión, perfiles y permisos del servidor. La [guía del backend](backend/README.md) explica cómo iniciarlo y entender cada capa.
+La carpeta `backend/` incorpora la API de productos, cuentas y pedidos con Spring Boot, Java 17 y una base H2 persistente local. React consulta y administra el catálogo y usa registro, inicio de sesión, perfiles, compras de demostración y permisos del servidor. La [guía del backend](backend/README.md) explica cómo iniciarlo y entender cada capa.
 
 ## Abrir en Windows
 
@@ -48,7 +48,11 @@ El catálogo es público; solo el administrador puede modificar productos y gest
 
 Para comprobarlo, registra un comprador con un RUT válido, recarga la página y verifica su sesión. Cierra sesión e inicia como administrador para consultar la cuenta nueva en **Administración → Usuarios**. Prueba crear un vendedor, cambiar el rol de una cuenta ordinaria y desactivarla. El servidor rechaza el acceso de una cuenta desactivada y los cambios administrativos realizados como comprador o vendedor. Cambiar la contraseña de una cuenta ordinaria termina sus sesiones anteriores. Las cuentas y el catálogo anteriores del navegador no se importan automáticamente.
 
-En el modo conectado todavía no se confirman compras ni se administran categorías: eso necesita endpoints propios para guardar pedidos y descontar stock en una transacción. La siguiente etapa será conectar los pedidos; AWS queda para después.
+Los pedidos ya se guardan en el servidor. El comprador puede confirmar una compra de demostración, revisar su historial y recuperar el comprobante al recargar. Java calcula el total con el precio actual del catálogo y descuenta el stock dentro de la misma transacción que guarda el pedido. Si falta stock o se rechaza el pago simulado, no se guarda una compra parcial.
+
+Para probarlo, crea un producto con stock desde administración, entra como comprador, agrega unidades y confirma en **Finalizar compra**. Revisa **Mi cuenta** y vuelve a iniciar sesión como vendedor: desde **Pedidos recibidos** puedes consultar la entrega y cambiar el estado a **En preparación** o **Entregado**. El administrador también puede hacerlo desde su panel. Usa **Actualizar pedidos** para consultar cambios realizados en otro navegador.
+
+El comprador recibe únicamente sus pedidos; vendedor y administrador pueden consultar todos. Cada comprobante conserva nombre, precio e imagen del momento de compra aunque el producto cambie o se elimine. Las solicitudes repetidas usan el mismo identificador para evitar descuentos duplicados. El carrito se vacía cuando la API confirma el pedido; un error de red conserva el intento para reintentar. No se realizan cobros reales. Categorías y mensajes siguen pendientes de conexión al backend; AWS queda para después.
 
 ## Comprobar y compilar
 
@@ -61,7 +65,7 @@ npm run preview
 
 `dist/` contiene los archivos para publicar. La compilación incluye páginas de redirección para los antiguos enlaces `.html`, sus filtros y el acceso anterior de `react/index.html`.
 
-`npm test` ejecuta 145 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks, flujos de compra, sesiones y comunicación con la API mediante respuestas simuladas. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
+`npm test` ejecuta 150 pruebas con Jasmine y Karma y 11 pruebas de rutas con Node. Incluye reglas de negocio, componentes, formularios, hooks, flujos de compra, sesiones y comunicación con la API mediante respuestas simuladas. Requiere Chrome instalado; en Windows también se detecta Edge como alternativa mediante `CHROME_BIN`. Los comandos `npm run test:jasmine` y `npm run test:rutas` permiten ejecutar cada grupo por separado. No es necesario instalar pnpm para usar estos comandos.
 
 `npm run test:cobertura` genera el informe real de líneas, sentencias, funciones y ramas en `coverage/index.html`, y falla si alguna de esas cuatro métricas globales queda por debajo del 80 %. La configuración de cobertura solo se aplica a las pruebas. La [guía de pruebas](docs/PRUEBAS.md) explica cómo ejecutar los casos, leer el reporte y presentar los resultados.
 
@@ -126,6 +130,7 @@ El modo local conserva las cuentas de demostración del navegador. En el modo co
 - `src/components/Administracion.jsx`: subrutas de administración y navegación activa con `NavLink`.
 - `src/hooks/useTienda.js`: operaciones de la tienda y guardado.
 - `src/hooks/useSesionApi.js`: recupera la sesión y conecta registro, perfil, contraseña y administración de cuentas con el servidor.
+- `src/hooks/usePedidosApi.js` y `src/servicios/pedidosApi.js`: consultan pedidos, confirman compras, conservan el identificador del intento y actualizan estados.
 - `src/servicios/clienteApi.js`: cookies, token CSRF y errores HTTP compartidos.
 - `src/servicios/cuentasApi.js` y `productosApi.js`: peticiones de cada parte de la API.
 - `src/hooks/useAccionesTienda.js`: acciones de acceso, carrito y compra que muestran avisos o cambian de pantalla.

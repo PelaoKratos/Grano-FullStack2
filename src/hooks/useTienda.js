@@ -10,6 +10,7 @@ import { productos as productosIniciales } from "../datos/productos.js";
 import imagenDeRespaldo from "../assets/ritual-grano.png";
 import { useCatalogoApi } from "./useCatalogoApi.js";
 import { useSesionApi } from "./useSesionApi.js";
+import { usePedidosApi } from "./usePedidosApi.js";
 import { obtenerCategorias } from "../datos/categorias.js";
 
 // Este adaptador permite reutilizar las funciones de almacenamiento en las pruebas.
@@ -24,6 +25,9 @@ export function useTienda({
 } = {}) {
   const catalogo = useCatalogoApi(apiUrl);
   const cuentas = useSesionApi(apiUrl);
+  const pedidosApi = usePedidosApi(apiUrl, cuentas.usuario);
+  const cuentaActualRef = useRef(null);
+  cuentaActualRef.current = cuentas.usuario?.correo;
   // El modo API tiene su propia copia de sesión y carrito. La demostración local queda intacta.
   const clave = apiUrl ? "grano-tienda-api-v1" : CLAVE_TIENDA;
   const storage = useMemo(
@@ -37,7 +41,7 @@ export function useTienda({
               const datos = JSON.parse(valor);
               almacenamiento.setItem(
                 clave,
-                JSON.stringify({ ...datos, usuarios: [] }),
+                JSON.stringify({ ...datos, usuarios: [], pedidos: [] }),
               );
             },
           }
@@ -93,12 +97,10 @@ export function useTienda({
     }
     if (
       apiUrl &&
-      ["COMPRAR", "CATEGORIA_GUARDAR", "CATEGORIA_ELIMINAR"].includes(
-        accion.tipo,
-      )
+      ["CATEGORIA_GUARDAR", "CATEGORIA_ELIMINAR"].includes(accion.tipo)
     ) {
       setError(
-        "Los pedidos y la gestión de categorías del servidor se conectarán en la siguiente etapa.",
+        "La gestión de categorías del servidor se conectará en la siguiente etapa.",
       );
       return false;
     }
@@ -242,6 +244,7 @@ export function useTienda({
   // Envía la compra a las reglas de la tienda con un identificador de pedido y
   // la fecha local.
   function comprar(entrega, resultadoPago = "aprobado") {
+    if (apiUrl) return comprarEnServidor(entrega, resultadoPago);
     return ejecutar({
       tipo: "COMPRAR",
       entrega,
@@ -249,6 +252,29 @@ export function useTienda({
       idPedido: `GR-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
       fecha: new Date().toLocaleDateString("es-CL"),
     });
+  }
+
+  async function comprarEnServidor(entrega, resultadoPago) {
+    setError("");
+    const correoComprador = cuentas.usuario?.correo;
+    const pedido = await pedidosApi.comprar(carrito, entrega, resultadoPago);
+    catalogo.recargar();
+    if (!pedido) return false;
+    if (cuentaActualRef.current !== correoComprador) return pedido;
+    const actualizado = leerEstado();
+    actualizado.carrito = [];
+    estadoActualRef.current = actualizado;
+    setEstado(actualizado);
+    try {
+      guardarEstado(storage, actualizado);
+      pedidosApi.confirmarCarrito();
+    } catch {
+      // El pedido ya existe en la base. Un problema del navegador no debe anunciar una compra fallida.
+      setError(
+        "El pedido quedó guardado, pero no pudimos limpiar el carrito del navegador. Revisa tu historial antes de volver a comprar.",
+      );
+    }
+    return pedido;
   }
 
   function usarCuenta(accion, ...datos) {
@@ -261,9 +287,14 @@ export function useTienda({
     ...estado,
     sesion: apiUrl ? cuentas.usuario : estado.sesion,
     usuarios: apiUrl ? cuentas.usuarios : estado.usuarios,
+    pedidos: apiUrl ? pedidosApi.pedidos : estado.pedidos,
     productos,
     carrito,
-    error: error || cuentas.error,
+    error: error || cuentas.error || pedidosApi.error,
+    cargandoPedidos: pedidosApi.cargando,
+    errorPedidos: pedidosApi.error,
+    recargarPedidos: pedidosApi.recargar,
+    errorCompra: pedidosApi.errorCompra,
     cargandoSesion: cuentas.cargando,
     errorSesion: cuentas.error,
     recargarSesion: cuentas.recargar,
@@ -316,6 +347,8 @@ export function useTienda({
       ejecutar({ tipo: "CATEGORIA_ELIMINAR", nombre }),
     marcarMensaje: (indice) => ejecutar({ tipo: "MENSAJE_LEIDO", indice }),
     cambiarEstadoPedido: (id, estado) =>
-      ejecutar({ tipo: "PEDIDO_ESTADO", id, estado }),
+      apiUrl
+        ? pedidosApi.cambiarEstado(id, estado)
+        : ejecutar({ tipo: "PEDIDO_ESTADO", id, estado }),
   };
 }

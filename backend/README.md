@@ -1,6 +1,6 @@
 # Backend de Grano: productos y cuentas
 
-La API usa Spring Boot, Java 17 y H2 para guardar productos y cuentas. React se conecta al catálogo, registro, inicio de sesión, perfil y administración de usuarios. Spring Security comprueba los permisos en el servidor.
+La API usa Spring Boot, Java 17 y H2 para guardar productos, cuentas y pedidos. React se conecta al catálogo, registro, inicio de sesión, perfil, compras y administración. Spring Security comprueba los permisos en el servidor.
 
 ## Iniciar en Windows
 
@@ -110,6 +110,43 @@ Los errores devuelven un objeto con `mensaje`. Una validación de campos añade 
 
 Los precios se guardan con `BigDecimal` y se reciben como pesos enteros. El stock y el nivel crítico deben ser enteros desde cero. `precioAnterior` es opcional; si se informa como oferta debe superar el precio actual. `notas` e `imagen` también son opcionales. `imagen` acepta una referencia o una cadena ya convertida a base64: este CRUD no incluye un endpoint de subida de archivos.
 
+## Pedidos y stock
+
+Solo los compradores pueden confirmar compras. El servidor toma el comprador de la sesión y calcula los precios y el total desde el catálogo; no acepta que el navegador los decida. La confirmación sigue siendo una simulación de pago, sin cobros reales.
+
+| Método | Dirección                  | Acceso                                              |
+| ------ | -------------------------- | --------------------------------------------------- |
+| POST   | `/api/pedidos`             | Comprador activo                                    |
+| GET    | `/api/pedidos`             | Comprador: propios; vendedor y administrador: todos |
+| GET    | `/api/pedidos/{id}`        | Dueño del pedido, vendedor o administrador          |
+| PUT    | `/api/pedidos/{id}/estado` | Vendedor o administrador                            |
+
+El POST devuelve 201 y el comprobante. Recibe un identificador UUID para la solicitud, productos con ID y cantidad, datos de entrega y el resultado del pago de práctica. Reemplaza `id-del-producto` con una ID real:
+
+```json
+{
+  "solicitudId": "123e4567-e89b-12d3-a456-426614174000",
+  "productos": [{ "id": "id-del-producto", "cantidad": 1 }],
+  "entrega": {
+    "nombre": "Cliente de prueba",
+    "correo": "comprador@duocuc.cl",
+    "telefono": "912345678",
+    "metodo": "retiro"
+  },
+  "resultadoPago": "aprobado"
+}
+```
+
+Para domicilio también se exigen `direccion`, `comuna` y `region`. Se valida el teléfono chileno, el correo, el largo de los campos y las cantidades enteras entre 1 y 999, con hasta 100 productos distintos por pedido. Un resultado `rechazado` devuelve 400 sin modificar el stock. Un producto eliminado o sin unidades suficientes devuelve 409. Consultar un comprobante ajeno como comprador devuelve 404.
+
+El cambio de estado recibe, por ejemplo, `{"estado":"En preparación"}`. Los estados permitidos son **Recibido**, **En preparación** y **Entregado**; cambiar el estado no vuelve a descontar stock. No se incluyen cancelaciones, devoluciones ni pagos bancarios en esta etapa.
+
+`PedidoService.crear()` usa `@Transactional`: guarda el pedido y descuenta todos los productos juntos. Los productos se bloquean para que dos compradores no usen la misma última unidad, y se toman siempre en el mismo orden para evitar bloqueos cruzados. Si un producto falla, se revierte el pedido completo. La edición y eliminación administrativa también usan el bloqueo del producto.
+
+La solicitud se identifica por comprador y `solicitudId`. Repetir el mismo cuerpo devuelve el pedido existente sin descontar de nuevo; usar ese identificador con otro contenido devuelve 409. React conserva el intento antes de enviarlo y lo elimina después de confirmar y limpiar su carrito. Si se pierde la respuesta, se puede reintentar la misma compra sin duplicarla.
+
+Cada pedido guarda una copia del nombre, categoría, precio, cantidad e imagen de sus productos, junto con la entrega, la fecha y el estado. El comprobante se conserva aunque se elimine el producto del catálogo.
+
 ## Dónde se guardan los datos
 
 Al ejecutar desde `backend/`, H2 crea `data/grano.mv.db`. Ese archivo conserva los productos cuando se reinicia el servidor. La carpeta de datos queda excluida de Git; el repositorio guarda el código, no los registros creados al probarlo.
@@ -149,6 +186,8 @@ El backend se inicia accesible solo desde el equipo local. Ya comprueba sesiones
 
 Para seguir una petición empieza por `ProductoController.listar()`. Llama a `ProductoService.listar()` y este pide los datos al repositorio. JPA consulta H2 y Spring convierte la lista en JSON al responder.
 
+En pedidos, `PedidoController` recibe la solicitud y `PedidoService` reúne validaciones, cálculo y descuento de stock. `PedidoRepository` consulta el historial. `Pedido`, `LineaPedido` y `EntregaPedido` guardan el comprobante y sus copias de productos y entrega; los DTO de `DatosPedido` definen lo que llega y lo que se devuelve a React.
+
 Para crear un producto, el controlador valida el cuerpo con `@Valid`. El servicio comprueba el nombre y la oferta, genera la ID y entrega el producto al repositorio. La anotación `@Transactional` agrupa el trabajo del servicio en una transacción de base de datos.
 
 ## Ejecutar las pruebas
@@ -161,7 +200,7 @@ Si el servidor se abrió con `java -jar`, detenlo antes con `Ctrl+C` para que Wi
 mvn verify
 ```
 
-Hay 34 casos: 4 de `ProductoServiceTest`, 15 de `ProductoApiTest` y 15 de `CuentaApiTest`. JUnit, Mockito y MockMvc comprueban el CRUD, registro, sesión, contraseñas, roles, perfil, CSRF real y CORS con una base H2 temporal. Estas pruebas no modifican `backend/data`.
+Hay 46 casos: 4 de `ProductoServiceTest`, 15 de `ProductoApiTest`, 15 de `CuentaApiTest` y 12 de `PedidoApiTest`. JUnit, Mockito y MockMvc comprueban el CRUD, cuentas, permisos, stock, compras simultáneas, reintentos y comprobantes con una base H2 temporal. Estas pruebas no modifican `backend/data`.
 
 Maven deja sus resultados y el JAR en `target/`, que tampoco se sube a Git. Las pruebas de React siguen ejecutándose desde la raíz con `npm test` y `npm run test:cobertura`; la cobertura de Java se medirá por separado si se incorpora esa etapa.
 
@@ -173,4 +212,4 @@ El catálogo empieza vacío; agrega productos desde administración. Las cuentas
 
 Vite usa `VITE_API_URL=/api` y un proxy hacia `http://127.0.0.1:8080`. Así el navegador mantiene las cookies en el mismo origen al abrir con localhost o 127.0.0.1. Para publicar habrá que configurar también el proxy `/api` del alojamiento.
 
-Los próximos pasos son categorías y pedidos con descuento de stock dentro de una transacción. Las compras del modo conectado quedan pendientes hasta contar con esos endpoints. Después se preparará una base externa y el despliegue en AWS.
+Los próximos pasos son categorías y mensajes de contacto en el backend. Después se preparará una base externa y el despliegue en AWS. Los productos, las cuentas y los pedidos ya usan H2 persistente en el modo conectado.

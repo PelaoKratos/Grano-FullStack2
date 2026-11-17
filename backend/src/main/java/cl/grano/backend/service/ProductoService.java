@@ -42,14 +42,19 @@ public class ProductoService {
   }
 
   public Producto actualizar(String id, Producto datos) {
-    Producto producto = obtener(id);
+    Producto producto = bloquear(id);
     validar(datos, id);
     copiarDatos(datos, producto);
     return repositorio.save(producto);
   }
 
   public void eliminar(String id) {
-    repositorio.delete(obtener(id));
+    repositorio.delete(bloquear(id));
+  }
+
+  private Producto bloquear(String id) {
+    return repositorio.bloquear(id).orElseThrow(() ->
+        new ResponseStatusException(HttpStatus.NOT_FOUND, "No encontramos este producto."));
   }
 
   private void validar(Producto datos, String idActual) {

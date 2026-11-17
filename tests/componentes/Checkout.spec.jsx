@@ -1,9 +1,27 @@
 import { crearVista } from "../ayudas/renderizar.jsx";
 import Checkout from "../../src/components/Checkout.jsx";
+import { act } from "react";
 import { comprador, carrito } from "../ayudas/datos.js";
 
 describe("Formulario de compra", () => {
   const vista = crearVista();
+  it("espera la respuesta del servidor y evita confirmar dos veces", async () => {
+    let terminar;
+    const comprar = jasmine.createSpy("comprar").and.returnValue(
+      new Promise((resolver) => {
+        terminar = resolver;
+      }),
+    );
+    await vista.mostrar(
+      <Checkout usuario={comprador} carrito={carrito} onComprar={comprar} />,
+    );
+    await vista.enviar();
+    expect(vista.contenedor.querySelector("fieldset").disabled).toBeTrue();
+    await vista.enviar();
+    expect(comprar.calls.count()).toBe(1);
+    await act(async () => terminar({ id: "GR-1" }));
+    expect(vista.contenedor.querySelector("fieldset").disabled).toBeFalse();
+  });
   it("bloquea un teléfono inválido y permite corregirlo antes de comprar", async () => {
     const comprar = jasmine.createSpy("comprar");
     await vista.mostrar(

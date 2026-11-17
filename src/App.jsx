@@ -56,9 +56,20 @@ function Tienda() {
             Actualizar catálogo
           </Boton>
           <p className="mb-0 mt-2">
-            Productos y cuentas conectados al servidor. Los pedidos del servidor
-            todavía no están disponibles.
+            Productos, cuentas y pedidos conectados al servidor. Los pagos
+            siguen siendo de demostración.
           </p>
+        </div>
+      )}
+      {tienda.usarApi && tienda.sesion && (
+        <div className="container mt-3">
+          <Boton
+            variante="secundario"
+            disabled={tienda.cargandoPedidos}
+            onClick={tienda.recargarPedidos}
+          >
+            Actualizar pedidos
+          </Boton>
         </div>
       )}
       {tienda.usarApi && tienda.errorSesion && (
@@ -85,8 +96,10 @@ function Tienda() {
           }
         >
           {tienda.usarApi &&
-          (tienda.cargandoProductos || tienda.cargandoSesion) ? (
-            <p role="status">Cargando el catálogo y comprobando la sesión…</p>
+          (tienda.cargandoProductos ||
+            tienda.cargandoSesion ||
+            tienda.cargandoPedidos) ? (
+            <p role="status">Cargando los datos de la tienda…</p>
           ) : (
             <RutasTienda tienda={tienda} acciones={acciones} />
           )}

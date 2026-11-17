@@ -47,13 +47,13 @@ export function useAccionesTienda(tienda) {
   }
   // Intenta registrar el pedido y dirige al comprobante o al resumen del
   // intento fallido.
-  function realizarCompra(entrega, resultadoPago) {
+  async function realizarCompra(entrega, resultadoPago) {
     const resumen = {
       productos: tienda.carrito.map((producto) => ({ ...producto })),
       total: totalCarrito(tienda.carrito),
       entrega,
     };
-    const pedido = tienda.comprar(entrega, resultadoPago);
+    const pedido = await tienda.comprar(entrega, resultadoPago);
     if (pedido) {
       setMensajeCompra(
         `Pedido ${pedido.id} registrado. Gracias por tu compra.`,
@@ -64,9 +64,10 @@ export function useAccionesTienda(tienda) {
         state: {
           resumen,
           mensaje:
-            resultadoPago === "rechazado"
+            tienda.errorCompra?.() ||
+            (resultadoPago === "rechazado"
               ? "El pago de demostración fue rechazado. Tu carrito y el stock se conservan."
-              : "No pudimos registrar el pedido. Revisa el stock, los datos y el espacio disponible del navegador.",
+              : "No pudimos registrar el pedido. Revisa el stock, los datos y el espacio disponible del navegador."),
         },
       });
     }

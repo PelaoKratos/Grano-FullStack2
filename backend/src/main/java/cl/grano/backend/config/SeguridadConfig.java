@@ -40,6 +40,9 @@ public class SeguridadConfig {
         .requestCache(cache -> cache.disable())
         .authorizeHttpRequests(reglas -> reglas
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/pedidos").hasRole("comprador")
+            .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/estado").hasAnyRole("admin", "vendedor")
+            .requestMatchers(HttpMethod.GET, "/api/pedidos", "/api/pedidos/**").hasAnyRole("admin", "vendedor", "comprador")
             .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**", "/api/auth/csrf").permitAll()
             .requestMatchers("/api/auth/login", "/api/auth/registro", "/api/auth/clave").permitAll()
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/error").permitAll()
