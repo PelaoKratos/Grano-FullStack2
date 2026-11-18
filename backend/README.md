@@ -8,6 +8,8 @@ Haz doble clic en `Iniciar Backend.cmd`, dentro de esta carpeta. Usa el JDK 17 d
 
 ## Usar PostgreSQL con Docker
 
+Para recuperar los datos que ya estaban en H2, consulta la [guía de migración](../docs/MIGRACION_DATOS.md). Incluye simulación, revisión de conflictos y respaldos antes de aplicar.
+
 Abre Docker Desktop y espera a que indique que está iniciado. Si el backend H2 ya está abierto, detén esa ventana con `Ctrl+C` para liberar el puerto 8080. Después haz doble clic en `Iniciar Backend PostgreSQL.cmd`. El acceso levanta PostgreSQL, espera a que esté listo y arranca Spring Boot con el perfil `postgres`.
 
 También puedes hacerlo desde PowerShell, dentro de esta carpeta:
